@@ -4,11 +4,11 @@
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![Version](https://img.shields.io/badge/version-0.1.0-orange.svg)](semeval/__init__.py)
 
-> A comprehensive, modular framework for evaluating semantic search and NLP models, with a focus on Turkish language models.
+> A modular framework for evaluating semantic search and NLP models, with a focus on Turkish language models.
 
 ## 🎯 Overview
 
-**SemEval** is a powerful, extensible evaluation framework designed to assess the quality of semantic embeddings and NLP models. Built with modularity and ease of use in mind, it provides:
+**SemEval** is a efficient, extensible evaluation framework designed to assess the quality of semantic embeddings and NLP models. Built with modularity and ease of use in mind, it provides:
 
 - 🔌 **Pluggable Architecture**: Easily swap encoders, data loaders, and evaluation tasks
 - ✅ **Type-Safe**: Full Pydantic V2 validation for all data structures
