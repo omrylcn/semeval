@@ -680,27 +680,6 @@ uv run python scripts/test_postprocessing_all.py
 ```
 
 ---
-
-## 🤝 Contributing
-
-We welcome contributions! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
-
----
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
----
-
-## 📞 Contact & Support
-
-- **Documentation:** See [USAGE.md](USAGE.md) for detailed usage guide
-- **Architecture:** See [Architecture.md](Architecture.md) for technical details
-- **Issues:** Open an issue on GitHub
-
----
-
 ## 📈 Changelog
 
 ### Version 0.1.0 (Current)
