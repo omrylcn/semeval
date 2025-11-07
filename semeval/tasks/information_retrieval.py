@@ -314,3 +314,74 @@ class InformationRetrieval(BaseTask):
                 error_message=str(e),
                 metadata={}
             )
+
+    @staticmethod
+    def get_export_columns(result: TaskResult) -> Dict[str, Any]:
+        """Get IR-specific export columns."""
+        metrics = result.metrics
+        return {
+            'ndcg@10': round(metrics.get('cosine-NDCG@10', 0), 4),
+            'mrr@10': round(metrics.get('cosine-MRR@10', 0), 4),
+            'map@10': round(metrics.get('cosine-MAP@10', 0), 4),
+            'precision@10': round(metrics.get('cosine-PRECISION@10', 0), 4),
+            'recall@10': round(metrics.get('cosine-RECALL@10', 0), 4)
+        }
+
+    @staticmethod
+    def format_markdown_report(result: TaskResult) -> List[str]:
+        """Format IR results as markdown."""
+        import pandas as pd
+
+        metrics = result.metrics
+        lines = []
+
+        lines.append("#### Performance Metrics")
+        lines.append("")
+
+        # Create DataFrame for metrics table
+        data = {
+            'Metric': ['NDCG', 'MRR', 'MAP'],
+            '@1': [
+                metrics.get('cosine-NDCG@1', 0),
+                metrics.get('cosine-MRR@1', 0),
+                metrics.get('cosine-MAP@1', 0)
+            ],
+            '@3': [
+                metrics.get('cosine-NDCG@3', 0),
+                metrics.get('cosine-MRR@3', 0),
+                metrics.get('cosine-MAP@3', 0)
+            ],
+            '@5': [
+                metrics.get('cosine-NDCG@5', 0),
+                metrics.get('cosine-MRR@5', 0),
+                metrics.get('cosine-MAP@5', 0)
+            ],
+            '@10': [
+                metrics.get('cosine-NDCG@10', 0),
+                metrics.get('cosine-MRR@10', 0),
+                metrics.get('cosine-MAP@10', 0)
+            ]
+        }
+        df = pd.DataFrame(data)
+
+        # Format numbers to 4 decimals
+        for col in ['@1', '@3', '@5', '@10']:
+            df[col] = df[col].apply(lambda x: f"{x:.4f}")
+
+        lines.append(df.to_markdown(index=False))
+        lines.append("")
+        lines.append("#### Analysis")
+        lines.append("")
+
+        # Performance interpretation
+        ndcg_10 = metrics.get('cosine-NDCG@10', 0)
+        if ndcg_10 >= 0.8:
+            lines.append("- 🟢 **Excellent** retrieval performance (NDCG@10 ≥ 0.8)")
+        elif ndcg_10 >= 0.7:
+            lines.append("- 🟢 **Good** retrieval performance (NDCG@10 ≥ 0.7)")
+        elif ndcg_10 >= 0.5:
+            lines.append("- 🟡 **Moderate** retrieval performance (NDCG@10 ≥ 0.5)")
+        else:
+            lines.append("- 🔴 **Poor** retrieval performance (NDCG@10 < 0.5)")
+
+        return lines

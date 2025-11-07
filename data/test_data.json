@@ -1,11 +1,11 @@
 {
   "metadata": {
     "version": "1.0",
-    "description": "Turkish Financial Domain Semantic Search Evaluation Suite",
+    "description": "Turkish Semantic Search Evaluation Suite (Multi-Task)",
     "language": "tr",
     "domain": "finance",
     "created_date": "2025-11-07",
-    "total_tasks": 1
+    "total_tasks": 4
   },
   "tasks": {
     "information_retrieval": {
@@ -147,6 +147,452 @@
           5,
           10
         ]
+      }
+    },
+    "semantic_similarity": {
+      "name": "Semantic Similarity (Triplet Tests)",
+      "enabled": true,
+      "triplets": [
+        {
+          "id": "tf0",
+          "anchor": "Enflasyon oranları yükseliyor.",
+          "positive": "Fiyat artış hızı ivme kazandı.",
+          "negative": "Şirket yeni bir CEO atadı.",
+          "difficulty": "kolay",
+          "category": "enflasyon",
+          "subcategory": "finansal"
+        },
+        {
+          "id": "tf1",
+          "anchor": "TÜFE bu ay yüzde 3 arttı.",
+          "positive": "Tüketici fiyat endeksi aylık bazda %3 yükseldi.",
+          "negative": "ÜFE verileri açıklandı.",
+          "difficulty": "kolay",
+          "category": "enflasyon",
+          "subcategory": "finansal"
+        },
+        {
+          "id": "tf2",
+          "anchor": "Merkez bankası enflasyonla mücadele ediyor.",
+          "positive": "TCMB fiyat istikrarı için çalışıyor.",
+          "negative": "Hazine tahvil ihalesine çıktı.",
+          "difficulty": "orta",
+          "category": "enflasyon",
+          "subcategory": "finansal"
+        },
+        {
+          "id": "tf3",
+          "anchor": "Merkez bankası faiz oranlarını artırdı.",
+          "positive": "TCMB politika faizini yükseltti.",
+          "negative": "Dolar kuru düştü.",
+          "difficulty": "kolay",
+          "category": "faiz",
+          "subcategory": "finansal"
+        },
+        {
+          "id": "tf4",
+          "anchor": "Sıkı para politikası uygulanıyor.",
+          "positive": "Merkez bankası para politikasını sıkılaştırdı.",
+          "negative": "Bütçe açığı arttı.",
+          "difficulty": "orta",
+          "category": "faiz",
+          "subcategory": "finansal"
+        },
+        {
+          "id": "tf5",
+          "anchor": "Kredi faizleri yükseldi.",
+          "positive": "Borçlanma maliyetleri arttı.",
+          "negative": "Mevduat faizleri sabit kaldı.",
+          "difficulty": "kolay",
+          "category": "faiz",
+          "subcategory": "finansal"
+        },
+        {
+          "id": "tf6",
+          "anchor": "BIST 100 endeksi düştü.",
+          "positive": "Borsa İstanbul ana endeksi değer kaybetti.",
+          "negative": "Dolar/TL yükseldi.",
+          "difficulty": "orta",
+          "category": "borsa",
+          "subcategory": "finansal"
+        },
+        {
+          "id": "tf7",
+          "anchor": "Hisse senetleri ralli yaptı.",
+          "positive": "Pay piyasası yükselişe geçti.",
+          "negative": "Tahvil faizleri düştü.",
+          "difficulty": "orta",
+          "category": "borsa",
+          "subcategory": "finansal"
+        },
+        {
+          "id": "tf8",
+          "anchor": "X Bankası hisseleri yüzde 5 değer kazandı.",
+          "positive": "X Bankası'nın payları %5 yükseldi.",
+          "negative": "Y Şirketi temettü dağıtacak.",
+          "difficulty": "kolay",
+          "category": "borsa",
+          "subcategory": "finansal"
+        },
+        {
+          "id": "tf9",
+          "anchor": "Şirket halka arz ediliyor.",
+          "positive": "Firma borsaya açılıyor.",
+          "negative": "Şirket satın alma yapacak.",
+          "difficulty": "kolay",
+          "category": "borsa",
+          "subcategory": "finansal"
+        },
+        {
+          "id": "tf10",
+          "anchor": "Dolar/TL kuru yükseldi.",
+          "positive": "Türk lirası dolar karşısında değer kaybetti.",
+          "negative": "Euro/TL düştü.",
+          "difficulty": "orta",
+          "category": "döviz",
+          "subcategory": "finansal"
+        },
+        {
+          "id": "tf11",
+          "anchor": "Döviz rezervleri azaldı.",
+          "positive": "Merkez bankasının döviz stokları düştü.",
+          "negative": "Cari açık arttı.",
+          "difficulty": "orta",
+          "category": "döviz",
+          "subcategory": "finansal"
+        },
+        {
+          "id": "tf12",
+          "anchor": "TL güçlendi.",
+          "positive": "Türk parası değer kazandı.",
+          "negative": "Dolar rekor kırdı.",
+          "difficulty": "kolay",
+          "category": "döviz",
+          "subcategory": "finansal"
+        },
+        {
+          "id": "tf13",
+          "anchor": "Konut kredisi çekmek istiyorum.",
+          "positive": "Ev almak için bankadan kredi kullanacağım.",
+          "negative": "Kredi kartı borcumu kapatacağım.",
+          "difficulty": "kolay",
+          "category": "kredi",
+          "subcategory": "finansal"
+        },
+        {
+          "id": "tf14",
+          "anchor": "Kredi notu yüksek olanlar daha düşük faiz alıyor.",
+          "positive": "Findeks skoru iyi olanlara uygun faiz veriliyor.",
+          "negative": "Tüketici kredisi talebi arttı.",
+          "difficulty": "orta",
+          "category": "kredi",
+          "subcategory": "finansal"
+        },
+        {
+          "id": "tf15",
+          "anchor": "Hazine tahvil faizleri yükseldi.",
+          "positive": "Devlet borçlanma senetlerinin getirisi arttı.",
+          "negative": "Şirket tahvili ihraç edildi.",
+          "difficulty": "orta",
+          "category": "tahvil",
+          "subcategory": "finansal"
+        },
+        {
+          "id": "tf16",
+          "anchor": "Eurobond getirisi düştü.",
+          "positive": "Dış borçlanma senetlerinin faizi geriledi.",
+          "negative": "Hazine iç borçlanmaya yöneldi.",
+          "difficulty": "zor",
+          "category": "tahvil",
+          "subcategory": "finansal"
+        },
+        {
+          "id": "tf17",
+          "anchor": "Cari açık daraldı.",
+          "positive": "Dış ticaret açığı azaldı.",
+          "negative": "Bütçe fazlası arttı.",
+          "difficulty": "orta",
+          "category": "makro",
+          "subcategory": "finansal"
+        },
+        {
+          "id": "tf18",
+          "anchor": "Ekonomi resesyona girdi.",
+          "positive": "Ekonomik daralma başladı.",
+          "negative": "Büyüme hızlandı.",
+          "difficulty": "orta",
+          "category": "makro",
+          "subcategory": "finansal"
+        },
+        {
+          "id": "tf19",
+          "anchor": "GSYİH büyümesi beklenenden iyi geldi.",
+          "positive": "Milli gelir artışı tahminleri aştı.",
+          "negative": "İşsizlik oranı açıklandı.",
+          "difficulty": "orta",
+          "category": "makro",
+          "subcategory": "finansal"
+        },
+        {
+          "id": "tg0",
+          "anchor": "Türkiye'nin başkenti neresidir?",
+          "positive": "Ankara hangi ülkenin başkentidir?",
+          "negative": "İstanbul'da hava durumu nasıl?",
+          "difficulty": "kolay",
+          "category": "coğrafya",
+          "subcategory": "genel_turkce"
+        },
+        {
+          "id": "tg1",
+          "anchor": "İstanbul Türkiye'nin en kalabalık şehridir.",
+          "positive": "Türkiye'de nüfusu en fazla olan il İstanbul'dur.",
+          "negative": "Ankara 1923 yılında başkent oldu.",
+          "difficulty": "kolay",
+          "category": "coğrafya",
+          "subcategory": "genel_turkce"
+        },
+        {
+          "id": "tg2",
+          "anchor": "Bugün hava çok soğuk.",
+          "positive": "Dışarıda hava oldukça serin.",
+          "negative": "Yarın yağmur yağacak.",
+          "difficulty": "kolay",
+          "category": "hava_durumu",
+          "subcategory": "genel_turkce"
+        },
+        {
+          "id": "tg3",
+          "anchor": "Akşam yemeğinde pizza yedik.",
+          "positive": "Akşamleyin pizza siparişi verdik.",
+          "negative": "Sabah kahvaltıda börek vardı.",
+          "difficulty": "kolay",
+          "category": "yemek",
+          "subcategory": "genel_turkce"
+        },
+        {
+          "id": "tg4",
+          "anchor": "Arabam bozuldu, tamirciye götürmem lazım.",
+          "positive": "Aracımı servise götürmeliyim, arızalı.",
+          "negative": "Yeni bir araba almayı düşünüyorum.",
+          "difficulty": "orta",
+          "category": "günlük",
+          "subcategory": "genel_turkce"
+        },
+        {
+          "id": "tg5",
+          "anchor": "Galatasaray maçı kazandı.",
+          "positive": "Galatasaray galibiyetle ayrıldı.",
+          "negative": "Fenerbahçe transfere başladı.",
+          "difficulty": "kolay",
+          "category": "spor",
+          "subcategory": "genel_turkce"
+        },
+        {
+          "id": "tg6",
+          "anchor": "Cristiano Ronaldo gol attı.",
+          "positive": "Ronaldo ağları havalandırdı.",
+          "negative": "Messi en iyi futbolcudur.",
+          "difficulty": "orta",
+          "category": "spor",
+          "subcategory": "genel_turkce"
+        },
+        {
+          "id": "tg7",
+          "anchor": "Başım çok ağrıyor, ağrı kesici almalıyım.",
+          "positive": "Baş ağrım var, ilaç içeceğim.",
+          "negative": "Doktora gitmem gerekiyor.",
+          "difficulty": "kolay",
+          "category": "sağlık",
+          "subcategory": "genel_turkce"
+        },
+        {
+          "id": "tg8",
+          "anchor": "Düzenli egzersiz yapmak sağlıklı yaşam için önemlidir.",
+          "positive": "Sağlıklı olmak için spor yapmak gerekir.",
+          "negative": "Beslenmede protein önemlidir.",
+          "difficulty": "orta",
+          "category": "sağlık",
+          "subcategory": "genel_turkce"
+        },
+        {
+          "id": "tg9",
+          "anchor": "Üniversite sınavına hazırlanıyorum.",
+          "positive": "YKS için ders çalışıyorum.",
+          "negative": "Liseyi geçen sene bitirdim.",
+          "difficulty": "orta",
+          "category": "eğitim",
+          "subcategory": "genel_turkce"
+        },
+        {
+          "id": "tg10",
+          "anchor": "Bu kitabı okumak çok zevkli.",
+          "positive": "Bu eseri okumak keyifli.",
+          "negative": "Kitap almayı seviyorum.",
+          "difficulty": "kolay",
+          "category": "eğitim",
+          "subcategory": "genel_turkce"
+        },
+        {
+          "id": "tg11",
+          "anchor": "Telefonum şarjı bitti.",
+          "positive": "Cep telefonumun pili tükendi.",
+          "negative": "Yeni telefon almam gerekiyor.",
+          "difficulty": "kolay",
+          "category": "teknoloji",
+          "subcategory": "genel_turkce"
+        },
+        {
+          "id": "tg12",
+          "anchor": "Yapay zeka teknolojisi hızla gelişiyor.",
+          "positive": "AI alanında büyük ilerlemeler kaydediliyor.",
+          "negative": "Robotlar gelecekte yaygınlaşacak.",
+          "difficulty": "orta",
+          "category": "teknoloji",
+          "subcategory": "genel_turkce"
+        },
+        {
+          "id": "tg13",
+          "anchor": "İnternet bağlantım çok yavaş.",
+          "positive": "Wifi hızım düşük.",
+          "negative": "Bilgisayarım çok eski.",
+          "difficulty": "kolay",
+          "category": "teknoloji",
+          "subcategory": "genel_turkce"
+        },
+        {
+          "id": "tg14",
+          "anchor": "Çok mutluyum bugün.",
+          "positive": "Bugün kendimi çok iyi hissediyorum.",
+          "negative": "Dün üzgündüm.",
+          "difficulty": "kolay",
+          "category": "duygu",
+          "subcategory": "genel_turkce"
+        },
+        {
+          "id": "tg15",
+          "anchor": "Bu film beni çok duygulandırdı.",
+          "positive": "Film izlerken gözyaşlarımı tutamadım.",
+          "negative": "Film çok uzundu.",
+          "difficulty": "orta",
+          "category": "duygu",
+          "subcategory": "genel_turkce"
+        },
+        {
+          "id": "tg16",
+          "anchor": "Toplantı yarın saat 10'da.",
+          "positive": "Meeting yarın sabah onda başlıyor.",
+          "negative": "Dün toplantı iptal edildi.",
+          "difficulty": "kolay",
+          "category": "zaman",
+          "subcategory": "genel_turkce"
+        },
+        {
+          "id": "tg17",
+          "anchor": "Cumhuriyet 1923 yılında ilan edildi.",
+          "positive": "Türkiye Cumhuriyeti 1923'te kuruldu.",
+          "negative": "Atatürk 1881 yılında doğdu.",
+          "difficulty": "orta",
+          "category": "tarih",
+          "subcategory": "genel_turkce"
+        },
+        {
+          "id": "tg18",
+          "anchor": "Bu sorunu çözmek için daha fazla zamana ihtiyacım var.",
+          "positive": "Bu problemi halletmek için ek süre gerekiyor.",
+          "negative": "Bu sorunun cevabını biliyorum.",
+          "difficulty": "orta",
+          "category": "karmaşık",
+          "subcategory": "genel_turkce"
+        },
+        {
+          "id": "tg19",
+          "anchor": "Projeyi zamanında teslim edemeyeceğim.",
+          "positive": "Çalışmayı son tarihe yetiştiremem.",
+          "negative": "Proje çok başarılı oldu.",
+          "difficulty": "orta",
+          "category": "karmaşık",
+          "subcategory": "genel_turkce"
+        }
+      ],
+      "config": {
+        "success_threshold": 0.85,
+        "margin_threshold": 0.2
+      }
+    },
+    "linguistic_robustness": {
+      "name": "Linguistic Robustness (Morphology, Typo, Negation)",
+      "enabled": true,
+      "morphology": [
+        {"id": "m0", "original": "mevduat", "modified": "mevduatım", "category": "iyelik"},
+        {"id": "m1", "original": "kredi", "modified": "kredim", "category": "iyelik"},
+        {"id": "m2", "original": "hisse", "modified": "hisseler", "category": "çoğul"},
+        {"id": "m3", "original": "tahvil", "modified": "tahviller", "category": "çoğul"},
+        {"id": "m4", "original": "banka", "modified": "bankada", "category": "hal_eki"},
+        {"id": "m5", "original": "borsa", "modified": "borsada", "category": "hal_eki"},
+        {"id": "m6", "original": "enflasyon", "modified": "enflasyonun", "category": "ilgi"},
+        {"id": "m7", "original": "büyüme", "modified": "büyümenin", "category": "ilgi"},
+        {"id": "m8", "original": "hisse senedi", "modified": "hisse senetlerindeki", "category": "karmaşık"},
+        {"id": "m9", "original": "merkez bankası", "modified": "merkez bankasının", "category": "karmaşık"}
+      ],
+      "typo": [
+        {"id": "t0", "correct": "enflasyon", "typo": "enfilasyon", "type": "türkçe_ses"},
+        {"id": "t1", "correct": "mevduat", "typo": "mevdüat", "type": "türkçe_ses"},
+        {"id": "t2", "correct": "ekonomi", "typo": "ekenomi", "type": "türkçe_ses"},
+        {"id": "t3", "correct": "yatırım", "typo": "yatirim", "type": "türkçe_ses"},
+        {"id": "t4", "correct": "kredi", "typo": "kreid", "type": "klavye"},
+        {"id": "t5", "correct": "faiz", "typo": "faiiz", "type": "klavye"},
+        {"id": "t6", "correct": "borsa", "typo": "boras", "type": "klavye"},
+        {"id": "t7", "correct": "büyüme", "typo": "byüme", "type": "eksik_harf"},
+        {"id": "t8", "correct": "gelir", "typo": "geliir", "type": "fazla_harf"},
+        {"id": "t9", "correct": "portföy", "typo": "portfoy", "type": "eksik_işaret"}
+      ],
+      "negation": [
+        {"id": "n0", "sentence1": "Kredi çekmek mantıklı bir karar.", "sentence2": "Kredi çekmek mantıklı bir karar değil.", "type": "olumsuzluk_eki"},
+        {"id": "n1", "sentence1": "Borsa yükseldi.", "sentence2": "Borsa yükselmedi.", "type": "olumsuzluk_eki"},
+        {"id": "n2", "sentence1": "Faiz oranları düştü.", "sentence2": "Faiz oranları düşmedi.", "type": "olumsuzluk_eki"},
+        {"id": "n3", "sentence1": "Bu yatırım karlı.", "sentence2": "Bu yatırım karlı değil.", "type": "olumsuzluk_eki"},
+        {"id": "n4", "sentence1": "Enflasyon yükseldi.", "sentence2": "Enflasyon düştü.", "type": "zıt_kelime"},
+        {"id": "n5", "sentence1": "Dolar güçlendi.", "sentence2": "Dolar zayıfladı.", "type": "zıt_kelime"},
+        {"id": "n6", "sentence1": "Borsa kazandırdı.", "sentence2": "Borsa kaybettirdi.", "type": "zıt_kelime"},
+        {"id": "n7", "sentence1": "Faiz arttı.", "sentence2": "Faiz azaldı.", "type": "zıt_kelime"},
+        {"id": "n8", "sentence1": "Enflasyon arttı ama büyüme devam etti.", "sentence2": "Enflasyon arttı ve büyüme durdu.", "type": "bağlaç"},
+        {"id": "n9", "sentence1": "Borsa yükseldi çünkü veriler iyiydi.", "sentence2": "Borsa düştü çünkü veriler kötüydü.", "type": "bağlaç"}
+      ],
+      "config": {
+        "morphology_threshold": 0.85,
+        "typo_threshold": 0.75,
+        "negation_threshold": 0.50
+      }
+    },
+    "vector_arithmetic": {
+      "name": "Vector Arithmetic (Analogy Tests)",
+      "enabled": true,
+      "analogies": [
+        {"id": "a0", "a": "baba", "b": "erkek", "c": "kadın", "d": "anne", "category": "cinsiyet", "subcategory": "genel_turkce"},
+        {"id": "a1", "a": "oğul", "b": "erkek", "c": "kadın", "d": "kız", "category": "cinsiyet", "subcategory": "genel_turkce"},
+        {"id": "a2", "a": "Ankara", "b": "Türkiye", "c": "Almanya", "d": "Berlin", "category": "coğrafya", "subcategory": "genel_turkce"},
+        {"id": "a3", "a": "Paris", "b": "Fransa", "c": "İngiltere", "d": "Londra", "category": "coğrafya", "subcategory": "genel_turkce"},
+        {"id": "a4", "a": "Tokyo", "b": "Japonya", "c": "Çin", "d": "Pekin", "category": "coğrafya", "subcategory": "genel_turkce"},
+        {"id": "a5", "a": "küçük", "b": "büyük", "c": "az", "d": "çok", "category": "derece", "subcategory": "genel_turkce"},
+        {"id": "a6", "a": "soğuk", "b": "sıcak", "c": "yavaş", "d": "hızlı", "category": "derece", "subcategory": "genel_turkce"},
+        {"id": "a7", "a": "kedi", "b": "kedi yavrusu", "c": "köpek yavrusu", "d": "köpek", "category": "hayvan", "subcategory": "genel_turkce"},
+        {"id": "a8", "a": "inek", "b": "buzağı", "c": "tay", "d": "at", "category": "hayvan", "subcategory": "genel_turkce"},
+        {"id": "a9", "a": "eski", "b": "yeni", "c": "köhne", "d": "taze", "category": "derece", "subcategory": "genel_turkce"},
+        {"id": "a10", "a": "dolar", "b": "Amerika", "c": "Avrupa", "d": "euro", "category": "para_ülke", "subcategory": "finansal"},
+        {"id": "a11", "a": "dolar", "b": "ABD", "c": "Japonya", "d": "yen", "category": "para_ülke", "subcategory": "finansal"},
+        {"id": "a12", "a": "sterlin", "b": "İngiltere", "c": "İsviçre", "d": "frank", "category": "para_ülke", "subcategory": "finansal"},
+        {"id": "a13", "a": "TL", "b": "Türkiye", "c": "Rusya", "d": "ruble", "category": "para_ülke", "subcategory": "finansal"},
+        {"id": "a14", "a": "BIST 100", "b": "Türkiye", "c": "Amerika", "d": "NASDAQ", "category": "borsa_ülke", "subcategory": "finansal"},
+        {"id": "a15", "a": "Nikkei", "b": "Japonya", "c": "İngiltere", "d": "FTSE", "category": "borsa_ülke", "subcategory": "finansal"},
+        {"id": "a16", "a": "yükseliş", "b": "düşüş", "c": "kazanç", "d": "kayıp", "category": "zıtlık", "subcategory": "finansal"},
+        {"id": "a17", "a": "alıcı", "b": "satıcı", "c": "talep", "d": "arz", "category": "zıtlık", "subcategory": "finansal"},
+        {"id": "a18", "a": "enflasyon", "b": "deflasyon", "c": "büyüme", "d": "küçülme", "category": "zıtlık", "subcategory": "finansal"},
+        {"id": "a19", "a": "hisse", "b": "borsa", "c": "tahvil", "d": "tahvil piyasası", "category": "enstrüman_piyasa", "subcategory": "finansal"}
+      ],
+      "config": {
+        "top_k": [1, 5, 10],
+        "vocabulary_expansion": true,
+        "vocabulary_sources": ["analogies", "corpus"]
       }
     }
   }

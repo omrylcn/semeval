@@ -1,0 +1,49 @@
+# SemEval Development Configuration
+# ===================================
+# Development configuration with verbose logging and quick testing
+
+app_name: "SemEval Development"
+app_version: "0.1.0"
+app_description: "Semantic Evaluation Framework - Development Mode"
+
+# Model Configuration - Development
+model:
+  name: "emrecan/bert-base-turkish-cased-mean-nli-stsb-tr"
+  device: "auto"
+  batch_size: 16  # Smaller batch for faster iteration
+
+# Output Configuration - Development
+output:
+  base_dir: "./output/dev"
+  export_formats:
+    - "json"
+    - "markdown"  # Skip CSV for faster dev
+  save_comprehensive_report: true
+
+# Task Configurations - Quick metrics for development
+tasks:
+  information_retrieval:
+    enabled: true
+    ndcg_at_k: [1, 5, 10]  # Fewer metrics for speed
+    map_at_k: [10]
+    mrr_at_k: [10]
+
+  semantic_similarity:
+    enabled: true
+    margin_threshold: 0.0
+
+  linguistic_robustness:
+    enabled: true
+    morphology_threshold: 0.85
+    typo_threshold: 0.75
+    negation_threshold: 0.50
+
+  vector_arithmetic:
+    enabled: true
+    top_k: [1, 5]  # Quick top-k for dev
+
+# Logging Configuration - Verbose for development
+logging:
+  verbose: true
+  level: "DEBUG"
+  log_dir: "logs/dev"

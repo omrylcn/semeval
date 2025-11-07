@@ -12,7 +12,14 @@ from .base_encoder import BaseEncoder
 from .base_loader import BaseDataLoader
 from .loaders import JSONDataLoader
 from .schemas import TestDataModel
-from ..tasks import InformationRetrieval, TaskResult
+from .config import SemEvalSettings, load_settings
+from ..tasks import (
+    InformationRetrieval,
+    SemanticSimilarity,
+    LinguisticRobustness,
+    VectorArithmetic,
+    TaskResult
+)
 
 
 class EvaluationResult:
@@ -145,13 +152,33 @@ class TaskRunner:
         encoder: BaseEncoder,
         data_loader: Optional[BaseDataLoader] = None,
         device: Optional[str] = None,
-        verbose: bool = False
+        verbose: bool = False,
+        settings: Optional[SemEvalSettings] = None
     ):
-        """Initialize task runner."""
+        """Initialize task runner.
+
+        Parameters
+        ----------
+        encoder : BaseEncoder
+            Text encoder
+        data_loader : BaseDataLoader, optional
+            Data loader (default: JSONDataLoader)
+        device : str, optional
+            Device override (overrides settings if provided)
+        verbose : bool, optional
+            Verbose override (overrides settings if provided)
+        settings : SemEvalSettings, optional
+            Configuration settings. If not provided, loads from default config.
+        """
         self.encoder = encoder
         self.data_loader = data_loader or JSONDataLoader()
-        self.device = device
-        self.verbose = verbose
+
+        # Load settings if not provided (backward compatibility)
+        self.settings = settings or load_settings()
+
+        # Allow parameter overrides (for backward compatibility)
+        self.device = device if device is not None else self.settings.model.device
+        self.verbose = verbose if verbose else self.settings.logging.verbose
 
     def _log(self, message: str, level: str = "INFO"):
         """Log a message if verbose.
@@ -223,10 +250,50 @@ class TaskRunner:
             result = task.run()
             task_results.append(result)
 
-        # TODO: Add other tasks as they are implemented
-        # - Semantic Similarity
-        # - Linguistic Robustness
-        # - Vector Arithmetic
+        # Semantic Similarity
+        if test_data.tasks.semantic_similarity is not None:
+            self._log("\n" + "="*70)
+            self._log("Running Semantic Similarity Task")
+            self._log("="*70)
+
+            task = SemanticSimilarity(
+                encoder=self.encoder,
+                task_data=test_data.tasks.semantic_similarity,
+                device=self.device,
+                verbose=self.verbose
+            )
+            result = task.run()
+            task_results.append(result)
+
+        # Linguistic Robustness
+        if test_data.tasks.linguistic_robustness is not None:
+            self._log("\n" + "="*70)
+            self._log("Running Linguistic Robustness Task")
+            self._log("="*70)
+
+            task = LinguisticRobustness(
+                encoder=self.encoder,
+                task_data=test_data.tasks.linguistic_robustness,
+                device=self.device,
+                verbose=self.verbose
+            )
+            result = task.run()
+            task_results.append(result)
+
+        # Vector Arithmetic
+        if test_data.tasks.vector_arithmetic is not None:
+            self._log("\n" + "="*70)
+            self._log("Running Vector Arithmetic Task")
+            self._log("="*70)
+
+            task = VectorArithmetic(
+                encoder=self.encoder,
+                task_data=test_data.tasks.vector_arithmetic,
+                device=self.device,
+                verbose=self.verbose
+            )
+            result = task.run()
+            task_results.append(result)
 
         total_runtime = time.time() - start_time
 
@@ -285,6 +352,41 @@ class TaskRunner:
             )
             return task.run()
 
-        # TODO: Add other task types
+        elif task_name == "semantic_similarity":
+            if test_data.tasks.semantic_similarity is None:
+                raise ValueError("Semantic Similarity task not available in test data")
+
+            task = SemanticSimilarity(
+                encoder=self.encoder,
+                task_data=test_data.tasks.semantic_similarity,
+                device=self.device,
+                verbose=self.verbose
+            )
+            return task.run()
+
+        elif task_name == "linguistic_robustness":
+            if test_data.tasks.linguistic_robustness is None:
+                raise ValueError("Linguistic Robustness task not available in test data")
+
+            task = LinguisticRobustness(
+                encoder=self.encoder,
+                task_data=test_data.tasks.linguistic_robustness,
+                device=self.device,
+                verbose=self.verbose
+            )
+            return task.run()
+
+        elif task_name == "vector_arithmetic":
+            if test_data.tasks.vector_arithmetic is None:
+                raise ValueError("Vector Arithmetic task not available in test data")
+
+            task = VectorArithmetic(
+                encoder=self.encoder,
+                task_data=test_data.tasks.vector_arithmetic,
+                device=self.device,
+                verbose=self.verbose
+            )
+            return task.run()
+
         else:
             raise ValueError(f"Unknown task name: {task_name}")

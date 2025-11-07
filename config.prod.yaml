@@ -1,0 +1,50 @@
+# SemEval Production Configuration
+# ==================================
+# Production configuration with optimized settings
+
+app_name: "SemEval Production"
+app_version: "0.1.0"
+app_description: "Semantic Evaluation Framework for Turkish NLP - Production"
+
+# Model Configuration - Production
+model:
+  name: "emrecan/bert-base-turkish-cased-mean-nli-stsb-tr"
+  device: "auto"
+  batch_size: 64  # Larger batch for production
+
+# Output Configuration - Production
+output:
+  base_dir: "./results"
+  export_formats:
+    - "json"
+    - "csv"
+    - "markdown"
+  save_comprehensive_report: true
+
+# Task Configurations - Extended metrics for production
+tasks:
+  information_retrieval:
+    enabled: true
+    ndcg_at_k: [1, 3, 5, 10, 20, 50, 100]
+    map_at_k: [10, 100]
+    mrr_at_k: [10, 100]
+
+  semantic_similarity:
+    enabled: true
+    margin_threshold: 0.0
+
+  linguistic_robustness:
+    enabled: true
+    morphology_threshold: 0.85
+    typo_threshold: 0.75
+    negation_threshold: 0.50
+
+  vector_arithmetic:
+    enabled: true
+    top_k: [1, 3, 5, 10, 20]
+
+# Logging Configuration - Less verbose for production
+logging:
+  verbose: false
+  level: "WARNING"
+  log_dir: "logs"

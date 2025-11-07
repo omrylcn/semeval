@@ -42,6 +42,14 @@ from .schemas import (
 from .base_encoder import BaseEncoder
 from .base_loader import BaseDataLoader, DataValidationError
 from .runner import TaskRunner, EvaluationResult
+from .config import (
+    SemEvalSettings,
+    load_settings,
+    ModelConfig,
+    OutputConfig,
+    TasksConfig,
+    LoggingConfig
+)
 
 __all__ = [
     # Schemas
@@ -56,6 +64,13 @@ __all__ = [
     # Runner
     'TaskRunner',
     'EvaluationResult',
+    # Configuration
+    'SemEvalSettings',
+    'load_settings',
+    'ModelConfig',
+    'OutputConfig',
+    'TasksConfig',
+    'LoggingConfig',
     # Exceptions
     'DataValidationError',
 ]

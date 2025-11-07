@@ -65,8 +65,8 @@ class SentenceTransformerEncoder(BaseEncoder):
 
         self._model_name = model_name_or_path
 
-        # Auto-detect device if not specified
-        if device is None:
+        # Auto-detect device if not specified or "auto"
+        if device is None or device == "auto":
             if torch.cuda.is_available():
                 device = 'cuda'
             elif torch.backends.mps.is_available():

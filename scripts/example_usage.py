@@ -1,121 +1,207 @@
-"""Example usage of the semeval package.
+"""Example usage of the SemEval package.
 
 This script demonstrates how to use the main API for evaluating
-semantic search models.
+semantic embedding models with all 4 tasks and configuration system.
 """
 
 from pathlib import Path
 import sys
 
 # Add parent to path
-sys.path.insert(0, str(Path(__file__).parent.parent.parent))
+sys.path.insert(0, str(Path(__file__).parent.parent))
 
-# Import from main package API
 import semeval
-from semeval import TaskRunner, SentenceTransformerEncoder
+from semeval import (
+    TaskRunner,
+    SentenceTransformerEncoder,
+    load_settings
+)
 
 print("="*70)
 print(f"SemEval Package v{semeval.__version__}")
 print(f"By {semeval.__author__}")
 print("="*70)
 
-print("\n📦 Example 1: Basic Usage with TaskRunner")
+# Data path
+data_path = Path(__file__).parent.parent / "data" / "test_data.json"
+
+print("\n📦 Example 1: Basic Usage with All 4 Tasks")
 print("-"*70)
 
-# Create encoder using main API
+# Create encoder
 print("Creating encoder...")
-encoder = SentenceTransformerEncoder("emrecan/bert-base-turkish-cased-mean-nli-stsb-tr")
-print(f"✅ Loaded: {encoder.model_name} ({encoder.get_embedding_dim()}D)")
+encoder = SentenceTransformerEncoder(
+    "emrecan/bert-base-turkish-cased-mean-nli-stsb-tr"
+)
+print(f"✅ Model: {encoder._model_name}")
+print(f"✅ Embedding dim: {encoder.get_embedding_dim()}D")
 
 # Create runner
 print("\nCreating TaskRunner...")
 runner = TaskRunner(encoder=encoder, verbose=False)
 print("✅ Runner created")
 
-# Run all tasks
-print("\nRunning evaluation...")
-data_path = Path(__file__).parent.parent / "data" / "test_data.json"
+# Run all 4 tasks
+print("\nRunning all 4 evaluation tasks...")
+print("  - Information Retrieval")
+print("  - Semantic Similarity")
+print("  - Linguistic Robustness")
+print("  - Vector Arithmetic")
+
 result = runner.run(str(data_path))
 
 # Display summary
 summary = result.get_summary()
-print(f"✅ Evaluation completed in {summary['total_runtime']:.2f}s")
+print(f"\n✅ Evaluation completed in {summary['total_runtime']:.2f}s")
 
-print("\nResults:")
+print("\nResults Summary:")
 for task_name, task_info in summary['tasks'].items():
-    print(f"\n  {task_name.upper()}")
+    status_icon = "✅" if task_info['status'] == 'success' else "❌"
+    print(f"\n{status_icon} {task_name.upper()}")
+    print(f"   Status: {task_info['status']}")
+    print(f"   Runtime: {task_info['runtime']:.2f}s")
+
     if task_info['status'] == 'success':
-        # Show key metrics
-        for metric, value in sorted(task_info['metrics'].items())[:5]:
-            print(f"    {metric:30s}: {value:.4f}")
+        # Show 2-3 key metrics per task
+        metrics = task_info['metrics']
+
+        if task_name == 'information_retrieval':
+            print(f"   NDCG@10: {metrics.get('cosine-NDCG@10', 0):.4f}")
+            print(f"   MRR@10: {metrics.get('cosine-MRR@10', 0):.4f}")
+
+        elif task_name == 'semantic_similarity':
+            print(f"   Accuracy: {metrics.get('accuracy', 0):.2%}")
+            print(f"   Avg Margin: {metrics.get('avg_margin', 0):.3f}")
+
+        elif task_name == 'linguistic_robustness':
+            print(f"   Overall Robustness: {metrics.get('overall_robustness', 0):.2%}")
+
+        elif task_name == 'vector_arithmetic':
+            print(f"   Accuracy: {metrics.get('accuracy', 0):.2%}")
 
 print("\n" + "="*70)
-print("📦 Example 2: Run Single Task")
+print("📦 Example 2: Using Configuration System")
 print("-"*70)
 
-# Run only IR task
-print("Running Information Retrieval task only...")
-ir_result = runner.run_task("information_retrieval", str(data_path))
+# Load settings from config
+print("Loading config...")
+settings = load_settings()  # Loads config.yaml
+print(f"✅ Config loaded")
+print(f"   Model: {settings.model.name}")
+print(f"   Device: {settings.model.device}")
+print(f"   Output dir: {settings.output.base_dir}")
+print(f"   Verbose: {settings.logging.verbose}")
 
-print(f"✅ Task: {ir_result.task_name}")
-print(f"✅ Status: {ir_result.status}")
-print(f"✅ Runtime: {ir_result.runtime_seconds:.2f}s")
+# Create encoder using config
+encoder_from_config = SentenceTransformerEncoder(
+    settings.model.name,
+    device=settings.model.device
+)
+
+# Create runner with settings
+runner_with_config = TaskRunner(
+    encoder=encoder_from_config,
+    settings=settings
+)
+
+print("\nRunning with config...")
+result_config = runner_with_config.run(str(data_path))
+print(f"✅ Completed in {result_config.total_runtime:.2f}s")
+
+print("\n" + "="*70)
+print("📦 Example 3: Run Specific Task")
+print("-"*70)
+
+# Run only Semantic Similarity task
+print("Running Semantic Similarity task only...")
+ss_result = runner.run_task("semantic_similarity", str(data_path))
+
+print(f"✅ Task: {ss_result.task_name}")
+print(f"✅ Status: {ss_result.status}")
+print(f"✅ Runtime: {ss_result.runtime_seconds:.2f}s")
 
 # Get specific metrics
-ndcg = ir_result.get_metric('cosine-NDCG@10')
-mrr = ir_result.get_metric('cosine-MRR@10')
-map_score = ir_result.get_metric('cosine-MAP@10')
+accuracy = ss_result.get_metric('accuracy')
+avg_margin = ss_result.get_metric('avg_margin')
 
 print(f"\nKey Metrics:")
-print(f"  NDCG@10: {ndcg:.4f}")
-print(f"  MRR@10:  {mrr:.4f}")
-print(f"  MAP@10:  {map_score:.4f}")
+print(f"  Triplet Accuracy: {accuracy:.2%}")
+print(f"  Average Margin: {avg_margin:.3f}")
 
 print("\n" + "="*70)
-print("📦 Example 3: Using HuggingFaceEncoder")
+print("📦 Example 4: Export Results")
 print("-"*70)
 
-from semeval import HuggingFaceEncoder
+from semeval.postprocess import ResultsExporter
 
-print("Creating HuggingFace encoder...")
-hf_encoder = HuggingFaceEncoder("dbmdz/bert-base-turkish-cased")
-print(f"✅ Loaded: {hf_encoder.model_name} ({hf_encoder.get_embedding_dim()}D)")
+print("Creating exporter...")
+exporter = ResultsExporter()
 
-print("\nRunning with HuggingFace encoder...")
-hf_runner = TaskRunner(encoder=hf_encoder, verbose=False)
-hf_result = hf_runner.run_task("information_retrieval", str(data_path))
+# Create output directory
+output_dir = Path(__file__).parent.parent / "output" / "examples"
+output_dir.mkdir(parents=True, exist_ok=True)
 
-print(f"✅ Status: {hf_result.status}")
-print(f"✅ Runtime: {hf_result.runtime_seconds:.2f}s")
+print(f"Exporting results to: {output_dir}")
 
-hf_ndcg = hf_result.get_metric('cosine-NDCG@10')
-if hf_ndcg:
-    print(f"✅ NDCG@10: {hf_ndcg:.4f}")
+# Export to different formats
+print("\nExporting formats:")
+print("  - CSV...")
+exporter.export_csv(result, str(output_dir / "results.csv"))
+print("  - JSON...")
+exporter.export_json(result, str(output_dir / "results.json"))
+print("  - Markdown...")
+exporter.export_markdown(result, str(output_dir / "results.md"))
+
+# Per-task export
+print("  - Per-task files...")
+task_paths = exporter.export_per_task(result, str(output_dir))
+
+print(f"\n✅ Exported {len(task_paths)} tasks")
+for task_name, paths in task_paths.items():
+    print(f"   {task_name}: {len(paths)} files")
 
 print("\n" + "="*70)
-print("📦 Example 4: Direct Task Usage")
+print("📦 Example 5: Comprehensive Report")
 print("-"*70)
 
-from semeval import InformationRetrieval, JSONDataLoader
+from semeval.postprocess import ReportGenerator
 
-print("Loading data directly...")
-loader = JSONDataLoader()
-test_data = loader.load(str(data_path))
-ir_data = test_data.tasks.information_retrieval
+print("Generating comprehensive report...")
+generator = ReportGenerator()
 
-print(f"✅ Loaded: {len(ir_data.corpus)} docs, {len(ir_data.queries)} queries")
-
-print("\nRunning task directly...")
-task = InformationRetrieval(
-    encoder=encoder,
-    task_data=ir_data,
-    verbose=False
+generator.generate_report(
+    result,
+    str(output_dir / "comprehensive_report.md"),
+    model_name="BERT Turkish (Example)",
+    include_recommendations=True
 )
-direct_result = task.run()
 
-print(f"✅ Status: {direct_result.status}")
-print(f"✅ Metrics: {len(direct_result.metrics)} metrics computed")
+print(f"✅ Report saved to: {output_dir / 'comprehensive_report.md'}")
+
+print("\n" + "="*70)
+print("📦 Example 6: Environment-Specific Configs")
+print("-"*70)
+
+# Load dev config
+print("Loading dev config...")
+dev_settings = load_settings(env="dev")
+print(f"✅ Dev config:")
+print(f"   Verbose: {dev_settings.logging.verbose}")
+print(f"   Log level: {dev_settings.logging.level}")
+
+# Load prod config
+print("\nLoading prod config...")
+prod_settings = load_settings(env="prod")
+print(f"✅ Prod config:")
+print(f"   Verbose: {prod_settings.logging.verbose}")
+print(f"   Log level: {prod_settings.logging.level}")
 
 print("\n" + "="*70)
 print("✅ All examples completed successfully!")
+print("="*70)
+print("\n💡 Next steps:")
+print("  - Check USAGE.md for detailed documentation")
+print("  - Explore config.yaml for configuration options")
+print("  - See output/examples/ for exported results")
+print("  - Run test_all_tasks.py to test all tasks")
 print("="*70)

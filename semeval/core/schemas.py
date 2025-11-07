@@ -21,7 +21,7 @@ class TestMetadata(BaseModel):
     language : str, optional
         Primary language of test data (default: "tr")
     domain : str, optional
-        Domain of test data (default: "finance")
+        Domain of test data (e.g., "finance", "general", "medical") - optional
     created_date : str, optional
         ISO format date when test data was created
     total_tasks : int, optional
@@ -31,7 +31,7 @@ class TestMetadata(BaseModel):
     version: str
     description: str
     language: str = "tr"
-    domain: str = "finance"
+    domain: Optional[str] = None
     created_date: Optional[str] = None
     total_tasks: int = 4
 
@@ -150,15 +150,24 @@ class TripletData(BaseModel):
         Text semantically similar to anchor
     negative : str
         Text semantically dissimilar to anchor
-    difficulty : {'kolay', 'orta', 'zor'}
-        Difficulty level of this triplet
-    category : str
-        Category/topic of this triplet (e.g., "enflasyon", "borsa")
-    subcategory : {'finansal', 'genel_turkce'}
-        High-level category
+    difficulty : {'kolay', 'orta', 'zor'}, optional
+        Difficulty level of this triplet (optional metadata)
+    category : str, optional
+        Category/topic of this triplet (e.g., "enflasyon", "borsa") - optional metadata
+    subcategory : str, optional
+        High-level category (e.g., "finansal", "genel_turkce") - optional metadata
 
     Examples
     --------
+    >>> # Minimal triplet (only required fields)
+    >>> triplet = TripletData(
+    ...     id="t0",
+    ...     anchor="Enflasyon yükseliyor",
+    ...     positive="Fiyatlar artıyor",
+    ...     negative="Hisse senetleri düştü"
+    ... )
+    >>>
+    >>> # Full triplet with metadata
     >>> triplet = TripletData(
     ...     id="t0",
     ...     anchor="Enflasyon yükseliyor",
@@ -174,9 +183,9 @@ class TripletData(BaseModel):
     anchor: str
     positive: str
     negative: str
-    difficulty: Literal["kolay", "orta", "zor"]
-    category: str
-    subcategory: Literal["finansal", "genel_turkce"]
+    difficulty: Optional[Literal["kolay", "orta", "zor"]] = None
+    category: Optional[str] = None
+    subcategory: Optional[str] = None
 
     @field_validator('anchor', 'positive', 'negative')
     @classmethod

@@ -5,7 +5,7 @@ must follow.
 """
 
 from abc import ABC, abstractmethod
-from typing import Dict, Any, Optional
+from typing import Dict, Any, Optional, List
 from pydantic import BaseModel, Field
 from datetime import datetime
 
@@ -217,6 +217,75 @@ class BaseTask(ABC):
         """
         if self.verbose:
             print(f"[{level}] {message}")
+
+    @staticmethod
+    def get_export_columns(result: TaskResult) -> Dict[str, Any]:
+        """Get columns for CSV/DataFrame export.
+
+        Tasks can override this to provide custom export columns.
+        Default implementation returns basic columns.
+
+        Parameters
+        ----------
+        result : TaskResult
+            Task result to export
+
+        Returns
+        -------
+        dict
+            Dictionary of column_name -> value for export
+
+        Examples
+        --------
+        >>> class MyTask(BaseTask):
+        ...     @staticmethod
+        ...     def get_export_columns(result):
+        ...         return {'custom_metric': result.metrics.get('custom', 0)}
+        """
+        # Default: return all metrics as-is
+        return result.metrics
+
+    @staticmethod
+    def format_markdown_report(result: TaskResult) -> List[str]:
+        """Format task results as markdown lines.
+
+        Tasks can override this to provide custom markdown formatting.
+        Default implementation returns basic metrics table.
+
+        Parameters
+        ----------
+        result : TaskResult
+            Task result to format
+
+        Returns
+        -------
+        list of str
+            List of markdown lines
+
+        Examples
+        --------
+        >>> class MyTask(BaseTask):
+        ...     @staticmethod
+        ...     def format_markdown_report(result):
+        ...         return ['## My Task', f'Score: {result.metrics["score"]}']
+        """
+        import pandas as pd
+
+        lines = []
+        if result.metrics:
+            # Build data for DataFrame
+            data = {'Metric': [], 'Value': []}
+            for key, value in result.metrics.items():
+                data['Metric'].append(key)
+                if isinstance(value, float):
+                    data['Value'].append(f"{value:.4f}")
+                else:
+                    data['Value'].append(str(value))
+
+            df = pd.DataFrame(data)
+            lines.append(df.to_markdown(index=False))
+
+        return lines
 
     def __repr__(self) -> str:
         """Return string representation of task.

@@ -87,6 +87,7 @@ from .core.encoders import SentenceTransformerEncoder, HuggingFaceEncoder
 from .core.loaders import JSONDataLoader
 from .core.base_encoder import BaseEncoder
 from .core.base_loader import BaseDataLoader, DataValidationError
+from .core.config import load_settings, SemEvalSettings
 from .core.schemas import (
     TestDataModel,
     InformationRetrievalData,
@@ -94,7 +95,15 @@ from .core.schemas import (
     LinguisticRobustnessData,
     VectorArithmeticData
 )
-from .tasks import InformationRetrieval, BaseTask, TaskResult
+from .tasks import (
+    InformationRetrieval,
+    SemanticSimilarity,
+    LinguisticRobustness,
+    VectorArithmetic,
+    BaseTask,
+    TaskResult
+)
+from .postprocess import ResultsExporter, ReportGenerator
 
 __all__ = [
     # Version
@@ -110,8 +119,14 @@ __all__ = [
     # Data loaders
     'JSONDataLoader',
     'BaseDataLoader',
+    # Configuration
+    'load_settings',
+    'SemEvalSettings',
     # Tasks
     'InformationRetrieval',
+    'SemanticSimilarity',
+    'LinguisticRobustness',
+    'VectorArithmetic',
     'BaseTask',
     'TaskResult',
     # Schemas
@@ -122,4 +137,7 @@ __all__ = [
     'VectorArithmeticData',
     # Exceptions
     'DataValidationError',
+    # Post-processing
+    'ResultsExporter',
+    'ReportGenerator',
 ]
