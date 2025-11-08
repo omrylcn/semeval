@@ -4,7 +4,7 @@
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![Version](https://img.shields.io/badge/version-0.1.0-orange.svg)](semeval/__init__.py)
 
-> A modular toolkit for evaluating semantic search and NLP models, with a focus on Turkish language models.
+> A modular toolkit for evaluating semantic embeddings and NLP models.
 
 ## 🎯 Overview
 
