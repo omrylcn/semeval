@@ -6,6 +6,8 @@
 
 > A modular toolkit for evaluating semantic embeddings and NLP models.
 
+**Note:** This toolkit is language-agnostic. Examples use Turkish data, but any language is supported.
+
 ## 🎯 Overview
 
 **SemEval** is a efficient, extensible evaluation toolkit designed to assess the quality of semantic embeddings and NLP models. Built with modularity and ease of use in mind, it provides:
@@ -478,10 +480,11 @@ encoder = SentenceTransformerEncoder(
 )
 ```
 
-**Recommended Turkish Models:**
-- `emrecan/bert-base-turkish-cased-mean-nli-stsb-tr`
-- `sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2`
-- `Alibaba-NLP/gte-multilingual-base`
+**Example Models:**
+- `emrecan/bert-base-turkish-cased-mean-nli-stsb-tr` (Turkish)
+- `sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2` (Multilingual)
+- `Alibaba-NLP/gte-multilingual-base` (Multilingual)
+- `sentence-transformers/all-MiniLM-L6-v2` (English)
 
 ### 2. HuggingFace Encoder
 
@@ -523,7 +526,7 @@ class MyEncoder(BaseEncoder):
 {
   "metadata": {
     "version": "1.0",
-    "description": "Turkish Semantic Evaluation Suite",
+    "description": "Semantic Evaluation Suite",
     "language": "tr",
     "total_tasks": 4
   },
