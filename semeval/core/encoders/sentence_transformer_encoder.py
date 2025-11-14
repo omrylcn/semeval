@@ -3,9 +3,11 @@
 This module provides an encoder wrapper for Sentence Transformers models.
 """
 
+from typing import List, Optional, Union
+
 import numpy as np
 import torch
-from typing import List, Union, Optional
+
 from ..base_encoder import BaseEncoder
 
 

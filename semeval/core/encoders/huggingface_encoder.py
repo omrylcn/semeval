@@ -4,10 +4,12 @@ This module provides an encoder for raw HuggingFace transformer models
 with mean pooling strategy.
 """
 
+from typing import List, Optional, Union
+
 import numpy as np
 import torch
-from typing import List, Union, Optional
 from tqdm import tqdm
+
 from ..base_encoder import BaseEncoder
 
 
@@ -66,7 +68,7 @@ class HuggingFaceEncoder(BaseEncoder):
     ):
         """Initialize HuggingFace encoder."""
         try:
-            from transformers import AutoTokenizer, AutoModel
+            from transformers import AutoModel, AutoTokenizer
         except ImportError:
             raise ImportError(
                 "transformers is not installed. "

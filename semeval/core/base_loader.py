@@ -5,8 +5,9 @@ from various sources (JSON, CSV, databases, etc.).
 """
 
 from abc import ABC, abstractmethod
-from typing import Dict, Any, Optional
 from pathlib import Path
+from typing import Any, Dict, Optional
+
 from .schemas import TestDataModel
 
 

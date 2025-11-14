@@ -5,13 +5,13 @@ a model's ability to rank relevant documents higher than irrelevant ones.
 """
 
 import time
-import numpy as np
-from typing import Dict, List, Any, Optional
+from typing import Any, Dict, List, Optional
+
 from sentence_transformers import util
 from sentence_transformers.evaluation import InformationRetrievalEvaluator
 
-from .base import BaseTask, TaskResult
 from ..core.schemas import InformationRetrievalData
+from .base import BaseTask, TaskResult
 
 
 class InformationRetrieval(BaseTask):
@@ -144,8 +144,8 @@ class InformationRetrieval(BaseTask):
         # Run evaluation
         # Note: evaluator returns accuracy (1.0) and writes results to CSV
         # We need to call it and then read back the metrics
-        import tempfile
         import os
+        import tempfile
 
         with tempfile.TemporaryDirectory() as tmpdir:
             # Run evaluator (it will write to CSV)
@@ -213,7 +213,7 @@ class InformationRetrieval(BaseTask):
         )
 
         # Calculate metrics for each query
-        from ..metrics.ir_metrics import compute_ranking_metrics, aggregate_metrics
+        from ..metrics.ir_metrics import aggregate_metrics, compute_ranking_metrics
 
         all_query_metrics = []
 

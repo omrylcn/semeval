@@ -5,10 +5,10 @@ This package contains implementations of evaluation tasks.
 
 from .base import BaseTask, TaskResult
 from .information_retrieval import InformationRetrieval
-from .semantic_similarity import SemanticSimilarity
 from .linguistic_robustness import LinguisticRobustness
+from .registry import TASK_REGISTRY, get_task_class, register_task
+from .semantic_similarity import SemanticSimilarity
 from .vector_arithmetic import VectorArithmetic
-from .registry import get_task_class, register_task, TASK_REGISTRY
 
 __all__ = [
     'BaseTask',

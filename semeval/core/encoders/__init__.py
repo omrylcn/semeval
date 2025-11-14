@@ -17,8 +17,8 @@ Examples
 >>> embeddings = encoder.encode(["text1", "text2"])
 """
 
-from .sentence_transformer_encoder import SentenceTransformerEncoder
 from .huggingface_encoder import HuggingFaceEncoder
+from .sentence_transformer_encoder import SentenceTransformerEncoder
 
 __all__ = [
     'SentenceTransformerEncoder',

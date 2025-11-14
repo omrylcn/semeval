@@ -65,7 +65,7 @@ class YamlConfigSettingsSource(PydanticBaseSettingsSource):
         try:
             with open(self.yaml_file, 'r', encoding='utf-8') as f:
                 self._config_data = yaml.safe_load(f) or {}
-        except Exception as e:
+        except Exception:
             # Fail silently, let defaults handle it
             self._config_data = {}
 

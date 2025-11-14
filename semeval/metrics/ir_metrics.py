@@ -3,8 +3,9 @@
 Simplified IR metrics for when we can't use SentenceTransformers evaluator.
 """
 
-import numpy as np
 from typing import Dict, List
+
+import numpy as np
 
 
 def compute_ranking_metrics(

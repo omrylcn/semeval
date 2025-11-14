@@ -5,15 +5,13 @@ a model's ability to solve analogies using vector arithmetic.
 """
 
 import time
-from typing import Dict, Any, List, Tuple, Optional
+from typing import Any, Dict, List, Optional
+
 from sentence_transformers import util
 
-from .base import BaseTask, TaskResult
 from ..core.schemas import VectorArithmeticData
-from ..metrics.arithmetic_metrics import (
-    compute_analogy_metrics,
-    get_failed_analogies
-)
+from ..metrics.arithmetic_metrics import compute_analogy_metrics, get_failed_analogies
+from .base import BaseTask, TaskResult
 
 
 class VectorArithmetic(BaseTask):

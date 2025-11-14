@@ -3,8 +3,9 @@
 Simple triplet accuracy metrics following the style of ir_metrics.py
 """
 
+from typing import Dict, List
+
 import numpy as np
-from typing import Dict, List, Tuple
 
 
 def compute_triplet_metrics(

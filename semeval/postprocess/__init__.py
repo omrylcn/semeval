@@ -4,9 +4,9 @@ This package provides tools for exporting, analyzing, and comparing
 evaluation results.
 """
 
-from .results_exporter import ResultsExporter
-from .report_generator import ReportGenerator
 from .model_comparator import ModelComparator
+from .report_generator import ReportGenerator
+from .results_exporter import ResultsExporter
 
 __all__ = [
     'ResultsExporter',

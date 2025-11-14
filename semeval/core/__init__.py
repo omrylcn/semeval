@@ -32,23 +32,23 @@ Examples
 >>> print(result.get_summary())
 """
 
-from .schemas import (
-    TestDataModel,
-    InformationRetrievalData,
-    SemanticSimilarityData,
-    LinguisticRobustnessData,
-    VectorArithmeticData
-)
 from .base_encoder import BaseEncoder
 from .base_loader import BaseDataLoader, DataValidationError
-from .runner import TaskRunner, EvaluationResult
 from .config import (
-    SemEvalSettings,
-    load_settings,
+    LoggingConfig,
     ModelConfig,
     OutputConfig,
+    SemEvalSettings,
     TasksConfig,
-    LoggingConfig
+    load_settings,
+)
+from .runner import EvaluationResult, TaskRunner
+from .schemas import (
+    InformationRetrievalData,
+    LinguisticRobustnessData,
+    SemanticSimilarityData,
+    TestDataModel,
+    VectorArithmeticData,
 )
 
 __all__ = [

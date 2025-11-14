@@ -5,21 +5,19 @@ evaluation tasks and aggregates their results.
 """
 
 import time
-from typing import Dict, List, Optional, Any
-from pathlib import Path
+from typing import Any, Dict, List, Optional
 
-from .base_encoder import BaseEncoder
-from .base_loader import BaseDataLoader
-from .loaders import JSONDataLoader
-from .schemas import TestDataModel
-from .config import SemEvalSettings, load_settings
 from ..tasks import (
     InformationRetrieval,
-    SemanticSimilarity,
     LinguisticRobustness,
+    SemanticSimilarity,
+    TaskResult,
     VectorArithmetic,
-    TaskResult
 )
+from .base_encoder import BaseEncoder
+from .base_loader import BaseDataLoader
+from .config import SemEvalSettings, load_settings
+from .loaders import JSONDataLoader
 
 
 class EvaluationResult:

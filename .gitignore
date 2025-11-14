@@ -64,3 +64,6 @@ dmypy.json
 
 
 .claude
+TODO.md
+ROADMAP.md
+uv.lock

@@ -3,9 +3,9 @@
 Generate detailed analysis reports with insights and recommendations.
 """
 
-from pathlib import Path
-from typing import Dict, Any, List, Optional
 from datetime import datetime
+from pathlib import Path
+from typing import Any, Dict, List, Optional
 
 
 class ReportGenerator:
@@ -164,12 +164,12 @@ class ReportGenerator:
         lines.append("")
 
         if task_info['status'] == 'failed':
-            lines.append(f"**Status:** ❌ FAILED")
+            lines.append("**Status:** ❌ FAILED")
             lines.append(f"**Error:** {task_info.get('error', 'Unknown error')}")
             lines.append("")
             return lines
 
-        lines.append(f"**Status:** ✅ SUCCESS")
+        lines.append("**Status:** ✅ SUCCESS")
         lines.append(f"**Runtime:** {task_info['runtime']:.2f}s")
         lines.append("")
 

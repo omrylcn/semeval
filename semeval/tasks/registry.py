@@ -4,13 +4,13 @@ This module provides a registry that maps task names to their corresponding
 task class implementations, enabling flexible export and reporting.
 """
 
-from typing import Dict, Type, Optional
+from typing import Dict, Optional, Type
+
 from .base import BaseTask
 from .information_retrieval import InformationRetrieval
-from .semantic_similarity import SemanticSimilarity
 from .linguistic_robustness import LinguisticRobustness
+from .semantic_similarity import SemanticSimilarity
 from .vector_arithmetic import VectorArithmetic
-
 
 # Task registry mapping task names to task classes
 TASK_REGISTRY: Dict[str, Type[BaseTask]] = {

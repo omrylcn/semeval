@@ -5,8 +5,9 @@ Encoders are responsible for converting text into dense vector representations.
 """
 
 from abc import ABC, abstractmethod
-import numpy as np
 from typing import List, Union
+
+import numpy as np
 
 
 class BaseEncoder(ABC):

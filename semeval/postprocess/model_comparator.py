@@ -3,9 +3,9 @@
 Compare multiple models side-by-side and identify performance differences.
 """
 
-from pathlib import Path
-from typing import Dict, Any, List, Tuple
 from datetime import datetime
+from pathlib import Path
+from typing import Any, Dict, List
 
 
 class ModelComparator:
@@ -294,7 +294,7 @@ class ModelComparator:
         lines.append("")
 
         # Score each model
-        scores = {model: 0 for model in model_names}
+        scores = dict.fromkeys(model_names, 0)
 
         for task_name in ['information_retrieval', 'semantic_similarity']:
             task_scores = []

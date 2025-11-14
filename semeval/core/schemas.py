@@ -4,9 +4,9 @@ This module defines the data models for all evaluation tasks using Pydantic
 for automatic validation and type safety.
 """
 
+from typing import Dict, List, Literal, Optional
+
 from pydantic import BaseModel, Field, field_validator, model_validator
-from typing import Dict, List, Optional, Literal, Union
-from datetime import datetime
 
 
 class TestMetadata(BaseModel):

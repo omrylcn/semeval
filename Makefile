@@ -9,6 +9,7 @@ help:
 	@echo "  make install        - Install package dependencies"
 	@echo "  make dev            - Install with dev dependencies"
 	@echo "  make sync           - Sync dependencies with uv"
+	@echo "  make setup-hooks    - Install Git hooks (auto-test before push)"
 	@echo ""
 	@echo "Run:"
 	@echo "  make run            - Run all tasks with example data"
@@ -18,6 +19,11 @@ help:
 	@echo "  make config         - Test configuration system"
 	@echo "  make export         - Test per-task export"
 	@echo "  make compare        - Run model comparison"
+	@echo ""
+	@echo "Unit Tests (pytest):"
+	@echo "  make pytest         - Run unit tests with pytest"
+	@echo "  make pytest-cov     - Run tests with coverage report"
+	@echo "  make pytest-quick   - Quick test run (no verbose)"
 	@echo ""
 	@echo "Clean:"
 	@echo "  make clean          - Remove all generated files"
@@ -32,6 +38,10 @@ help:
 	@echo "  make format         - Format code with black"
 	@echo "  make check          - Run all checks (lint + format check)"
 	@echo ""
+	@echo "Pre-Merge (IMPORTANT!):"
+	@echo "  make pre-merge      - Full validation before merging to main"
+	@echo "                        (lint + format + tests + coverage)"
+	@echo ""
 
 # Installation
 install:
@@ -42,6 +52,11 @@ dev:
 
 sync:
 	uv sync --all-groups
+
+# Setup Git hooks
+setup-hooks:
+	@echo "🔧 Installing Git hooks..."
+	@bash scripts/setup-hooks.sh
 
 # Run commands
 run:
@@ -71,6 +86,41 @@ test-all:
 	uv run python scripts/test_postprocessing_all.py
 	@echo ""
 	@echo "✅ All tests complete!"
+
+# Unit tests with pytest
+pytest:
+	@echo "🧪 Running pytest unit tests..."
+	uv run pytest tests/ -v
+
+pytest-cov:
+	@echo "🧪 Running pytest with coverage..."
+	uv run pytest tests/ -v --cov=semeval --cov-report=term-missing --cov-report=html
+	@echo ""
+	@echo "📊 Coverage report generated: htmlcov/index.html"
+
+pytest-quick:
+	@echo "🧪 Running quick pytest..."
+	uv run pytest tests/ -q
+
+# Pre-merge validation (CRITICAL before merging to main)
+pre-merge: check pytest-cov
+	@echo ""
+	@echo "=========================================="
+	@echo "✅ ALL PRE-MERGE CHECKS PASSED!"
+	@echo "=========================================="
+	@echo ""
+	@echo "📋 Summary:"
+	@echo "  ✅ Linting passed"
+	@echo "  ✅ Formatting verified"
+	@echo "  ✅ All tests passed"
+	@echo "  ✅ Coverage checked"
+	@echo ""
+	@echo "Current branch: $$(git branch --show-current)"
+	@echo ""
+	@echo "🚀 Ready to merge! Run:"
+	@echo "  git checkout main"
+	@echo "  git merge $$(git branch --show-current)"
+	@echo ""
 
 config:
 	uv run python scripts/test_config.py

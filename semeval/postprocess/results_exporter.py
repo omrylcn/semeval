@@ -4,9 +4,10 @@ Export evaluation results to JSON, CSV, and Markdown formats.
 """
 
 import json
-from pathlib import Path
-from typing import Dict, Any, List, Optional
 from datetime import datetime
+from pathlib import Path
+from typing import Dict, List, Optional
+
 import pandas as pd
 
 from ..tasks import get_task_class
@@ -378,7 +379,7 @@ class ResultsExporter:
         summary = result.get_summary()
         task_paths = {}
 
-        from ..tasks import get_task_class, TaskResult
+        from ..tasks import TaskResult, get_task_class
 
         print("\n📁 Exporting per-task files...")
 

@@ -6,16 +6,16 @@ using triplet tests.
 """
 
 import time
-import numpy as np
-from typing import Dict, List, Any, Optional
+from typing import Any, Dict, List, Optional
+
 from sentence_transformers import util
 
-from .base import BaseTask, TaskResult
 from ..core.schemas import SemanticSimilarityData
 from ..metrics.similarity_metrics import (
+    compute_category_breakdown,
     compute_triplet_metrics,
-    compute_category_breakdown
 )
+from .base import BaseTask, TaskResult
 
 
 class SemanticSimilarity(BaseTask):

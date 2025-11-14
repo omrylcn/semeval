@@ -4,20 +4,19 @@ This module provides configuration classes using pydantic-settings,
 supporting configuration from YAML files, environment variables, and defaults.
 """
 
-import os
 import logging
+import os
 from pathlib import Path
-from typing import List, Tuple, Type, Optional
+from typing import List, Optional, Tuple, Type
 
 from pydantic import Field
 from pydantic_settings import (
     BaseSettings,
+    PydanticBaseSettingsSource,
     SettingsConfigDict,
-    PydanticBaseSettingsSource
 )
 
 from .yaml_source import YamlConfigSettingsSource
-
 
 # Default config path (can be overridden with CONFIG_PATH env var)
 DEFAULT_CONFIG_PATH = Path(__file__).parent.parent.parent / "config.yaml"
