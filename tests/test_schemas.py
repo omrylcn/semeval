@@ -1,11 +1,6 @@
 """Tests for core schemas."""
 
-import pytest
-from semeval.core.schemas import (
-    TestMetadata,
-    SimilarityConfig,
-    TripletData,
-)
+from semeval.core.schemas import SimilarityConfig, TestMetadata, TripletData
 
 
 def test_test_metadata_creation():

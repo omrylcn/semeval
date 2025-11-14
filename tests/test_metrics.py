@@ -1,6 +1,5 @@
 """Tests for metrics modules."""
 
-import pytest
 from semeval.metrics.similarity_metrics import compute_triplet_metrics
 
 

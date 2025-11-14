@@ -6,8 +6,9 @@ from pathlib import Path
 
 import pytest
 
+from semeval.core.base_loader import DataValidationError
 from semeval.core.loaders import JSONDataLoader
-from semeval.core.schemas import TestDataModel, TestMetadata
+from semeval.core.schemas import TestDataModel
 
 
 def test_json_loader_initialization():
@@ -69,7 +70,7 @@ def test_json_loader_invalid_json():
 
     try:
         loader = JSONDataLoader()
-        with pytest.raises(Exception):  # Should raise DataValidationError
+        with pytest.raises(DataValidationError):
             loader.load(tmp_path)
     finally:
         Path(tmp_path).unlink()
@@ -78,5 +79,5 @@ def test_json_loader_invalid_json():
 def test_json_loader_missing_file():
     """Test loader handles missing file."""
     loader = JSONDataLoader()
-    with pytest.raises(Exception):
+    with pytest.raises(FileNotFoundError):
         loader.load("/nonexistent/path/file.json")
