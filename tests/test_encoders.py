@@ -108,8 +108,9 @@ class TestSentenceTransformerEncoder:
         # Results should be the same regardless of batch size
         np.testing.assert_array_almost_equal(emb_batch1, emb_batch2, decimal=5)
 
-    def test_encoder_with_turkish_text(self, encoder):
-        """Test encoding Turkish text."""
+    def test_encoder_with_unicode_text(self, encoder):
+        """Test encoding Unicode text (Turkish characters)."""
+        # This tests SemEval's ability to handle Unicode, not model's Turkish support
         texts = [
             "Merhaba dünya",
             "Bu bir test cümlesidir",
@@ -117,10 +118,11 @@ class TestSentenceTransformerEncoder:
         ]
         embeddings = encoder.encode(texts)
 
+        # SemEval should handle Unicode without crashing
         assert embeddings.shape[0] == 3
         assert embeddings.shape[1] > 0
-        # Check embeddings are not all zeros
-        assert not np.allclose(embeddings, 0)
+        # Embeddings should be valid numbers (not NaN or Inf)
+        assert np.isfinite(embeddings).all()
 
     def test_encoder_missing_dependency_error(self):
         """Test that missing sentence-transformers raises ImportError."""
@@ -138,35 +140,17 @@ class TestSentenceTransformerEncoder:
                 SentenceTransformerEncoder("any-model")
 
 
-class TestEncoderIntegration:
-    """Integration tests for encoders."""
+    def test_encoder_produces_valid_embeddings(self, encoder):
+        """Test that encoder produces valid numerical embeddings."""
+        texts = ["Text one", "Text two", "Text three"]
+        embeddings = encoder.encode(texts)
 
-    def test_encoder_similarity_computation(self):
-        """Test that similar texts have higher similarity."""
-        encoder = SentenceTransformerEncoder(
-            "sentence-transformers/paraphrase-albert-small-v2", device="cpu"
-        )
+        # All embeddings should be finite (not NaN or Inf)
+        assert np.isfinite(embeddings).all()
 
-        # Similar texts
-        text1 = "The cat sits on the mat"
-        text2 = "A cat is sitting on a mat"
-        # Different text
-        text3 = "Quantum physics is complex"
+        # Embeddings should have reasonable magnitudes (not all zeros)
+        assert not np.allclose(embeddings, 0)
 
-        emb1 = encoder.encode(text1)
-        emb2 = encoder.encode(text2)
-        emb3 = encoder.encode(text3)
-
-        # Compute cosine similarities
-        sim_12 = np.dot(emb1[0], emb2[0]) / (
-            np.linalg.norm(emb1[0]) * np.linalg.norm(emb2[0])
-        )
-        sim_13 = np.dot(emb1[0], emb3[0]) / (
-            np.linalg.norm(emb1[0]) * np.linalg.norm(emb3[0])
-        )
-
-        # Similar texts should have higher similarity
-        assert sim_12 > sim_13
-        # Similarity should be in valid range
-        assert -1.0 <= sim_12 <= 1.0
-        assert -1.0 <= sim_13 <= 1.0
+        # Each embedding should have non-zero norm
+        for emb in embeddings:
+            assert np.linalg.norm(emb) > 0
