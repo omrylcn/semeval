@@ -163,9 +163,7 @@ class BaseDataLoader(ABC):
             )
 
         if not path.is_file():
-            raise ValueError(
-                f"Source must be a file, not a directory: {source}"
-            )
+            raise ValueError(f"Source must be a file, not a directory: {source}")
 
         return path
 

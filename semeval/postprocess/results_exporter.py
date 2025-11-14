@@ -40,11 +40,7 @@ class ResultsExporter:
     >>> print(df.describe())
     """
 
-    def to_dataframe(
-        self,
-        result,
-        include_metadata: bool = True
-    ) -> pd.DataFrame:
+    def to_dataframe(self, result, include_metadata: bool = True) -> pd.DataFrame:
         """Convert evaluation results to pandas DataFrame.
 
         Parameters
@@ -68,20 +64,20 @@ class ResultsExporter:
         summary = result.get_summary()
         rows = []
 
-        for task_name, task_info in summary['tasks'].items():
+        for task_name, task_info in summary["tasks"].items():
             row = {
-                'task': task_name,
-                'status': task_info['status'],
-                'runtime_seconds': round(task_info['runtime'], 3)
+                "task": task_name,
+                "status": task_info["status"],
+                "runtime_seconds": round(task_info["runtime"], 3),
             }
 
             if include_metadata:
-                row['test_version'] = summary['metadata'].get('version', '')
-                row['language'] = summary['metadata'].get('language', '')
-                row['domain'] = summary['metadata'].get('domain', '')
+                row["test_version"] = summary["metadata"].get("version", "")
+                row["language"] = summary["metadata"].get("language", "")
+                row["domain"] = summary["metadata"].get("domain", "")
 
             # Add task-specific metrics using task's export method
-            if task_info['status'] == 'success':
+            if task_info["status"] == "success":
                 # Get task class from registry
                 task_class = get_task_class(task_name)
 
@@ -89,32 +85,29 @@ class ResultsExporter:
                     # Use task's export method to get columns
                     # Need to create a minimal TaskResult-like object from task_info
                     from ..tasks import TaskResult
+
                     task_result = TaskResult(
                         task_name=task_name,
-                        status=task_info['status'],
-                        metrics=task_info['metrics'],
-                        runtime_seconds=task_info['runtime'],
-                        metadata={}
+                        status=task_info["status"],
+                        metrics=task_info["metrics"],
+                        runtime_seconds=task_info["runtime"],
+                        metadata={},
                     )
                     export_columns = task_class.get_export_columns(task_result)
                     row.update(export_columns)
                 else:
                     # Fallback: use all metrics
-                    row.update(task_info['metrics'])
+                    row.update(task_info["metrics"])
 
             else:
-                row['error'] = task_info.get('error', '')
+                row["error"] = task_info.get("error", "")
 
             rows.append(row)
 
         return pd.DataFrame(rows)
 
     def export_json(
-        self,
-        result,
-        output_path: str,
-        indent: int = 2,
-        ensure_ascii: bool = False
+        self, result, output_path: str, indent: int = 2, ensure_ascii: bool = False
     ) -> None:
         """Export results to JSON format.
 
@@ -143,19 +136,16 @@ class ResultsExporter:
         export_data = {
             "export_timestamp": datetime.now().isoformat(),
             "export_format": "json",
-            **summary
+            **summary,
         }
 
-        with open(output_path, 'w', encoding='utf-8') as f:
+        with open(output_path, "w", encoding="utf-8") as f:
             json.dump(export_data, f, indent=indent, ensure_ascii=ensure_ascii)
 
         print(f"✅ JSON exported to: {output_path}")
 
     def export_csv(
-        self,
-        result,
-        output_path: str,
-        include_metadata: bool = True
+        self, result, output_path: str, include_metadata: bool = True
     ) -> pd.DataFrame:
         """Export results to CSV format using pandas.
 
@@ -188,16 +178,13 @@ class ResultsExporter:
         df = self.to_dataframe(result, include_metadata=include_metadata)
 
         # Save to CSV
-        df.to_csv(output_path, index=False, encoding='utf-8')
+        df.to_csv(output_path, index=False, encoding="utf-8")
 
         print(f"✅ CSV exported to: {output_path}")
         return df
 
     def export_markdown(
-        self,
-        result,
-        output_path: str,
-        include_details: bool = True
+        self, result, output_path: str, include_details: bool = True
     ) -> None:
         """Export results to Markdown format.
 
@@ -232,11 +219,11 @@ class ResultsExporter:
         # Metadata
         lines.append("## Test Metadata")
         lines.append("")
-        metadata = summary['metadata']
+        metadata = summary["metadata"]
         lines.append(f"- **Version:** {metadata.get('version', 'N/A')}")
         lines.append(f"- **Description:** {metadata.get('description', 'N/A')}")
         lines.append(f"- **Language:** {metadata.get('language', 'N/A')}")
-        if metadata.get('domain'):
+        if metadata.get("domain"):
             lines.append(f"- **Domain:** {metadata['domain']}")
         lines.append(f"- **Total Runtime:** {summary['total_runtime']:.2f}s")
         lines.append("")
@@ -245,26 +232,27 @@ class ResultsExporter:
         lines.append("## Task Results")
         lines.append("")
 
-        for task_name, task_info in summary['tasks'].items():
+        for task_name, task_info in summary["tasks"].items():
             lines.append(f"### {task_name.replace('_', ' ').title()}")
             lines.append("")
             lines.append(f"- **Status:** {task_info['status']}")
             lines.append(f"- **Runtime:** {task_info['runtime']:.2f}s")
             lines.append("")
 
-            if task_info['status'] == 'success' and include_details:
+            if task_info["status"] == "success" and include_details:
                 # Get task class from registry
                 task_class = get_task_class(task_name)
 
                 if task_class:
                     # Use task's markdown report method
                     from ..tasks import TaskResult
+
                     task_result = TaskResult(
                         task_name=task_name,
-                        status=task_info['status'],
-                        metrics=task_info['metrics'],
-                        runtime_seconds=task_info['runtime'],
-                        metadata={}
+                        status=task_info["status"],
+                        metrics=task_info["metrics"],
+                        runtime_seconds=task_info["runtime"],
+                        metadata={},
                     )
                     task_lines = task_class.format_markdown_report(task_result)
                     lines.extend(task_lines)
@@ -274,7 +262,7 @@ class ResultsExporter:
                     lines.append("")
                     lines.append("| Metric | Value |")
                     lines.append("|--------|-------|")
-                    for key, value in task_info['metrics'].items():
+                    for key, value in task_info["metrics"].items():
                         if isinstance(value, float):
                             lines.append(f"| {key} | {value:.4f} |")
                         else:
@@ -282,21 +270,18 @@ class ResultsExporter:
 
                 lines.append("")
 
-            elif task_info['status'] == 'failed':
+            elif task_info["status"] == "failed":
                 lines.append(f"**Error:** {task_info.get('error', 'Unknown error')}")
                 lines.append("")
 
         # Write file
-        with open(output_path, 'w', encoding='utf-8') as f:
-            f.write('\n'.join(lines))
+        with open(output_path, "w", encoding="utf-8") as f:
+            f.write("\n".join(lines))
 
         print(f"✅ Markdown exported to: {output_path}")
 
     def export_all(
-        self,
-        result,
-        output_dir: str,
-        base_name: str = "results"
+        self, result, output_dir: str, base_name: str = "results"
     ) -> Dict[str, str]:
         """Export results to all supported formats.
 
@@ -327,23 +312,20 @@ class ResultsExporter:
         paths = {}
 
         # Export to each format
-        paths['json'] = str(output_dir / f"{base_name}.json")
-        self.export_json(result, paths['json'])
+        paths["json"] = str(output_dir / f"{base_name}.json")
+        self.export_json(result, paths["json"])
 
-        paths['csv'] = str(output_dir / f"{base_name}.csv")
-        self.export_csv(result, paths['csv'])
+        paths["csv"] = str(output_dir / f"{base_name}.csv")
+        self.export_csv(result, paths["csv"])
 
-        paths['markdown'] = str(output_dir / f"{base_name}.md")
-        self.export_markdown(result, paths['markdown'])
+        paths["markdown"] = str(output_dir / f"{base_name}.md")
+        self.export_markdown(result, paths["markdown"])
 
         print(f"\n✅ All formats exported to: {output_dir}/")
         return paths
 
     def export_per_task(
-        self,
-        result,
-        output_dir: str,
-        export_formats: Optional[List[str]] = None
+        self, result, output_dir: str, export_formats: Optional[List[str]] = None
     ) -> Dict[str, Dict[str, str]]:
         """Export each task to separate files.
 
@@ -374,7 +356,7 @@ class ResultsExporter:
         output_dir.mkdir(parents=True, exist_ok=True)
 
         if export_formats is None:
-            export_formats = ['json', 'markdown']
+            export_formats = ["json", "markdown"]
 
         summary = result.get_summary()
         task_paths = {}
@@ -383,40 +365,40 @@ class ResultsExporter:
 
         print("\n📁 Exporting per-task files...")
 
-        for task_name, task_info in summary['tasks'].items():
+        for task_name, task_info in summary["tasks"].items():
             task_paths[task_name] = {}
 
             # Create TaskResult object
             task_result = TaskResult(
                 task_name=task_name,
-                status=task_info['status'],
-                metrics=task_info['metrics'],
-                runtime_seconds=task_info['runtime'],
-                metadata={}
+                status=task_info["status"],
+                metrics=task_info["metrics"],
+                runtime_seconds=task_info["runtime"],
+                metadata={},
             )
 
             # Get task class for formatting
             task_class = get_task_class(task_name)
 
             # Export JSON
-            if 'json' in export_formats:
+            if "json" in export_formats:
                 json_path = output_dir / f"{task_name}_result.json"
                 task_data = {
-                    'task_name': task_name,
-                    'status': task_info['status'],
-                    'runtime_seconds': task_info['runtime'],
-                    'metrics': task_info['metrics'],
-                    'timestamp': task_result.timestamp
+                    "task_name": task_name,
+                    "status": task_info["status"],
+                    "runtime_seconds": task_info["runtime"],
+                    "metrics": task_info["metrics"],
+                    "timestamp": task_result.timestamp,
                 }
 
-                with open(json_path, 'w', encoding='utf-8') as f:
+                with open(json_path, "w", encoding="utf-8") as f:
                     json.dump(task_data, f, indent=2, ensure_ascii=False)
 
-                task_paths[task_name]['json'] = str(json_path)
+                task_paths[task_name]["json"] = str(json_path)
                 print(f"   ✅ {task_name}.json")
 
             # Export Markdown
-            if 'markdown' in export_formats:
+            if "markdown" in export_formats:
                 md_path = output_dir / f"{task_name}_result.md"
                 lines = []
 
@@ -428,18 +410,18 @@ class ResultsExporter:
                 lines.append("")
 
                 # Task-specific content using task's formatter
-                if task_class and task_info['status'] == 'success':
+                if task_class and task_info["status"] == "success":
                     task_lines = task_class.format_markdown_report(task_result)
                     lines.extend(task_lines)
-                elif task_info['status'] == 'failed':
+                elif task_info["status"] == "failed":
                     lines.append("## Error")
                     lines.append("")
                     lines.append(f"```\n{task_info.get('error', 'Unknown error')}\n```")
 
-                with open(md_path, 'w', encoding='utf-8') as f:
-                    f.write('\n'.join(lines))
+                with open(md_path, "w", encoding="utf-8") as f:
+                    f.write("\n".join(lines))
 
-                task_paths[task_name]['markdown'] = str(md_path)
+                task_paths[task_name]["markdown"] = str(md_path)
                 print(f"   ✅ {task_name}.md")
 
         print(f"\n✅ Per-task files exported to: {output_dir}/")

@@ -21,6 +21,6 @@ from .huggingface_encoder import HuggingFaceEncoder
 from .sentence_transformer_encoder import SentenceTransformerEncoder
 
 __all__ = [
-    'SentenceTransformerEncoder',
-    'HuggingFaceEncoder',
+    "SentenceTransformerEncoder",
+    "HuggingFaceEncoder",
 ]

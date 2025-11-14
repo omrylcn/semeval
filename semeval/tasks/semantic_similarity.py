@@ -65,7 +65,7 @@ class SemanticSimilarity(BaseTask):
         encoder,
         task_data: SemanticSimilarityData,
         device: Optional[str] = None,
-        verbose: bool = False
+        verbose: bool = False,
     ):
         """Initialize Semantic Similarity task."""
         super().__init__(encoder, task_data, device, verbose)
@@ -104,7 +104,7 @@ class SemanticSimilarity(BaseTask):
             anchor_texts,
             convert_to_tensor=True,
             show_progress_bar=self.verbose,
-            batch_size=32
+            batch_size=32,
         )
 
         self._log("Encoding positive texts...")
@@ -112,7 +112,7 @@ class SemanticSimilarity(BaseTask):
             positive_texts,
             convert_to_tensor=True,
             show_progress_bar=self.verbose,
-            batch_size=32
+            batch_size=32,
         )
 
         self._log("Encoding negative texts...")
@@ -120,7 +120,7 @@ class SemanticSimilarity(BaseTask):
             negative_texts,
             convert_to_tensor=True,
             show_progress_bar=self.verbose,
-            batch_size=32
+            batch_size=32,
         )
 
         # Compute similarities
@@ -142,7 +142,7 @@ class SemanticSimilarity(BaseTask):
         metrics = compute_triplet_metrics(positive_sims, negative_sims)
 
         # Add count to metrics
-        metrics['triplet_count'] = total_triplets
+        metrics["triplet_count"] = total_triplets
 
         # Compute difficulty breakdown (if available)
         if any(t.difficulty is not None for t in triplets):
@@ -157,7 +157,7 @@ class SemanticSimilarity(BaseTask):
                 difficulty_stats = self._compute_difficulty_breakdown(
                     list(filt_pos), list(filt_neg), list(filt_diff)
                 )
-                metrics['difficulty_breakdown'] = difficulty_stats
+                metrics["difficulty_breakdown"] = difficulty_stats
 
         # Compute subcategory breakdown (if available)
         if any(t.subcategory is not None for t in triplets):
@@ -171,7 +171,7 @@ class SemanticSimilarity(BaseTask):
                 subcategory_stats = self._compute_subcategory_breakdown(
                     list(filt_pos), list(filt_neg), list(filt_subcat)
                 )
-                metrics['subcategory_breakdown'] = subcategory_stats
+                metrics["subcategory_breakdown"] = subcategory_stats
 
         # Compute category breakdown (if available)
         if any(t.category is not None for t in triplets):
@@ -185,13 +185,13 @@ class SemanticSimilarity(BaseTask):
                 category_stats = compute_category_breakdown(
                     list(filt_pos), list(filt_neg), list(filt_cat)
                 )
-                metrics['category_breakdown'] = category_stats
+                metrics["category_breakdown"] = category_stats
 
         # Identify failed triplets
         failed = self._identify_failed_triplets(
             triplets, positive_sims, negative_sims, limit=5
         )
-        metrics['failed_triplets_sample'] = failed
+        metrics["failed_triplets_sample"] = failed
 
         return metrics
 
@@ -199,7 +199,7 @@ class SemanticSimilarity(BaseTask):
         self,
         positive_sims: List[float],
         negative_sims: List[float],
-        difficulties: List[str]
+        difficulties: List[str],
     ) -> Dict[str, Dict[str, float]]:
         """Compute metrics broken down by difficulty level.
 
@@ -221,15 +221,15 @@ class SemanticSimilarity(BaseTask):
         diff_groups = {}
         for pos, neg, diff in zip(positive_sims, negative_sims, difficulties):
             if diff not in diff_groups:
-                diff_groups[diff] = {'pos': [], 'neg': []}
-            diff_groups[diff]['pos'].append(pos)
-            diff_groups[diff]['neg'].append(neg)
+                diff_groups[diff] = {"pos": [], "neg": []}
+            diff_groups[diff]["pos"].append(pos)
+            diff_groups[diff]["neg"].append(neg)
 
         # Compute metrics per difficulty
         result = {}
         for diff, data in diff_groups.items():
-            result[diff] = compute_triplet_metrics(data['pos'], data['neg'])
-            result[diff]['count'] = len(data['pos'])
+            result[diff] = compute_triplet_metrics(data["pos"], data["neg"])
+            result[diff]["count"] = len(data["pos"])
 
         return result
 
@@ -237,7 +237,7 @@ class SemanticSimilarity(BaseTask):
         self,
         positive_sims: List[float],
         negative_sims: List[float],
-        subcategories: List[str]
+        subcategories: List[str],
     ) -> Dict[str, Dict[str, float]]:
         """Compute metrics broken down by subcategory.
 
@@ -259,15 +259,15 @@ class SemanticSimilarity(BaseTask):
         subcat_groups = {}
         for pos, neg, subcat in zip(positive_sims, negative_sims, subcategories):
             if subcat not in subcat_groups:
-                subcat_groups[subcat] = {'pos': [], 'neg': []}
-            subcat_groups[subcat]['pos'].append(pos)
-            subcat_groups[subcat]['neg'].append(neg)
+                subcat_groups[subcat] = {"pos": [], "neg": []}
+            subcat_groups[subcat]["pos"].append(pos)
+            subcat_groups[subcat]["neg"].append(neg)
 
         # Compute metrics per subcategory
         result = {}
         for subcat, data in subcat_groups.items():
-            result[subcat] = compute_triplet_metrics(data['pos'], data['neg'])
-            result[subcat]['count'] = len(data['pos'])
+            result[subcat] = compute_triplet_metrics(data["pos"], data["neg"])
+            result[subcat]["count"] = len(data["pos"])
 
         return result
 
@@ -276,7 +276,7 @@ class SemanticSimilarity(BaseTask):
         triplets,
         positive_sims: List[float],
         negative_sims: List[float],
-        limit: int = 5
+        limit: int = 5,
     ) -> List[Dict[str, Any]]:
         """Identify failed triplets for error analysis.
 
@@ -302,25 +302,29 @@ class SemanticSimilarity(BaseTask):
             margin = pos_sim - neg_sim
             if margin <= 0:  # Failed
                 failed_info = {
-                    'id': triplet.id,
-                    'anchor': triplet.anchor[:50] + "..." if len(triplet.anchor) > 50 else triplet.anchor,
-                    'positive_sim': float(pos_sim),
-                    'negative_sim': float(neg_sim),
-                    'margin': float(margin),
+                    "id": triplet.id,
+                    "anchor": (
+                        triplet.anchor[:50] + "..."
+                        if len(triplet.anchor) > 50
+                        else triplet.anchor
+                    ),
+                    "positive_sim": float(pos_sim),
+                    "negative_sim": float(neg_sim),
+                    "margin": float(margin),
                 }
 
                 # Add optional metadata if available
                 if triplet.difficulty is not None:
-                    failed_info['difficulty'] = triplet.difficulty
+                    failed_info["difficulty"] = triplet.difficulty
                 if triplet.category is not None:
-                    failed_info['category'] = triplet.category
+                    failed_info["category"] = triplet.category
                 if triplet.subcategory is not None:
-                    failed_info['subcategory'] = triplet.subcategory
+                    failed_info["subcategory"] = triplet.subcategory
 
                 failed.append(failed_info)
 
         # Sort by margin (most negative first)
-        failed.sort(key=lambda x: x['margin'])
+        failed.sort(key=lambda x: x["margin"])
 
         return failed[:limit]
 
@@ -369,8 +373,8 @@ class SemanticSimilarity(BaseTask):
                 runtime_seconds=runtime,
                 metadata={
                     "triplet_count": len(self.task_data.triplets),
-                    "config": self.task_data.config.model_dump()
-                }
+                    "config": self.task_data.config.model_dump(),
+                },
             )
 
             return result
@@ -386,7 +390,7 @@ class SemanticSimilarity(BaseTask):
                 metrics={},
                 runtime_seconds=runtime,
                 error_message=str(e),
-                metadata={}
+                metadata={},
             )
 
     @staticmethod
@@ -394,11 +398,11 @@ class SemanticSimilarity(BaseTask):
         """Get Semantic Similarity-specific export columns."""
         metrics = result.metrics
         return {
-            'accuracy': round(metrics.get('accuracy', 0), 4),
-            'avg_margin': round(metrics.get('avg_margin', 0), 4),
-            'avg_positive_sim': round(metrics.get('avg_positive_sim', 0), 4),
-            'avg_negative_sim': round(metrics.get('avg_negative_sim', 0), 4),
-            'margin_gt_02': round(metrics.get('margin_gt_02', 0), 4)
+            "accuracy": round(metrics.get("accuracy", 0), 4),
+            "avg_margin": round(metrics.get("avg_margin", 0), 4),
+            "avg_positive_sim": round(metrics.get("avg_positive_sim", 0), 4),
+            "avg_negative_sim": round(metrics.get("avg_negative_sim", 0), 4),
+            "margin_gt_02": round(metrics.get("margin_gt_02", 0), 4),
         }
 
     @staticmethod
@@ -414,51 +418,55 @@ class SemanticSimilarity(BaseTask):
 
         # Core metrics table
         core_data = {
-            'Metric': [
-                'Triplet Accuracy',
-                'Average Margin',
-                'Avg Positive Similarity',
-                'Avg Negative Similarity',
-                'Margin > 0.2'
+            "Metric": [
+                "Triplet Accuracy",
+                "Average Margin",
+                "Avg Positive Similarity",
+                "Avg Negative Similarity",
+                "Margin > 0.2",
             ],
-            'Value': [
+            "Value": [
                 f"{metrics.get('accuracy', 0):.2%}",
                 f"{metrics.get('avg_margin', 0):+.3f}",
                 f"{metrics.get('avg_positive_sim', 0):.3f}",
                 f"{metrics.get('avg_negative_sim', 0):.3f}",
-                f"{metrics.get('margin_gt_02', 0):.2%}"
-            ]
+                f"{metrics.get('margin_gt_02', 0):.2%}",
+            ],
         }
         df_core = pd.DataFrame(core_data)
         lines.append(df_core.to_markdown(index=False))
 
         # Difficulty breakdown
-        if 'difficulty_breakdown' in metrics:
+        if "difficulty_breakdown" in metrics:
             lines.append("")
             lines.append("#### Performance by Difficulty")
             lines.append("")
             diff_data = []
-            for diff, diff_metrics in metrics['difficulty_breakdown'].items():
-                diff_data.append({
-                    'Difficulty': diff,
-                    'Accuracy': f"{diff_metrics.get('accuracy', 0):.2%}",
-                    'Count': diff_metrics.get('count', 0)
-                })
+            for diff, diff_metrics in metrics["difficulty_breakdown"].items():
+                diff_data.append(
+                    {
+                        "Difficulty": diff,
+                        "Accuracy": f"{diff_metrics.get('accuracy', 0):.2%}",
+                        "Count": diff_metrics.get("count", 0),
+                    }
+                )
             df_diff = pd.DataFrame(diff_data)
             lines.append(df_diff.to_markdown(index=False))
 
         # Subcategory breakdown
-        if 'subcategory_breakdown' in metrics:
+        if "subcategory_breakdown" in metrics:
             lines.append("")
             lines.append("#### Performance by Subcategory")
             lines.append("")
             subcat_data = []
-            for subcat, subcat_metrics in metrics['subcategory_breakdown'].items():
-                subcat_data.append({
-                    'Subcategory': subcat,
-                    'Accuracy': f"{subcat_metrics.get('accuracy', 0):.2%}",
-                    'Count': subcat_metrics.get('count', 0)
-                })
+            for subcat, subcat_metrics in metrics["subcategory_breakdown"].items():
+                subcat_data.append(
+                    {
+                        "Subcategory": subcat,
+                        "Accuracy": f"{subcat_metrics.get('accuracy', 0):.2%}",
+                        "Count": subcat_metrics.get("count", 0),
+                    }
+                )
             df_subcat = pd.DataFrame(subcat_data)
             lines.append(df_subcat.to_markdown(index=False))
 
@@ -468,7 +476,7 @@ class SemanticSimilarity(BaseTask):
         lines.append("")
 
         # Performance interpretation
-        accuracy = metrics.get('accuracy', 0)
+        accuracy = metrics.get("accuracy", 0)
         if accuracy >= 0.9:
             lines.append("- ✅ **Excellent** semantic discrimination (accuracy ≥ 90%)")
         elif accuracy >= 0.8:
@@ -479,19 +487,27 @@ class SemanticSimilarity(BaseTask):
             lines.append("- 🔴 **Poor** semantic discrimination (accuracy < 70%)")
 
         # Margin analysis
-        avg_margin = metrics.get('avg_margin', 0)
+        avg_margin = metrics.get("avg_margin", 0)
         if avg_margin >= 0.3:
-            lines.append("- ✅ **Strong** separation between positive and negative examples")
+            lines.append(
+                "- ✅ **Strong** separation between positive and negative examples"
+            )
         elif avg_margin >= 0.2:
-            lines.append("- 🟢 **Good** separation between positive and negative examples")
+            lines.append(
+                "- 🟢 **Good** separation between positive and negative examples"
+            )
         elif avg_margin >= 0.1:
-            lines.append("- 🟡 **Weak** separation between positive and negative examples")
+            lines.append(
+                "- 🟡 **Weak** separation between positive and negative examples"
+            )
         else:
-            lines.append("- 🔴 **Very weak** separation between positive and negative examples")
+            lines.append(
+                "- 🔴 **Very weak** separation between positive and negative examples"
+            )
 
         # Failed triplets
-        if 'failed_triplets_sample' in metrics and metrics['failed_triplets_sample']:
-            failed_count = len(metrics['failed_triplets_sample'])
+        if "failed_triplets_sample" in metrics and metrics["failed_triplets_sample"]:
+            failed_count = len(metrics["failed_triplets_sample"])
             lines.append("")
             lines.append(f"**Failed Triplets:** {failed_count} examples shown")
             lines.append("")

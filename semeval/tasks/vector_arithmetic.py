@@ -66,7 +66,7 @@ class VectorArithmetic(BaseTask):
         encoder,
         task_data: VectorArithmeticData,
         device: Optional[str] = None,
-        verbose: bool = False
+        verbose: bool = False,
     ):
         """Initialize Vector Arithmetic task."""
         super().__init__(encoder, task_data, device, verbose)
@@ -85,7 +85,9 @@ class VectorArithmetic(BaseTask):
 
     def _build_vocabulary(self) -> None:
         """Build vocabulary from analogies and encode it."""
-        self._log(f"Building vocabulary from {len(self.task_data.analogies)} analogies...")
+        self._log(
+            f"Building vocabulary from {len(self.task_data.analogies)} analogies..."
+        )
 
         # Extract all unique words from analogies
         vocabulary_set = set()
@@ -103,7 +105,7 @@ class VectorArithmetic(BaseTask):
             self.vocabulary,
             batch_size=32,
             show_progress_bar=self.verbose,
-            convert_to_tensor=True
+            convert_to_tensor=True,
         )
 
         self._log(f"Vocabulary encoded: {self.vocabulary_embeddings.shape}")
@@ -165,10 +167,16 @@ class VectorArithmetic(BaseTask):
             categories.append(analogy.category)
             subcategories.append(analogy.subcategory)
             all_predictions.append(predictions)
-            analogy_tuples.append((
-                analogy.a, analogy.b, analogy.c, analogy.d,
-                analogy.category, analogy.subcategory
-            ))
+            analogy_tuples.append(
+                (
+                    analogy.a,
+                    analogy.b,
+                    analogy.c,
+                    analogy.d,
+                    analogy.category,
+                    analogy.subcategory,
+                )
+            )
 
             # Log progress periodically
             if (idx + 1) % 10 == 0:
@@ -176,20 +184,14 @@ class VectorArithmetic(BaseTask):
 
         # Compute metrics
         metrics = compute_analogy_metrics(
-            ranks,
-            categories,
-            subcategories,
-            top_k=self.task_data.config.top_k
+            ranks, categories, subcategories, top_k=self.task_data.config.top_k
         )
 
         # Add failed analogies for error analysis
         failed = get_failed_analogies(
-            analogy_tuples,
-            ranks,
-            all_predictions,
-            threshold=5
+            analogy_tuples, ranks, all_predictions, threshold=5
         )
-        metrics['failed_analogies_sample'] = failed[:10]  # Store top 10 failures
+        metrics["failed_analogies_sample"] = failed[:10]  # Store top 10 failures
 
         return metrics
 
@@ -242,8 +244,8 @@ class VectorArithmetic(BaseTask):
                 metadata={
                     "analogy_count": len(self.task_data.analogies),
                     "vocabulary_size": len(self.vocabulary),
-                    "config": self.task_data.config.model_dump()
-                }
+                    "config": self.task_data.config.model_dump(),
+                },
             )
 
             return result
@@ -259,20 +261,20 @@ class VectorArithmetic(BaseTask):
                 metrics={},
                 runtime_seconds=runtime,
                 error_message=str(e),
-                metadata={}
+                metadata={},
             )
 
     @staticmethod
     def get_export_columns(result: TaskResult) -> Dict[str, Any]:
         """Get Vector Arithmetic-specific export columns."""
         metrics = result.metrics
-        top_k = metrics.get('top_k_accuracy', {})
+        top_k = metrics.get("top_k_accuracy", {})
         return {
-            'top1_accuracy': round(top_k.get(1, 0), 4),
-            'top5_accuracy': round(top_k.get(5, 0), 4),
-            'top10_accuracy': round(top_k.get(10, 0), 4),
-            'mean_rank': round(metrics.get('mean_rank', 0), 4),
-            'mrr': round(metrics.get('mrr', 0), 4)
+            "top1_accuracy": round(top_k.get(1, 0), 4),
+            "top5_accuracy": round(top_k.get(5, 0), 4),
+            "top10_accuracy": round(top_k.get(10, 0), 4),
+            "mean_rank": round(metrics.get("mean_rank", 0), 4),
+            "mrr": round(metrics.get("mrr", 0), 4),
         }
 
     @staticmethod
@@ -286,57 +288,61 @@ class VectorArithmetic(BaseTask):
         lines.append("#### Key Metrics")
         lines.append("")
 
-        top_k = metrics.get('top_k_accuracy', {})
+        top_k = metrics.get("top_k_accuracy", {})
 
         # Main metrics table
         main_data = {
-            'Metric': [
-                'Top-1 Accuracy',
-                'Top-5 Accuracy',
-                'Top-10 Accuracy',
-                'Mean Rank',
-                'MRR'
+            "Metric": [
+                "Top-1 Accuracy",
+                "Top-5 Accuracy",
+                "Top-10 Accuracy",
+                "Mean Rank",
+                "MRR",
             ],
-            'Value': [
+            "Value": [
                 f"{top_k.get(1, 0):.2%}",
                 f"{top_k.get(5, 0):.2%}",
                 f"{top_k.get(10, 0):.2%}",
                 f"{metrics.get('mean_rank', 0):.2f}",
-                f"{metrics.get('mrr', 0):.4f}"
-            ]
+                f"{metrics.get('mrr', 0):.4f}",
+            ],
         }
         df_main = pd.DataFrame(main_data)
         lines.append(df_main.to_markdown(index=False))
 
         # Subcategory breakdown
-        if 'subcategory_breakdown' in metrics and metrics['subcategory_breakdown']:
+        if "subcategory_breakdown" in metrics and metrics["subcategory_breakdown"]:
             lines.append("")
             lines.append("**Performance by Subcategory:**")
             lines.append("")
             subcat_data = []
-            for subcat, subcat_metrics in metrics['subcategory_breakdown'].items():
-                subcat_data.append({
-                    'Subcategory': subcat,
-                    'Top-5 Acc': f"{subcat_metrics.get('top_k_accuracy', {}).get(5, 0):.1%}",
-                    'Mean Rank': f"{subcat_metrics.get('mean_rank', 0):.1f}",
-                    'Count': subcat_metrics.get('count', 0)
-                })
+            for subcat, subcat_metrics in metrics["subcategory_breakdown"].items():
+                subcat_data.append(
+                    {
+                        "Subcategory": subcat,
+                        "Top-5 Acc": f"{subcat_metrics.get('top_k_accuracy', {}).get(5, 0):.1%}",
+                        "Mean Rank": f"{subcat_metrics.get('mean_rank', 0):.1f}",
+                        "Count": subcat_metrics.get("count", 0),
+                    }
+                )
             df_subcat = pd.DataFrame(subcat_data)
             lines.append(df_subcat.to_markdown(index=False))
 
         # Category breakdown (if available)
-        if 'category_breakdown' in metrics and metrics['category_breakdown']:
+        if "category_breakdown" in metrics and metrics["category_breakdown"]:
             lines.append("")
             lines.append("**Performance by Category:**")
             lines.append("")
             cat_data = []
-            for cat, cat_metrics in metrics['category_breakdown'].items():
-                cat_data.append({
-                    'Category': cat,
-                    'Top-5 Acc': f"{cat_metrics.get('top_k_accuracy', {}).get(5, 0):.1%}",
-                    'Mean Rank': f"{cat_metrics.get('mean_rank', 0):.1f}",
-                    'Count': cat_metrics.get('count', 0)
-                })
+            for cat, cat_metrics in metrics["category_breakdown"].items():
+                cat_data.append(
+                    {
+                        "Category": cat,
+                        "Top-5 Acc": f"{cat_metrics.get('top_k_accuracy', {}).get(5, 0):.1%}",
+                        "Mean Rank": f"{cat_metrics.get('mean_rank', 0):.1f}",
+                        "Count": cat_metrics.get("count", 0),
+                    }
+                )
             df_cat = pd.DataFrame(cat_data)
             lines.append(df_cat.to_markdown(index=False))
 

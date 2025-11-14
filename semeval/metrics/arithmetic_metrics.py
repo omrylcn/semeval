@@ -12,7 +12,7 @@ def compute_analogy_metrics(
     ranks: List[int],
     categories: List[str],
     subcategories: List[str],
-    top_k: Optional[List[int]] = None
+    top_k: Optional[List[int]] = None,
 ) -> Dict[str, Any]:
     """Compute metrics for analogy evaluation.
 
@@ -56,13 +56,13 @@ def compute_analogy_metrics(
 
     if not ranks:
         return {
-            'top_k_accuracy': dict.fromkeys(top_k, 0.0),
-            'mean_rank': 0.0,
-            'median_rank': 0.0,
-            'mrr': 0.0,
-            'total_analogies': 0,
-            'category_breakdown': {},
-            'subcategory_breakdown': {}
+            "top_k_accuracy": dict.fromkeys(top_k, 0.0),
+            "mean_rank": 0.0,
+            "median_rank": 0.0,
+            "mrr": 0.0,
+            "total_analogies": 0,
+            "category_breakdown": {},
+            "subcategory_breakdown": {},
         }
 
     ranks_arr = np.array(ranks)
@@ -84,46 +84,50 @@ def compute_analogy_metrics(
     category_stats = {}
     for cat, rank in zip(categories, ranks):
         if cat not in category_stats:
-            category_stats[cat] = {'ranks': [], 'count': 0, 'success_top5': 0}
-        category_stats[cat]['ranks'].append(rank)
-        category_stats[cat]['count'] += 1
+            category_stats[cat] = {"ranks": [], "count": 0, "success_top5": 0}
+        category_stats[cat]["ranks"].append(rank)
+        category_stats[cat]["count"] += 1
         if rank <= 5:
-            category_stats[cat]['success_top5'] += 1
+            category_stats[cat]["success_top5"] += 1
 
     category_breakdown = {}
     for cat, stats in category_stats.items():
         category_breakdown[cat] = {
-            'mean_rank': float(np.mean(stats['ranks'])),
-            'top5_accuracy': stats['success_top5'] / stats['count'] if stats['count'] > 0 else 0.0,
-            'count': stats['count']
+            "mean_rank": float(np.mean(stats["ranks"])),
+            "top5_accuracy": (
+                stats["success_top5"] / stats["count"] if stats["count"] > 0 else 0.0
+            ),
+            "count": stats["count"],
         }
 
     # Subcategory breakdown
     subcategory_stats = {}
     for subcat, rank in zip(subcategories, ranks):
         if subcat not in subcategory_stats:
-            subcategory_stats[subcat] = {'ranks': [], 'count': 0, 'success_top5': 0}
-        subcategory_stats[subcat]['ranks'].append(rank)
-        subcategory_stats[subcat]['count'] += 1
+            subcategory_stats[subcat] = {"ranks": [], "count": 0, "success_top5": 0}
+        subcategory_stats[subcat]["ranks"].append(rank)
+        subcategory_stats[subcat]["count"] += 1
         if rank <= 5:
-            subcategory_stats[subcat]['success_top5'] += 1
+            subcategory_stats[subcat]["success_top5"] += 1
 
     subcategory_breakdown = {}
     for subcat, stats in subcategory_stats.items():
         subcategory_breakdown[subcat] = {
-            'mean_rank': float(np.mean(stats['ranks'])),
-            'top5_accuracy': stats['success_top5'] / stats['count'] if stats['count'] > 0 else 0.0,
-            'count': stats['count']
+            "mean_rank": float(np.mean(stats["ranks"])),
+            "top5_accuracy": (
+                stats["success_top5"] / stats["count"] if stats["count"] > 0 else 0.0
+            ),
+            "count": stats["count"],
         }
 
     return {
-        'top_k_accuracy': top_k_accuracy,
-        'mean_rank': mean_rank,
-        'median_rank': median_rank,
-        'mrr': mrr,
-        'total_analogies': len(ranks),
-        'category_breakdown': category_breakdown,
-        'subcategory_breakdown': subcategory_breakdown
+        "top_k_accuracy": top_k_accuracy,
+        "mean_rank": mean_rank,
+        "median_rank": median_rank,
+        "mrr": mrr,
+        "total_analogies": len(ranks),
+        "category_breakdown": category_breakdown,
+        "subcategory_breakdown": subcategory_breakdown,
     }
 
 
@@ -152,7 +156,7 @@ def get_failed_analogies(
     analogies: List[tuple],
     ranks: List[int],
     predictions: List[List[tuple]],
-    threshold: int = 5
+    threshold: int = 5,
 ) -> List[Dict[str, Any]]:
     """Get list of failed analogies for error analysis.
 
@@ -183,13 +187,15 @@ def get_failed_analogies(
     for analogy, rank, preds in zip(analogies, ranks, predictions):
         if rank > threshold:
             a, b, c, d, category, subcategory = analogy
-            failed.append({
-                'formula': format_analogy_formula(a, b, c, d),
-                'expected': d,
-                'rank': rank,
-                'category': category,
-                'subcategory': subcategory,
-                'top_predictions': preds[:5]  # Top 5 predictions
-            })
+            failed.append(
+                {
+                    "formula": format_analogy_formula(a, b, c, d),
+                    "expected": d,
+                    "rank": rank,
+                    "category": category,
+                    "subcategory": subcategory,
+                    "top_predictions": preds[:5],  # Top 5 predictions
+                }
+            )
 
     return failed

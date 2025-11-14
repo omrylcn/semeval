@@ -37,17 +37,13 @@ class ModelConfig(BaseSettings):
 
     name: str = Field(
         default="emrecan/bert-base-turkish-cased-mean-nli-stsb-tr",
-        description="Model name or path"
+        description="Model name or path",
     )
     device: str = Field(
-        default="auto",
-        description="Device for computation: auto, cpu, cuda, mps"
+        default="auto", description="Device for computation: auto, cpu, cuda, mps"
     )
     batch_size: int = Field(
-        default=32,
-        gt=0,
-        le=512,
-        description="Batch size for encoding"
+        default=32, gt=0, le=512, description="Batch size for encoding"
     )
 
 
@@ -64,17 +60,13 @@ class OutputConfig(BaseSettings):
         Whether to generate comprehensive report
     """
 
-    base_dir: str = Field(
-        default="./output",
-        description="Base output directory"
-    )
+    base_dir: str = Field(default="./output", description="Base output directory")
     export_formats: List[str] = Field(
         default=["json", "csv", "markdown"],
-        description="Export formats: json, csv, markdown"
+        description="Export formats: json, csv, markdown",
     )
     save_comprehensive_report: bool = Field(
-        default=True,
-        description="Generate comprehensive report"
+        default=True, description="Generate comprehensive report"
     )
 
 
@@ -95,17 +87,10 @@ class InformationRetrievalConfig(BaseSettings):
 
     enabled: bool = Field(default=True, description="Enable this task")
     ndcg_at_k: List[int] = Field(
-        default=[1, 3, 5, 10],
-        description="K values for NDCG@K"
+        default=[1, 3, 5, 10], description="K values for NDCG@K"
     )
-    map_at_k: List[int] = Field(
-        default=[10],
-        description="K values for MAP@K"
-    )
-    mrr_at_k: List[int] = Field(
-        default=[10],
-        description="K values for MRR@K"
-    )
+    map_at_k: List[int] = Field(default=[10], description="K values for MAP@K")
+    mrr_at_k: List[int] = Field(default=[10], description="K values for MRR@K")
 
 
 class SemanticSimilarityConfig(BaseSettings):
@@ -121,10 +106,7 @@ class SemanticSimilarityConfig(BaseSettings):
 
     enabled: bool = Field(default=True, description="Enable this task")
     margin_threshold: float = Field(
-        default=0.0,
-        ge=-1.0,
-        le=1.0,
-        description="Minimum margin threshold"
+        default=0.0, ge=-1.0, le=1.0, description="Minimum margin threshold"
     )
 
 
@@ -145,22 +127,16 @@ class LinguisticRobustnessConfig(BaseSettings):
 
     enabled: bool = Field(default=True, description="Enable this task")
     morphology_threshold: float = Field(
-        default=0.85,
-        ge=0.0,
-        le=1.0,
-        description="Morphology similarity threshold"
+        default=0.85, ge=0.0, le=1.0, description="Morphology similarity threshold"
     )
     typo_threshold: float = Field(
-        default=0.75,
-        ge=0.0,
-        le=1.0,
-        description="Typo similarity threshold"
+        default=0.75, ge=0.0, le=1.0, description="Typo similarity threshold"
     )
     negation_threshold: float = Field(
         default=0.50,
         ge=0.0,
         le=1.0,
-        description="Negation similarity threshold (lower is better)"
+        description="Negation similarity threshold (lower is better)",
     )
 
 
@@ -177,8 +153,7 @@ class VectorArithmeticConfig(BaseSettings):
 
     enabled: bool = Field(default=True, description="Enable this task")
     top_k: List[int] = Field(
-        default=[1, 5, 10],
-        description="K values for Top-K accuracy"
+        default=[1, 5, 10], description="K values for Top-K accuracy"
     )
 
 
@@ -291,7 +266,7 @@ class SemEvalSettings(BaseSettings):
     app_version: str = Field(default="0.1.0", description="Version")
     app_description: str = Field(
         default="Semantic Evaluation Framework for Turkish NLP",
-        description="Description"
+        description="Description",
     )
 
     # Configurations
@@ -307,7 +282,7 @@ class SemEvalSettings(BaseSettings):
         env_prefix="SEMEVAL_",
         env_nested_delimiter="__",
         extra="ignore",
-        case_sensitive=False
+        case_sensitive=False,
     )
 
     @classmethod
@@ -357,8 +332,7 @@ class SemEvalSettings(BaseSettings):
 
 
 def load_settings(
-    config_path: Optional[str] = None,
-    env: Optional[str] = None
+    config_path: Optional[str] = None, env: Optional[str] = None
 ) -> SemEvalSettings:
     """Load SemEval settings from configuration.
 

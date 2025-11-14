@@ -46,7 +46,7 @@ class EvaluationResult:
         self,
         metadata: Dict[str, Any],
         task_results: List[TaskResult],
-        total_runtime: float
+        total_runtime: float,
     ):
         """Initialize evaluation result."""
         self.metadata = metadata
@@ -82,7 +82,7 @@ class EvaluationResult:
         summary = {
             "metadata": self.metadata,
             "total_runtime": self.total_runtime,
-            "tasks": {}
+            "tasks": {},
         }
 
         for result in self.task_results:
@@ -90,7 +90,7 @@ class EvaluationResult:
                 "status": result.status,
                 "runtime": result.runtime_seconds,
                 "metrics": result.metrics,
-                "error": result.error_message if result.status == "failed" else None
+                "error": result.error_message if result.status == "failed" else None,
             }
 
         return summary
@@ -151,7 +151,7 @@ class TaskRunner:
         data_loader: Optional[BaseDataLoader] = None,
         device: Optional[str] = None,
         verbose: bool = False,
-        settings: Optional[SemEvalSettings] = None
+        settings: Optional[SemEvalSettings] = None,
     ):
         """Initialize task runner.
 
@@ -217,9 +217,9 @@ class TaskRunner:
         >>> result = runner.run("data/test_data.json")
         >>> print(result.get_summary())
         """
-        self._log("="*70)
+        self._log("=" * 70)
         self._log("Starting Evaluation")
-        self._log("="*70)
+        self._log("=" * 70)
 
         start_time = time.time()
 
@@ -235,75 +235,75 @@ class TaskRunner:
 
         # Information Retrieval
         if test_data.tasks.information_retrieval is not None:
-            self._log("\n" + "="*70)
+            self._log("\n" + "=" * 70)
             self._log("Running Information Retrieval Task")
-            self._log("="*70)
+            self._log("=" * 70)
 
             task = InformationRetrieval(
                 encoder=self.encoder,
                 task_data=test_data.tasks.information_retrieval,
                 device=self.device,
-                verbose=self.verbose
+                verbose=self.verbose,
             )
             result = task.run()
             task_results.append(result)
 
         # Semantic Similarity
         if test_data.tasks.semantic_similarity is not None:
-            self._log("\n" + "="*70)
+            self._log("\n" + "=" * 70)
             self._log("Running Semantic Similarity Task")
-            self._log("="*70)
+            self._log("=" * 70)
 
             task = SemanticSimilarity(
                 encoder=self.encoder,
                 task_data=test_data.tasks.semantic_similarity,
                 device=self.device,
-                verbose=self.verbose
+                verbose=self.verbose,
             )
             result = task.run()
             task_results.append(result)
 
         # Linguistic Robustness
         if test_data.tasks.linguistic_robustness is not None:
-            self._log("\n" + "="*70)
+            self._log("\n" + "=" * 70)
             self._log("Running Linguistic Robustness Task")
-            self._log("="*70)
+            self._log("=" * 70)
 
             task = LinguisticRobustness(
                 encoder=self.encoder,
                 task_data=test_data.tasks.linguistic_robustness,
                 device=self.device,
-                verbose=self.verbose
+                verbose=self.verbose,
             )
             result = task.run()
             task_results.append(result)
 
         # Vector Arithmetic
         if test_data.tasks.vector_arithmetic is not None:
-            self._log("\n" + "="*70)
+            self._log("\n" + "=" * 70)
             self._log("Running Vector Arithmetic Task")
-            self._log("="*70)
+            self._log("=" * 70)
 
             task = VectorArithmetic(
                 encoder=self.encoder,
                 task_data=test_data.tasks.vector_arithmetic,
                 device=self.device,
-                verbose=self.verbose
+                verbose=self.verbose,
             )
             result = task.run()
             task_results.append(result)
 
         total_runtime = time.time() - start_time
 
-        self._log("\n" + "="*70)
+        self._log("\n" + "=" * 70)
         self._log(f"Evaluation Completed in {total_runtime:.2f}s")
-        self._log("="*70)
+        self._log("=" * 70)
 
         # Create evaluation result
         evaluation_result = EvaluationResult(
             metadata=test_data.metadata.model_dump(),
             task_results=task_results,
-            total_runtime=total_runtime
+            total_runtime=total_runtime,
         )
 
         return evaluation_result
@@ -340,13 +340,15 @@ class TaskRunner:
         # Run specific task
         if task_name == "information_retrieval":
             if test_data.tasks.information_retrieval is None:
-                raise ValueError("Information Retrieval task not available in test data")
+                raise ValueError(
+                    "Information Retrieval task not available in test data"
+                )
 
             task = InformationRetrieval(
                 encoder=self.encoder,
                 task_data=test_data.tasks.information_retrieval,
                 device=self.device,
-                verbose=self.verbose
+                verbose=self.verbose,
             )
             return task.run()
 
@@ -358,19 +360,21 @@ class TaskRunner:
                 encoder=self.encoder,
                 task_data=test_data.tasks.semantic_similarity,
                 device=self.device,
-                verbose=self.verbose
+                verbose=self.verbose,
             )
             return task.run()
 
         elif task_name == "linguistic_robustness":
             if test_data.tasks.linguistic_robustness is None:
-                raise ValueError("Linguistic Robustness task not available in test data")
+                raise ValueError(
+                    "Linguistic Robustness task not available in test data"
+                )
 
             task = LinguisticRobustness(
                 encoder=self.encoder,
                 task_data=test_data.tasks.linguistic_robustness,
                 device=self.device,
-                verbose=self.verbose
+                verbose=self.verbose,
             )
             return task.run()
 
@@ -382,7 +386,7 @@ class TaskRunner:
                 encoder=self.encoder,
                 task_data=test_data.tasks.vector_arithmetic,
                 device=self.device,
-                verbose=self.verbose
+                verbose=self.verbose,
             )
             return task.run()
 

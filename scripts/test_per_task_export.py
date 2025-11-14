@@ -50,9 +50,7 @@ def main():
 
     # Export per-task files
     task_paths = exporter.export_per_task(
-        result,
-        str(output_dir),
-        export_formats=['json', 'markdown']
+        result, str(output_dir), export_formats=["json", "markdown"]
     )
 
     print()

@@ -11,13 +11,13 @@ from .semantic_similarity import SemanticSimilarity
 from .vector_arithmetic import VectorArithmetic
 
 __all__ = [
-    'BaseTask',
-    'TaskResult',
-    'InformationRetrieval',
-    'SemanticSimilarity',
-    'LinguisticRobustness',
-    'VectorArithmetic',
-    'get_task_class',
-    'register_task',
-    'TASK_REGISTRY',
+    "BaseTask",
+    "TaskResult",
+    "InformationRetrieval",
+    "SemanticSimilarity",
+    "LinguisticRobustness",
+    "VectorArithmetic",
+    "get_task_class",
+    "register_task",
+    "TASK_REGISTRY",
 ]

@@ -34,7 +34,7 @@ class ReportGenerator:
         result,
         output_path: str,
         model_name: Optional[str] = None,
-        include_recommendations: bool = True
+        include_recommendations: bool = True,
     ) -> None:
         """Generate comprehensive Markdown report.
 
@@ -77,11 +77,11 @@ class ReportGenerator:
         # Test Configuration
         lines.append("## Test Configuration")
         lines.append("")
-        metadata = summary['metadata']
+        metadata = summary["metadata"]
         lines.append(f"- **Test Version:** {metadata.get('version', 'N/A')}")
         lines.append(f"- **Description:** {metadata.get('description', 'N/A')}")
         lines.append(f"- **Language:** {metadata.get('language', 'N/A')}")
-        if metadata.get('domain'):
+        if metadata.get("domain"):
             lines.append(f"- **Domain:** {metadata['domain']}")
         lines.append(f"- **Tasks Completed:** {len(summary['tasks'])}")
         lines.append("")
@@ -92,7 +92,7 @@ class ReportGenerator:
         lines.append("## Detailed Task Results")
         lines.append("")
 
-        for task_name, task_info in summary['tasks'].items():
+        for task_name, task_info in summary["tasks"].items():
             lines.extend(self._generate_task_section(task_name, task_info))
             lines.append("")
 
@@ -110,8 +110,8 @@ class ReportGenerator:
         lines.append("")
 
         # Write file
-        with open(output_path, 'w', encoding='utf-8') as f:
-            f.write('\n'.join(lines))
+        with open(output_path, "w", encoding="utf-8") as f:
+            f.write("\n".join(lines))
 
         print(f"✅ Comprehensive report generated: {output_path}")
 
@@ -122,11 +122,13 @@ class ReportGenerator:
         lines.append("")
 
         # Count successes and failures
-        tasks = summary['tasks']
-        successful = sum(1 for t in tasks.values() if t['status'] == 'success')
-        failed = sum(1 for t in tasks.values() if t['status'] == 'failed')
+        tasks = summary["tasks"]
+        successful = sum(1 for t in tasks.values() if t["status"] == "success")
+        failed = sum(1 for t in tasks.values() if t["status"] == "failed")
 
-        lines.append(f"### Overall Status: {'✅ PASS' if failed == 0 else '⚠️ ISSUES DETECTED'}")
+        lines.append(
+            f"### Overall Status: {'✅ PASS' if failed == 0 else '⚠️ ISSUES DETECTED'}"
+        )
         lines.append("")
         lines.append(f"- **Successful Tasks:** {successful}/{len(tasks)}")
         lines.append(f"- **Failed Tasks:** {failed}/{len(tasks)}")
@@ -139,31 +141,43 @@ class ReportGenerator:
             lines.append("")
 
             for task_name, task_info in tasks.items():
-                if task_info['status'] == 'success':
-                    metrics = task_info['metrics']
+                if task_info["status"] == "success":
+                    metrics = task_info["metrics"]
 
-                    if task_name == 'information_retrieval':
-                        ndcg = metrics.get('cosine-NDCG@10', 0)
-                        status_icon = "🟢" if ndcg >= 0.7 else "🟡" if ndcg >= 0.5 else "🔴"
-                        lines.append(f"- **Information Retrieval:** {status_icon} NDCG@10 = {ndcg:.4f}")
+                    if task_name == "information_retrieval":
+                        ndcg = metrics.get("cosine-NDCG@10", 0)
+                        status_icon = (
+                            "🟢" if ndcg >= 0.7 else "🟡" if ndcg >= 0.5 else "🔴"
+                        )
+                        lines.append(
+                            f"- **Information Retrieval:** {status_icon} NDCG@10 = {ndcg:.4f}"
+                        )
 
-                    elif task_name == 'semantic_similarity':
-                        accuracy = metrics.get('accuracy', 0)
-                        status_icon = "🟢" if accuracy >= 0.85 else "🟡" if accuracy >= 0.7 else "🔴"
-                        lines.append(f"- **Semantic Similarity:** {status_icon} Accuracy = {accuracy:.2%}")
+                    elif task_name == "semantic_similarity":
+                        accuracy = metrics.get("accuracy", 0)
+                        status_icon = (
+                            "🟢"
+                            if accuracy >= 0.85
+                            else "🟡" if accuracy >= 0.7 else "🔴"
+                        )
+                        lines.append(
+                            f"- **Semantic Similarity:** {status_icon} Accuracy = {accuracy:.2%}"
+                        )
 
             lines.append("")
 
         return lines
 
-    def _generate_task_section(self, task_name: str, task_info: Dict[str, Any]) -> List[str]:
+    def _generate_task_section(
+        self, task_name: str, task_info: Dict[str, Any]
+    ) -> List[str]:
         """Generate detailed section for a task."""
         lines = []
 
         lines.append(f"### {task_name.replace('_', ' ').title()}")
         lines.append("")
 
-        if task_info['status'] == 'failed':
+        if task_info["status"] == "failed":
             lines.append("**Status:** ❌ FAILED")
             lines.append(f"**Error:** {task_info.get('error', 'Unknown error')}")
             lines.append("")
@@ -173,12 +187,12 @@ class ReportGenerator:
         lines.append(f"**Runtime:** {task_info['runtime']:.2f}s")
         lines.append("")
 
-        metrics = task_info['metrics']
+        metrics = task_info["metrics"]
 
-        if task_name == 'information_retrieval':
+        if task_name == "information_retrieval":
             lines.extend(self._format_ir_metrics(metrics))
 
-        elif task_name == 'semantic_similarity':
+        elif task_name == "semantic_similarity":
             lines.extend(self._format_similarity_metrics(metrics))
 
         return lines
@@ -195,28 +209,28 @@ class ReportGenerator:
         # NDCG
         ndcg_row = "| **NDCG** |"
         for k in [1, 3, 5, 10]:
-            val = metrics.get(f'cosine-NDCG@{k}', 0)
+            val = metrics.get(f"cosine-NDCG@{k}", 0)
             ndcg_row += f" {val:.4f} |"
         lines.append(ndcg_row)
 
         # MRR
         mrr_row = "| **MRR** |"
         for k in [1, 3, 5, 10]:
-            val = metrics.get(f'cosine-MRR@{k}', 0)
+            val = metrics.get(f"cosine-MRR@{k}", 0)
             mrr_row += f" {val:.4f} |"
         lines.append(mrr_row)
 
         # MAP
         map_row = "| **MAP** |"
         for k in [1, 3, 5, 10]:
-            val = metrics.get(f'cosine-MAP@{k}', 0)
+            val = metrics.get(f"cosine-MAP@{k}", 0)
             map_row += f" {val:.4f} |"
         lines.append(map_row)
 
         lines.append("")
 
         # Analysis
-        ndcg10 = metrics.get('cosine-NDCG@10', 0)
+        ndcg10 = metrics.get("cosine-NDCG@10", 0)
         lines.append("#### Analysis")
         lines.append("")
         if ndcg10 >= 0.8:
@@ -241,34 +255,42 @@ class ReportGenerator:
         lines.append("|--------|-------|")
         lines.append(f"| **Triplet Accuracy** | {metrics.get('accuracy', 0):.2%} |")
         lines.append(f"| **Average Margin** | {metrics.get('avg_margin', 0):+.3f} |")
-        lines.append(f"| **Avg Positive Similarity** | {metrics.get('avg_positive_sim', 0):.3f} |")
-        lines.append(f"| **Avg Negative Similarity** | {metrics.get('avg_negative_sim', 0):.3f} |")
+        lines.append(
+            f"| **Avg Positive Similarity** | {metrics.get('avg_positive_sim', 0):.3f} |"
+        )
+        lines.append(
+            f"| **Avg Negative Similarity** | {metrics.get('avg_negative_sim', 0):.3f} |"
+        )
         lines.append(f"| **Margin > 0.2** | {metrics.get('margin_gt_02', 0):.2%} |")
         lines.append("")
 
         # Difficulty breakdown
-        if metrics.get('difficulty_breakdown'):
+        if metrics.get("difficulty_breakdown"):
             lines.append("#### Performance by Difficulty")
             lines.append("")
             lines.append("| Difficulty | Accuracy | Count |")
             lines.append("|------------|----------|-------|")
-            for diff, stats in sorted(metrics['difficulty_breakdown'].items()):
-                lines.append(f"| {diff.capitalize()} | {stats['accuracy']:.2%} | {stats['count']} |")
+            for diff, stats in sorted(metrics["difficulty_breakdown"].items()):
+                lines.append(
+                    f"| {diff.capitalize()} | {stats['accuracy']:.2%} | {stats['count']} |"
+                )
             lines.append("")
 
         # Subcategory breakdown
-        if metrics.get('subcategory_breakdown'):
+        if metrics.get("subcategory_breakdown"):
             lines.append("#### Performance by Subcategory")
             lines.append("")
             lines.append("| Subcategory | Accuracy | Count |")
             lines.append("|-------------|----------|-------|")
-            for subcat, stats in sorted(metrics['subcategory_breakdown'].items()):
-                lines.append(f"| {subcat} | {stats['accuracy']:.2%} | {stats['count']} |")
+            for subcat, stats in sorted(metrics["subcategory_breakdown"].items()):
+                lines.append(
+                    f"| {subcat} | {stats['accuracy']:.2%} | {stats['count']} |"
+                )
             lines.append("")
 
         # Analysis
-        accuracy = metrics.get('accuracy', 0)
-        margin = metrics.get('avg_margin', 0)
+        accuracy = metrics.get("accuracy", 0)
+        margin = metrics.get("avg_margin", 0)
 
         lines.append("#### Analysis")
         lines.append("")
@@ -283,17 +305,25 @@ class ReportGenerator:
             lines.append("- 🔴 **Poor** semantic discrimination (accuracy < 70%)")
 
         if margin >= 0.3:
-            lines.append("- ✅ **Strong** separation between positive and negative examples")
+            lines.append(
+                "- ✅ **Strong** separation between positive and negative examples"
+            )
         elif margin >= 0.2:
-            lines.append("- 🟢 **Good** separation between positive and negative examples")
+            lines.append(
+                "- 🟢 **Good** separation between positive and negative examples"
+            )
         elif margin >= 0.1:
-            lines.append("- 🟡 **Moderate** separation between positive and negative examples")
+            lines.append(
+                "- 🟡 **Moderate** separation between positive and negative examples"
+            )
         else:
-            lines.append("- 🔴 **Weak** separation between positive and negative examples")
+            lines.append(
+                "- 🔴 **Weak** separation between positive and negative examples"
+            )
 
         # Failed cases
-        if metrics.get('failed_triplets_sample'):
-            failed = metrics['failed_triplets_sample']
+        if metrics.get("failed_triplets_sample"):
+            failed = metrics["failed_triplets_sample"]
             lines.append("")
             lines.append(f"**Failed Triplets:** {len(failed)} examples shown")
             lines.append("")
@@ -310,14 +340,14 @@ class ReportGenerator:
 
         recommendations = []
 
-        for task_name, task_info in summary['tasks'].items():
-            if task_info['status'] != 'success':
+        for task_name, task_info in summary["tasks"].items():
+            if task_info["status"] != "success":
                 continue
 
-            metrics = task_info['metrics']
+            metrics = task_info["metrics"]
 
-            if task_name == 'information_retrieval':
-                ndcg = metrics.get('cosine-NDCG@10', 0)
+            if task_name == "information_retrieval":
+                ndcg = metrics.get("cosine-NDCG@10", 0)
                 if ndcg < 0.7:
                     recommendations.append(
                         "- 📊 **Information Retrieval:** Consider fine-tuning on domain-specific data to improve NDCG@10"
@@ -327,9 +357,9 @@ class ReportGenerator:
                         "- 💡 **Information Retrieval:** Performance is good, but could be improved with additional training data"
                     )
 
-            elif task_name == 'semantic_similarity':
-                accuracy = metrics.get('accuracy', 0)
-                margin = metrics.get('avg_margin', 0)
+            elif task_name == "semantic_similarity":
+                accuracy = metrics.get("accuracy", 0)
+                margin = metrics.get("avg_margin", 0)
 
                 if accuracy < 0.85:
                     recommendations.append(
@@ -342,16 +372,18 @@ class ReportGenerator:
                     )
 
                 # Check for difficulty patterns
-                if metrics.get('difficulty_breakdown'):
-                    diff_stats = metrics['difficulty_breakdown']
+                if metrics.get("difficulty_breakdown"):
+                    diff_stats = metrics["difficulty_breakdown"]
                     for diff, stats in diff_stats.items():
-                        if stats['accuracy'] < 0.7:
+                        if stats["accuracy"] < 0.7:
                             recommendations.append(
                                 f"- ⚠️ **Semantic Similarity:** Poor performance on '{diff}' difficulty level ({stats['accuracy']:.1%})"
                             )
 
         if not recommendations:
-            lines.append("✅ **No specific recommendations.** The model performs well across all evaluated tasks.")
+            lines.append(
+                "✅ **No specific recommendations.** The model performs well across all evaluated tasks."
+            )
         else:
             lines.append("### Suggested Improvements")
             lines.append("")

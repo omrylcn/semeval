@@ -33,18 +33,14 @@ def main():
     # Create encoder with config
     print("2️⃣  Loading encoder...")
     encoder = SentenceTransformerEncoder(
-        model_name_or_path=settings.model.name,
-        device=settings.model.device
+        model_name_or_path=settings.model.name, device=settings.model.device
     )
     print(f"   Encoder ready: {encoder._model_name}")
     print()
 
     # Create runner with settings
     print("3️⃣  Creating runner with settings...")
-    runner = TaskRunner(
-        encoder=encoder,
-        settings=settings  # Pass settings to runner
-    )
+    runner = TaskRunner(encoder=encoder, settings=settings)  # Pass settings to runner
     print(f"   Runner configured:")
     print(f"   - Device: {runner.device}")
     print(f"   - Verbose: {runner.verbose}")
@@ -63,8 +59,8 @@ def main():
     print(f"   Tasks completed: {len(summary['tasks'])}")
     print()
 
-    for task_name, task_info in summary['tasks'].items():
-        status_icon = "✅" if task_info['status'] == 'success' else "❌"
+    for task_name, task_info in summary["tasks"].items():
+        status_icon = "✅" if task_info["status"] == "success" else "❌"
         print(f"   {status_icon} {task_name}: {task_info['status']}")
 
     print()

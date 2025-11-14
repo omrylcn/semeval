@@ -94,12 +94,11 @@ class InformationRetrievalData(BaseModel):
     corpus: Dict[str, str] = Field(..., description="Document corpus")
     queries: Dict[str, str] = Field(..., description="Query set")
     relevant_docs: Dict[str, Dict[str, int]] = Field(
-        ...,
-        description="Relevance judgments (query_id -> {doc_id: relevance_score})"
+        ..., description="Relevance judgments (query_id -> {doc_id: relevance_score})"
     )
     config: IRConfig = Field(default_factory=IRConfig)
 
-    @field_validator('relevant_docs')
+    @field_validator("relevant_docs")
     @classmethod
     def validate_relevance_scores(cls, v):
         """Validate that relevance scores are 0, 1, or 2.
@@ -128,7 +127,7 @@ class InformationRetrievalData(BaseModel):
                     )
         return v
 
-    @field_validator('corpus', 'queries')
+    @field_validator("corpus", "queries")
     @classmethod
     def validate_not_empty(cls, v, info):
         """Validate that corpus and queries are not empty."""
@@ -187,7 +186,7 @@ class TripletData(BaseModel):
     category: Optional[str] = None
     subcategory: Optional[str] = None
 
-    @field_validator('anchor', 'positive', 'negative')
+    @field_validator("anchor", "positive", "negative")
     @classmethod
     def validate_text_not_empty(cls, v, info):
         """Validate that text fields are not empty."""
@@ -455,14 +454,14 @@ class TasksModel(BaseModel):
     linguistic_robustness: Optional[LinguisticRobustnessData] = None
     vector_arithmetic: Optional[VectorArithmeticData] = None
 
-    @model_validator(mode='after')
+    @model_validator(mode="after")
     def validate_at_least_one_task(self):
         """Validate that at least one task is provided."""
         tasks = [
             self.information_retrieval,
             self.semantic_similarity,
             self.linguistic_robustness,
-            self.vector_arithmetic
+            self.vector_arithmetic,
         ]
 
         if not any(tasks):
@@ -516,13 +515,19 @@ class TestDataModel(BaseModel):
         """
         enabled = []
 
-        if self.tasks.information_retrieval and self.tasks.information_retrieval.enabled:
-            enabled.append('information_retrieval')
+        if (
+            self.tasks.information_retrieval
+            and self.tasks.information_retrieval.enabled
+        ):
+            enabled.append("information_retrieval")
         if self.tasks.semantic_similarity and self.tasks.semantic_similarity.enabled:
-            enabled.append('semantic_similarity')
-        if self.tasks.linguistic_robustness and self.tasks.linguistic_robustness.enabled:
-            enabled.append('linguistic_robustness')
+            enabled.append("semantic_similarity")
+        if (
+            self.tasks.linguistic_robustness
+            and self.tasks.linguistic_robustness.enabled
+        ):
+            enabled.append("linguistic_robustness")
         if self.tasks.vector_arithmetic and self.tasks.vector_arithmetic.enabled:
-            enabled.append('vector_arithmetic')
+            enabled.append("vector_arithmetic")
 
         return enabled

@@ -64,7 +64,7 @@ class HuggingFaceEncoder(BaseEncoder):
         model_name: str,
         device: Optional[str] = None,
         trust_remote_code: bool = False,
-        max_length: int = 512
+        max_length: int = 512,
     ):
         """Initialize HuggingFace encoder."""
         try:
@@ -80,31 +80,27 @@ class HuggingFaceEncoder(BaseEncoder):
 
         # Load tokenizer and model
         self.tokenizer = AutoTokenizer.from_pretrained(
-            model_name,
-            trust_remote_code=trust_remote_code
+            model_name, trust_remote_code=trust_remote_code
         )
         self.model = AutoModel.from_pretrained(
-            model_name,
-            trust_remote_code=trust_remote_code
+            model_name, trust_remote_code=trust_remote_code
         )
 
         # Auto-detect device if not specified
         if device is None:
             if torch.cuda.is_available():
-                device = 'cuda'
+                device = "cuda"
             elif torch.backends.mps.is_available():
-                device = 'mps'
+                device = "mps"
             else:
-                device = 'cpu'
+                device = "cpu"
 
         self.device = device
         self.model.to(self.device)
         self.model.eval()  # Set to evaluation mode
 
     def _mean_pooling(
-        self,
-        model_output: torch.Tensor,
-        attention_mask: torch.Tensor
+        self, model_output: torch.Tensor, attention_mask: torch.Tensor
     ) -> torch.Tensor:
         """Apply mean pooling to model output.
 
@@ -127,10 +123,7 @@ class HuggingFaceEncoder(BaseEncoder):
         """
         # Expand attention mask to match token embeddings dimensions
         input_mask_expanded = (
-            attention_mask
-            .unsqueeze(-1)
-            .expand(model_output.size())
-            .float()
+            attention_mask.unsqueeze(-1).expand(model_output.size()).float()
         )
 
         # Sum embeddings (masking padding)
@@ -149,7 +142,7 @@ class HuggingFaceEncoder(BaseEncoder):
         show_progress_bar: bool = False,
         batch_size: int = 32,
         normalize_embeddings: bool = False,
-        **kwargs
+        **kwargs,
     ) -> np.ndarray:
         """Encode text(s) into embeddings.
 
@@ -214,7 +207,7 @@ class HuggingFaceEncoder(BaseEncoder):
             iterator = tqdm(iterator, total=num_batches, desc="Encoding")
 
         for i in iterator:
-            batch_texts = texts[i:i + batch_size]
+            batch_texts = texts[i : i + batch_size]
 
             # Tokenize
             encoded = self.tokenizer(
@@ -222,7 +215,7 @@ class HuggingFaceEncoder(BaseEncoder):
                 padding=True,
                 truncation=True,
                 max_length=self.max_length,
-                return_tensors='pt'
+                return_tensors="pt",
             ).to(self.device)
 
             # Encode
@@ -231,17 +224,12 @@ class HuggingFaceEncoder(BaseEncoder):
 
             # Mean pooling
             embeddings = self._mean_pooling(
-                outputs.last_hidden_state,
-                encoded['attention_mask']
+                outputs.last_hidden_state, encoded["attention_mask"]
             )
 
             # Normalize if requested
             if normalize_embeddings:
-                embeddings = torch.nn.functional.normalize(
-                    embeddings,
-                    p=2,
-                    dim=1
-                )
+                embeddings = torch.nn.functional.normalize(embeddings, p=2, dim=1)
 
             all_embeddings.append(embeddings.cpu())
 

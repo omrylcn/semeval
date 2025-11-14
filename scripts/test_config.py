@@ -36,9 +36,15 @@ def main():
     print("2️⃣  Task Configurations:")
     print(f"   IR Enabled: {settings.tasks.information_retrieval.enabled}")
     print(f"   IR NDCG@K: {settings.tasks.information_retrieval.ndcg_at_k}")
-    print(f"   Semantic Similarity Enabled: {settings.tasks.semantic_similarity.enabled}")
-    print(f"   Linguistic Robustness Enabled: {settings.tasks.linguistic_robustness.enabled}")
-    print(f"   - Morphology Threshold: {settings.tasks.linguistic_robustness.morphology_threshold}")
+    print(
+        f"   Semantic Similarity Enabled: {settings.tasks.semantic_similarity.enabled}"
+    )
+    print(
+        f"   Linguistic Robustness Enabled: {settings.tasks.linguistic_robustness.enabled}"
+    )
+    print(
+        f"   - Morphology Threshold: {settings.tasks.linguistic_robustness.morphology_threshold}"
+    )
     print(f"   - Typo Threshold: {settings.tasks.linguistic_robustness.typo_threshold}")
     print(f"   Vector Arithmetic Enabled: {settings.tasks.vector_arithmetic.enabled}")
     print(f"   - Top-K: {settings.tasks.vector_arithmetic.top_k}")

@@ -37,10 +37,7 @@ class ModelComparator:
     """
 
     def compare_models(
-        self,
-        results: Dict[str, Any],
-        output_path: str,
-        include_details: bool = True
+        self, results: Dict[str, Any], output_path: str, include_details: bool = True
     ) -> None:
         """Compare multiple models and generate comparison report.
 
@@ -92,10 +89,12 @@ class ModelComparator:
         # Get all unique tasks
         all_tasks = set()
         for summary in summaries.values():
-            all_tasks.update(summary['tasks'].keys())
+            all_tasks.update(summary["tasks"].keys())
 
         for task_name in sorted(all_tasks):
-            lines.extend(self._compare_task(task_name, model_names, summaries, include_details))
+            lines.extend(
+                self._compare_task(task_name, model_names, summaries, include_details)
+            )
             lines.append("")
 
         # Performance Rankings
@@ -117,15 +116,13 @@ class ModelComparator:
         lines.append("")
 
         # Write file
-        with open(output_path, 'w', encoding='utf-8') as f:
-            f.write('\n'.join(lines))
+        with open(output_path, "w", encoding="utf-8") as f:
+            f.write("\n".join(lines))
 
         print(f"✅ Model comparison report generated: {output_path}")
 
     def _generate_quick_summary(
-        self,
-        model_names: List[str],
-        summaries: Dict[str, Dict[str, Any]]
+        self, model_names: List[str], summaries: Dict[str, Dict[str, Any]]
     ) -> List[str]:
         """Generate quick summary comparison."""
         lines = []
@@ -137,12 +134,16 @@ class ModelComparator:
 
         for model_name in model_names:
             summary = summaries[model_name]
-            runtime = summary['total_runtime']
-            tasks_count = len(summary['tasks'])
-            failed = sum(1 for t in summary['tasks'].values() if t['status'] == 'failed')
+            runtime = summary["total_runtime"]
+            tasks_count = len(summary["tasks"])
+            failed = sum(
+                1 for t in summary["tasks"].values() if t["status"] == "failed"
+            )
             status = "✅ All Pass" if failed == 0 else f"⚠️ {failed} Failed"
 
-            lines.append(f"| {model_name} | {runtime:.2f}s | {tasks_count} | {status} |")
+            lines.append(
+                f"| {model_name} | {runtime:.2f}s | {tasks_count} | {status} |"
+            )
 
         lines.append("")
 
@@ -153,7 +154,7 @@ class ModelComparator:
         task_name: str,
         model_names: List[str],
         summaries: Dict[str, Dict[str, Any]],
-        include_details: bool
+        include_details: bool,
     ) -> List[str]:
         """Compare a specific task across models."""
         lines = []
@@ -164,8 +165,8 @@ class ModelComparator:
         # Check if all models have this task
         task_data = {}
         for model_name in model_names:
-            if task_name in summaries[model_name]['tasks']:
-                task_data[model_name] = summaries[model_name]['tasks'][task_name]
+            if task_name in summaries[model_name]["tasks"]:
+                task_data[model_name] = summaries[model_name]["tasks"][task_name]
 
         if len(task_data) == 0:
             lines.append("*No models evaluated this task*")
@@ -174,7 +175,9 @@ class ModelComparator:
 
         if len(task_data) < len(model_names):
             missing = set(model_names) - set(task_data.keys())
-            lines.append(f"⚠️ *Not all models evaluated this task. Missing: {', '.join(missing)}*")
+            lines.append(
+                f"⚠️ *Not all models evaluated this task. Missing: {', '.join(missing)}*"
+            )
             lines.append("")
 
         # Runtime comparison
@@ -186,30 +189,38 @@ class ModelComparator:
         for model_name in model_names:
             if model_name in task_data:
                 info = task_data[model_name]
-                status_icon = "✅" if info['status'] == 'success' else "❌"
-                lines.append(f"| {model_name} | {info['runtime']:.2f}s | {status_icon} {info['status'].title()} |")
+                status_icon = "✅" if info["status"] == "success" else "❌"
+                lines.append(
+                    f"| {model_name} | {info['runtime']:.2f}s | {status_icon} {info['status'].title()} |"
+                )
 
         lines.append("")
 
         # Metric comparison (for successful runs)
-        successful_models = [m for m in model_names if m in task_data and task_data[m]['status'] == 'success']
+        successful_models = [
+            m
+            for m in model_names
+            if m in task_data and task_data[m]["status"] == "success"
+        ]
 
         if len(successful_models) > 0:
             lines.append("**Performance Comparison:**")
             lines.append("")
 
-            if task_name == 'information_retrieval':
+            if task_name == "information_retrieval":
                 lines.extend(self._compare_ir_metrics(successful_models, task_data))
 
-            elif task_name == 'semantic_similarity':
-                lines.extend(self._compare_similarity_metrics(successful_models, task_data, include_details))
+            elif task_name == "semantic_similarity":
+                lines.extend(
+                    self._compare_similarity_metrics(
+                        successful_models, task_data, include_details
+                    )
+                )
 
         return lines
 
     def _compare_ir_metrics(
-        self,
-        model_names: List[str],
-        task_data: Dict[str, Dict[str, Any]]
+        self, model_names: List[str], task_data: Dict[str, Dict[str, Any]]
     ) -> List[str]:
         """Compare Information Retrieval metrics."""
         lines = []
@@ -218,17 +229,21 @@ class ModelComparator:
         lines.append("| Model | NDCG@10 | MRR@10 | MAP@10 | Winner |")
         lines.append("|-------|---------|--------|--------|--------|")
 
-        best_ndcg = max(task_data[m]['metrics'].get('cosine-NDCG@10', 0) for m in model_names)
+        best_ndcg = max(
+            task_data[m]["metrics"].get("cosine-NDCG@10", 0) for m in model_names
+        )
 
         for model_name in model_names:
-            metrics = task_data[model_name]['metrics']
-            ndcg = metrics.get('cosine-NDCG@10', 0)
-            mrr = metrics.get('cosine-MRR@10', 0)
-            map_score = metrics.get('cosine-MAP@10', 0)
+            metrics = task_data[model_name]["metrics"]
+            ndcg = metrics.get("cosine-NDCG@10", 0)
+            mrr = metrics.get("cosine-MRR@10", 0)
+            map_score = metrics.get("cosine-MAP@10", 0)
 
             winner = "🏆" if ndcg == best_ndcg else ""
 
-            lines.append(f"| {model_name} | {ndcg:.4f} | {mrr:.4f} | {map_score:.4f} | {winner} |")
+            lines.append(
+                f"| {model_name} | {ndcg:.4f} | {mrr:.4f} | {map_score:.4f} | {winner} |"
+            )
 
         lines.append("")
 
@@ -238,44 +253,52 @@ class ModelComparator:
         self,
         model_names: List[str],
         task_data: Dict[str, Dict[str, Any]],
-        include_details: bool
+        include_details: bool,
     ) -> List[str]:
         """Compare Semantic Similarity metrics."""
         lines = []
 
         # Core metrics table
-        lines.append("| Model | Accuracy | Avg Margin | Avg Pos Sim | Avg Neg Sim | Winner |")
-        lines.append("|-------|----------|------------|-------------|-------------|--------|")
+        lines.append(
+            "| Model | Accuracy | Avg Margin | Avg Pos Sim | Avg Neg Sim | Winner |"
+        )
+        lines.append(
+            "|-------|----------|------------|-------------|-------------|--------|"
+        )
 
-        best_acc = max(task_data[m]['metrics'].get('accuracy', 0) for m in model_names)
+        best_acc = max(task_data[m]["metrics"].get("accuracy", 0) for m in model_names)
 
         for model_name in model_names:
-            metrics = task_data[model_name]['metrics']
-            acc = metrics.get('accuracy', 0)
-            margin = metrics.get('avg_margin', 0)
-            pos_sim = metrics.get('avg_positive_sim', 0)
-            neg_sim = metrics.get('avg_negative_sim', 0)
+            metrics = task_data[model_name]["metrics"]
+            acc = metrics.get("accuracy", 0)
+            margin = metrics.get("avg_margin", 0)
+            pos_sim = metrics.get("avg_positive_sim", 0)
+            neg_sim = metrics.get("avg_negative_sim", 0)
 
             winner = "🏆" if acc == best_acc else ""
 
-            lines.append(f"| {model_name} | {acc:.2%} | {margin:+.3f} | {pos_sim:.3f} | {neg_sim:.3f} | {winner} |")
+            lines.append(
+                f"| {model_name} | {acc:.2%} | {margin:+.3f} | {pos_sim:.3f} | {neg_sim:.3f} | {winner} |"
+            )
 
         lines.append("")
 
         # Difficulty comparison (if available)
-        if include_details and any(task_data[m]['metrics'].get('difficulty_breakdown') for m in model_names):
+        if include_details and any(
+            task_data[m]["metrics"].get("difficulty_breakdown") for m in model_names
+        ):
             lines.append("**Performance by Difficulty:**")
             lines.append("")
             lines.append("| Model | Kolay | Orta | Zor |")
             lines.append("|-------|-------|------|-----|")
 
             for model_name in model_names:
-                metrics = task_data[model_name]['metrics']
-                diff_breakdown = metrics.get('difficulty_breakdown', {})
+                metrics = task_data[model_name]["metrics"]
+                diff_breakdown = metrics.get("difficulty_breakdown", {})
 
-                kolay = diff_breakdown.get('kolay', {}).get('accuracy', 0)
-                orta = diff_breakdown.get('orta', {}).get('accuracy', 0)
-                zor = diff_breakdown.get('zor', {}).get('accuracy', 0)
+                kolay = diff_breakdown.get("kolay", {}).get("accuracy", 0)
+                orta = diff_breakdown.get("orta", {}).get("accuracy", 0)
+                zor = diff_breakdown.get("zor", {}).get("accuracy", 0)
 
                 lines.append(f"| {model_name} | {kolay:.1%} | {orta:.1%} | {zor:.1%} |")
 
@@ -284,9 +307,7 @@ class ModelComparator:
         return lines
 
     def _generate_rankings(
-        self,
-        model_names: List[str],
-        summaries: Dict[str, Dict[str, Any]]
+        self, model_names: List[str], summaries: Dict[str, Dict[str, Any]]
     ) -> List[str]:
         """Generate overall performance rankings."""
         lines = []
@@ -296,24 +317,24 @@ class ModelComparator:
         # Score each model
         scores = dict.fromkeys(model_names, 0)
 
-        for task_name in ['information_retrieval', 'semantic_similarity']:
+        for task_name in ["information_retrieval", "semantic_similarity"]:
             task_scores = []
 
             for model_name in model_names:
-                if task_name not in summaries[model_name]['tasks']:
+                if task_name not in summaries[model_name]["tasks"]:
                     continue
 
-                task_info = summaries[model_name]['tasks'][task_name]
-                if task_info['status'] != 'success':
+                task_info = summaries[model_name]["tasks"][task_name]
+                if task_info["status"] != "success":
                     continue
 
-                metrics = task_info['metrics']
+                metrics = task_info["metrics"]
 
                 # Calculate task score
-                if task_name == 'information_retrieval':
-                    score = metrics.get('cosine-NDCG@10', 0)
-                elif task_name == 'semantic_similarity':
-                    score = metrics.get('accuracy', 0)
+                if task_name == "information_retrieval":
+                    score = metrics.get("cosine-NDCG@10", 0)
+                elif task_name == "semantic_similarity":
+                    score = metrics.get("accuracy", 0)
                 else:
                     score = 0
 
@@ -322,7 +343,7 @@ class ModelComparator:
             # Award points based on ranking
             task_scores.sort(key=lambda x: x[1], reverse=True)
             for idx, (model_name, _) in enumerate(task_scores):
-                scores[model_name] += (len(task_scores) - idx)
+                scores[model_name] += len(task_scores) - idx
 
         # Sort by total score
         ranked = sorted(scores.items(), key=lambda x: x[1], reverse=True)
@@ -331,19 +352,21 @@ class ModelComparator:
         lines.append("|------|-------|-------|")
 
         for rank, (model_name, score) in enumerate(ranked, 1):
-            medal = "🥇" if rank == 1 else "🥈" if rank == 2 else "🥉" if rank == 3 else ""
+            medal = (
+                "🥇" if rank == 1 else "🥈" if rank == 2 else "🥉" if rank == 3 else ""
+            )
             lines.append(f"| {rank} | {model_name} {medal} | {score} |")
 
         lines.append("")
-        lines.append("*Score calculated based on relative performance across all tasks*")
+        lines.append(
+            "*Score calculated based on relative performance across all tasks*"
+        )
         lines.append("")
 
         return lines
 
     def _generate_comparison_recommendations(
-        self,
-        model_names: List[str],
-        summaries: Dict[str, Dict[str, Any]]
+        self, model_names: List[str], summaries: Dict[str, Dict[str, Any]]
     ) -> List[str]:
         """Generate recommendations based on comparison."""
         lines = []
@@ -353,24 +376,24 @@ class ModelComparator:
         # Find best model per task
         best_models = {}
 
-        for task_name in ['information_retrieval', 'semantic_similarity']:
+        for task_name in ["information_retrieval", "semantic_similarity"]:
             best_score = 0
             best_model = None
 
             for model_name in model_names:
-                if task_name not in summaries[model_name]['tasks']:
+                if task_name not in summaries[model_name]["tasks"]:
                     continue
 
-                task_info = summaries[model_name]['tasks'][task_name]
-                if task_info['status'] != 'success':
+                task_info = summaries[model_name]["tasks"][task_name]
+                if task_info["status"] != "success":
                     continue
 
-                metrics = task_info['metrics']
+                metrics = task_info["metrics"]
 
-                if task_name == 'information_retrieval':
-                    score = metrics.get('cosine-NDCG@10', 0)
-                elif task_name == 'semantic_similarity':
-                    score = metrics.get('accuracy', 0)
+                if task_name == "information_retrieval":
+                    score = metrics.get("cosine-NDCG@10", 0)
+                elif task_name == "semantic_similarity":
+                    score = metrics.get("accuracy", 0)
                 else:
                     continue
 
@@ -386,14 +409,18 @@ class ModelComparator:
             best_overall = list(best_models.values())[0][0]
             lines.append(f"### Recommendation: Use **{best_overall}**")
             lines.append("")
-            lines.append(f"✅ **{best_overall}** performs best across all evaluated tasks.")
+            lines.append(
+                f"✅ **{best_overall}** performs best across all evaluated tasks."
+            )
 
         else:
             lines.append("### Recommendation: Task-Specific Model Selection")
             lines.append("")
             for task_name, (model_name, score) in best_models.items():
-                task_display = task_name.replace('_', ' ').title()
-                lines.append(f"- **{task_display}:** Use **{model_name}** (score: {score:.4f})")
+                task_display = task_name.replace("_", " ").title()
+                lines.append(
+                    f"- **{task_display}:** Use **{model_name}** (score: {score:.4f})"
+                )
 
         lines.append("")
 

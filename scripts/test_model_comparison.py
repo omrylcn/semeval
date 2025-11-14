@@ -11,18 +11,19 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from semeval import TaskRunner, SentenceTransformerEncoder
 
+
 def main():
     """Test model comparison."""
-    print("="*70)
+    print("=" * 70)
     print("Model Comparison Test")
-    print("="*70)
+    print("=" * 70)
 
     data_path = Path(__file__).parent.parent / "data" / "test_data.json"
 
     # Models to compare
     models = [
         "emrecan/bert-base-turkish-cased-mean-nli-stsb-tr",
-        "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
+        "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
     ]
 
     results = []
@@ -47,29 +48,29 @@ def main():
 
         # Extract metrics
         model_results = {
-            'model': model_name.split('/')[-1][:30],  # Shorten name
-            'total_runtime': summary['total_runtime']
+            "model": model_name.split("/")[-1][:30],  # Shorten name
+            "total_runtime": summary["total_runtime"],
         }
 
         # Information Retrieval
-        ir_metrics = summary['tasks']['information_retrieval']['metrics']
-        model_results['IR_NDCG@10'] = ir_metrics.get('cosine-NDCG@10', 0)
-        model_results['IR_MRR@10'] = ir_metrics.get('cosine-MRR@10', 0)
-        model_results['IR_MAP@10'] = ir_metrics.get('cosine-MAP@10', 0)
+        ir_metrics = summary["tasks"]["information_retrieval"]["metrics"]
+        model_results["IR_NDCG@10"] = ir_metrics.get("cosine-NDCG@10", 0)
+        model_results["IR_MRR@10"] = ir_metrics.get("cosine-MRR@10", 0)
+        model_results["IR_MAP@10"] = ir_metrics.get("cosine-MAP@10", 0)
 
         # Semantic Similarity
-        ss_metrics = summary['tasks']['semantic_similarity']['metrics']
-        model_results['SS_Accuracy'] = ss_metrics.get('accuracy', 0)
-        model_results['SS_Avg_Margin'] = ss_metrics.get('avg_margin', 0)
+        ss_metrics = summary["tasks"]["semantic_similarity"]["metrics"]
+        model_results["SS_Accuracy"] = ss_metrics.get("accuracy", 0)
+        model_results["SS_Avg_Margin"] = ss_metrics.get("avg_margin", 0)
 
         # Linguistic Robustness
-        lr_metrics = summary['tasks']['linguistic_robustness']['metrics']
-        model_results['LR_Overall'] = lr_metrics.get('overall_robustness', 0)
-        model_results['LR_Morphology'] = lr_metrics.get('morphology_robustness', 0)
+        lr_metrics = summary["tasks"]["linguistic_robustness"]["metrics"]
+        model_results["LR_Overall"] = lr_metrics.get("overall_robustness", 0)
+        model_results["LR_Morphology"] = lr_metrics.get("morphology_robustness", 0)
 
         # Vector Arithmetic
-        va_metrics = summary['tasks']['vector_arithmetic']['metrics']
-        model_results['VA_Accuracy'] = va_metrics.get('accuracy', 0)
+        va_metrics = summary["tasks"]["vector_arithmetic"]["metrics"]
+        model_results["VA_Accuracy"] = va_metrics.get("accuracy", 0)
 
         results.append(model_results)
 
@@ -82,23 +83,23 @@ def main():
 
     # Display main metrics
     print("📊 Information Retrieval:")
-    ir_cols = ['model', 'IR_NDCG@10', 'IR_MRR@10', 'IR_MAP@10']
+    ir_cols = ["model", "IR_NDCG@10", "IR_MRR@10", "IR_MAP@10"]
     print(df[ir_cols].to_string(index=False))
 
     print("\n📊 Semantic Similarity:")
-    ss_cols = ['model', 'SS_Accuracy', 'SS_Avg_Margin']
+    ss_cols = ["model", "SS_Accuracy", "SS_Avg_Margin"]
     print(df[ss_cols].to_string(index=False))
 
     print("\n📊 Linguistic Robustness:")
-    lr_cols = ['model', 'LR_Overall', 'LR_Morphology']
+    lr_cols = ["model", "LR_Overall", "LR_Morphology"]
     print(df[lr_cols].to_string(index=False))
 
     print("\n📊 Vector Arithmetic:")
-    va_cols = ['model', 'VA_Accuracy']
+    va_cols = ["model", "VA_Accuracy"]
     print(df[va_cols].to_string(index=False))
 
     print("\n⏱️  Runtime:")
-    runtime_cols = ['model', 'total_runtime']
+    runtime_cols = ["model", "total_runtime"]
     print(df[runtime_cols].to_string(index=False))
 
     # Find winners
@@ -109,24 +110,24 @@ def main():
     winners = {}
 
     # IR - NDCG@10
-    best_idx = df['IR_NDCG@10'].idxmax()
-    winners['Information Retrieval (NDCG@10)'] = df.loc[best_idx, 'model']
+    best_idx = df["IR_NDCG@10"].idxmax()
+    winners["Information Retrieval (NDCG@10)"] = df.loc[best_idx, "model"]
 
     # Semantic Similarity - Accuracy
-    best_idx = df['SS_Accuracy'].idxmax()
-    winners['Semantic Similarity (Accuracy)'] = df.loc[best_idx, 'model']
+    best_idx = df["SS_Accuracy"].idxmax()
+    winners["Semantic Similarity (Accuracy)"] = df.loc[best_idx, "model"]
 
     # Linguistic Robustness - Overall
-    best_idx = df['LR_Overall'].idxmax()
-    winners['Linguistic Robustness (Overall)'] = df.loc[best_idx, 'model']
+    best_idx = df["LR_Overall"].idxmax()
+    winners["Linguistic Robustness (Overall)"] = df.loc[best_idx, "model"]
 
     # Vector Arithmetic - Accuracy
-    best_idx = df['VA_Accuracy'].idxmax()
-    winners['Vector Arithmetic (Accuracy)'] = df.loc[best_idx, 'model']
+    best_idx = df["VA_Accuracy"].idxmax()
+    winners["Vector Arithmetic (Accuracy)"] = df.loc[best_idx, "model"]
 
     # Fastest
-    best_idx = df['total_runtime'].idxmin()
-    winners['Fastest Runtime'] = df.loc[best_idx, 'model']
+    best_idx = df["total_runtime"].idxmin()
+    winners["Fastest Runtime"] = df.loc[best_idx, "model"]
 
     for task, winner in winners.items():
         print(f"🏆 {task:45s}: {winner}")
@@ -143,6 +144,7 @@ def main():
     print(f"{'='*70}")
     print(f"\n📂 Results saved to: {csv_path}")
     print(f"\n💡 Tip: Open {csv_path} in Excel or Google Sheets for detailed analysis")
+
 
 if __name__ == "__main__":
     main()

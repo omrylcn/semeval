@@ -62,7 +62,7 @@ class InformationRetrieval(BaseTask):
         encoder,
         task_data: InformationRetrievalData,
         device: Optional[str] = None,
-        verbose: bool = False
+        verbose: bool = False,
     ):
         """Initialize Information Retrieval task."""
         super().__init__(encoder, task_data, device, verbose)
@@ -86,7 +86,7 @@ class InformationRetrieval(BaseTask):
         bool
             True if encoder has a 'model' attribute (SentenceTransformer)
         """
-        return hasattr(self.encoder, 'model') and hasattr(self.encoder.model, 'encode')
+        return hasattr(self.encoder, "model") and hasattr(self.encoder.model, "encode")
 
     def _prepare_evaluator_data(self) -> tuple:
         """Prepare data in format expected by InformationRetrievalEvaluator.
@@ -104,11 +104,7 @@ class InformationRetrieval(BaseTask):
                 doc_id for doc_id, score in docs.items() if score > 0
             }
 
-        return (
-            self.task_data.queries,
-            self.task_data.corpus,
-            relevant_docs
-        )
+        return (self.task_data.queries, self.task_data.corpus, relevant_docs)
 
     def _run_with_sentence_transformers(self) -> Dict[str, Any]:
         """Run evaluation using SentenceTransformers InformationRetrievalEvaluator.
@@ -126,11 +122,11 @@ class InformationRetrieval(BaseTask):
         # Only pass supported parameters
         evaluator_params = {}
         if self.task_data.config.ndcg_at_k:
-            evaluator_params['ndcg_at_k'] = self.task_data.config.ndcg_at_k
+            evaluator_params["ndcg_at_k"] = self.task_data.config.ndcg_at_k
         if self.task_data.config.map_at_k:
-            evaluator_params['map_at_k'] = self.task_data.config.map_at_k
+            evaluator_params["map_at_k"] = self.task_data.config.map_at_k
         if self.task_data.config.mrr_at_k:
-            evaluator_params['mrr_at_k'] = self.task_data.config.mrr_at_k
+            evaluator_params["mrr_at_k"] = self.task_data.config.mrr_at_k
 
         evaluator = InformationRetrievalEvaluator(
             queries=queries,
@@ -138,7 +134,7 @@ class InformationRetrieval(BaseTask):
             relevant_docs=relevant_docs,
             name="ir_eval",
             show_progress_bar=self.verbose,
-            **evaluator_params
+            **evaluator_params,
         )
 
         # Run evaluation
@@ -152,17 +148,23 @@ class InformationRetrieval(BaseTask):
             _ = evaluator(self.encoder.model, output_path=tmpdir)
 
             # Read back the CSV to get all metrics
-            csv_path = os.path.join(tmpdir, "Information-Retrieval_evaluation_ir_eval_results.csv")
+            csv_path = os.path.join(
+                tmpdir, "Information-Retrieval_evaluation_ir_eval_results.csv"
+            )
 
             if os.path.exists(csv_path):
                 import csv
-                with open(csv_path, 'r') as f:
+
+                with open(csv_path, "r") as f:
                     reader = csv.DictReader(f)
                     rows = list(reader)
                     if rows:
                         # Last row contains the metrics
-                        metrics = {k: float(v) for k, v in rows[-1].items()
-                                 if k not in ['epoch', 'steps']}
+                        metrics = {
+                            k: float(v)
+                            for k, v in rows[-1].items()
+                            if k not in ["epoch", "steps"]
+                        }
                         return metrics
 
         # Fallback: return empty metrics
@@ -189,7 +191,7 @@ class InformationRetrieval(BaseTask):
             corpus_texts,
             convert_to_tensor=True,
             show_progress_bar=self.verbose,
-            batch_size=32
+            batch_size=32,
         )
 
         # Encode queries
@@ -201,7 +203,7 @@ class InformationRetrieval(BaseTask):
             query_texts,
             convert_to_tensor=True,
             show_progress_bar=self.verbose,
-            batch_size=32
+            batch_size=32,
         )
 
         # Perform semantic search
@@ -209,7 +211,7 @@ class InformationRetrieval(BaseTask):
         all_hits = util.semantic_search(
             query_embeddings,
             corpus_embeddings,
-            top_k=max(self.task_data.config.ndcg_at_k)
+            top_k=max(self.task_data.config.ndcg_at_k),
         )
 
         # Calculate metrics for each query
@@ -219,7 +221,7 @@ class InformationRetrieval(BaseTask):
 
         for query_id, hits in zip(query_ids, all_hits):
             # Get retrieved doc IDs in order
-            retrieved_doc_ids = [corpus_ids[hit['corpus_id']] for hit in hits]
+            retrieved_doc_ids = [corpus_ids[hit["corpus_id"]] for hit in hits]
 
             # Get relevant docs for this query
             relevant_docs = self.task_data.relevant_docs.get(query_id, {})
@@ -228,7 +230,7 @@ class InformationRetrieval(BaseTask):
             metrics = compute_ranking_metrics(
                 retrieved_doc_ids=retrieved_doc_ids,
                 relevant_doc_ids=relevant_docs,
-                k_values=self.task_data.config.ndcg_at_k
+                k_values=self.task_data.config.ndcg_at_k,
             )
 
             all_query_metrics.append(metrics)
@@ -295,8 +297,8 @@ class InformationRetrieval(BaseTask):
                     "total_relevance_judgments": sum(
                         len(docs) for docs in self.task_data.relevant_docs.values()
                     ),
-                    "config": self.task_data.config.model_dump()
-                }
+                    "config": self.task_data.config.model_dump(),
+                },
             )
 
             return result
@@ -312,7 +314,7 @@ class InformationRetrieval(BaseTask):
                 metrics={},
                 runtime_seconds=runtime,
                 error_message=str(e),
-                metadata={}
+                metadata={},
             )
 
     @staticmethod
@@ -320,11 +322,11 @@ class InformationRetrieval(BaseTask):
         """Get IR-specific export columns."""
         metrics = result.metrics
         return {
-            'ndcg@10': round(metrics.get('cosine-NDCG@10', 0), 4),
-            'mrr@10': round(metrics.get('cosine-MRR@10', 0), 4),
-            'map@10': round(metrics.get('cosine-MAP@10', 0), 4),
-            'precision@10': round(metrics.get('cosine-PRECISION@10', 0), 4),
-            'recall@10': round(metrics.get('cosine-RECALL@10', 0), 4)
+            "ndcg@10": round(metrics.get("cosine-NDCG@10", 0), 4),
+            "mrr@10": round(metrics.get("cosine-MRR@10", 0), 4),
+            "map@10": round(metrics.get("cosine-MAP@10", 0), 4),
+            "precision@10": round(metrics.get("cosine-PRECISION@10", 0), 4),
+            "recall@10": round(metrics.get("cosine-RECALL@10", 0), 4),
         }
 
     @staticmethod
@@ -340,32 +342,32 @@ class InformationRetrieval(BaseTask):
 
         # Create DataFrame for metrics table
         data = {
-            'Metric': ['NDCG', 'MRR', 'MAP'],
-            '@1': [
-                metrics.get('cosine-NDCG@1', 0),
-                metrics.get('cosine-MRR@1', 0),
-                metrics.get('cosine-MAP@1', 0)
+            "Metric": ["NDCG", "MRR", "MAP"],
+            "@1": [
+                metrics.get("cosine-NDCG@1", 0),
+                metrics.get("cosine-MRR@1", 0),
+                metrics.get("cosine-MAP@1", 0),
             ],
-            '@3': [
-                metrics.get('cosine-NDCG@3', 0),
-                metrics.get('cosine-MRR@3', 0),
-                metrics.get('cosine-MAP@3', 0)
+            "@3": [
+                metrics.get("cosine-NDCG@3", 0),
+                metrics.get("cosine-MRR@3", 0),
+                metrics.get("cosine-MAP@3", 0),
             ],
-            '@5': [
-                metrics.get('cosine-NDCG@5', 0),
-                metrics.get('cosine-MRR@5', 0),
-                metrics.get('cosine-MAP@5', 0)
+            "@5": [
+                metrics.get("cosine-NDCG@5", 0),
+                metrics.get("cosine-MRR@5", 0),
+                metrics.get("cosine-MAP@5", 0),
             ],
-            '@10': [
-                metrics.get('cosine-NDCG@10', 0),
-                metrics.get('cosine-MRR@10', 0),
-                metrics.get('cosine-MAP@10', 0)
-            ]
+            "@10": [
+                metrics.get("cosine-NDCG@10", 0),
+                metrics.get("cosine-MRR@10", 0),
+                metrics.get("cosine-MAP@10", 0),
+            ],
         }
         df = pd.DataFrame(data)
 
         # Format numbers to 4 decimals
-        for col in ['@1', '@3', '@5', '@10']:
+        for col in ["@1", "@3", "@5", "@10"]:
             df[col] = df[col].apply(lambda x: f"{x:.4f}")
 
         lines.append(df.to_markdown(index=False))
@@ -374,7 +376,7 @@ class InformationRetrieval(BaseTask):
         lines.append("")
 
         # Performance interpretation
-        ndcg_10 = metrics.get('cosine-NDCG@10', 0)
+        ndcg_10 = metrics.get("cosine-NDCG@10", 0)
         if ndcg_10 >= 0.8:
             lines.append("- 🟢 **Excellent** retrieval performance (NDCG@10 ≥ 0.8)")
         elif ndcg_10 >= 0.7:

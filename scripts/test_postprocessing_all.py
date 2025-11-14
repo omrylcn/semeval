@@ -8,11 +8,12 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 from semeval import TaskRunner, SentenceTransformerEncoder
 from semeval.postprocess import ResultsExporter, ReportGenerator
 
+
 def main():
     """Test post-processing features with all 4 tasks."""
-    print("="*70)
+    print("=" * 70)
     print("Testing Post-Processing with All 4 Tasks")
-    print("="*70)
+    print("=" * 70)
 
     # Create encoder
     print("\n📦 Loading model...")
@@ -37,9 +38,9 @@ def main():
     print("")
 
     # Test ResultsExporter
-    print("="*70)
+    print("=" * 70)
     print("Testing ResultsExporter")
-    print("="*70)
+    print("=" * 70)
     print("")
 
     exporter = ResultsExporter()
@@ -62,9 +63,9 @@ def main():
     print("")
 
     # Test ReportGenerator
-    print("="*70)
+    print("=" * 70)
     print("Testing ReportGenerator")
-    print("="*70)
+    print("=" * 70)
     print("")
 
     generator = ReportGenerator()
@@ -74,27 +75,28 @@ def main():
         result,
         str(output_dir / "comprehensive_report.md"),
         model_name="BERT Turkish (All 4 Tasks)",
-        include_recommendations=True
+        include_recommendations=True,
     )
     print("")
 
     # Test Per-Task Export
-    print("="*70)
+    print("=" * 70)
     print("Testing Per-Task Export")
-    print("="*70)
+    print("=" * 70)
 
     print("\n5️⃣ Exporting per-task files...")
     task_paths = exporter.export_per_task(result, str(output_dir))
 
     # Summary
-    print("\n="*70)
+    print("\n=" * 70)
     print("✅ All Post-Processing Tests Complete!")
-    print("="*70)
+    print("=" * 70)
     print(f"\n📂 Check output files in: {output_dir}")
     print("\nGenerated files:")
     for file in sorted(output_dir.glob("*")):
         size = file.stat().st_size
         print(f"  - {file.name} ({size:,} bytes)")
+
 
 if __name__ == "__main__":
     main()

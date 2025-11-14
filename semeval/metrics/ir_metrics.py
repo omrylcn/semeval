@@ -9,9 +9,7 @@ import numpy as np
 
 
 def compute_ranking_metrics(
-    retrieved_doc_ids: List[str],
-    relevant_doc_ids: Dict[str, int],
-    k_values: List[int]
+    retrieved_doc_ids: List[str], relevant_doc_ids: Dict[str, int], k_values: List[int]
 ) -> Dict[str, float]:
     """Compute ranking metrics for a single query.
 
@@ -37,17 +35,17 @@ def compute_ranking_metrics(
 
     for k in k_values:
         # NDCG@k
-        metrics[f'ndcg@{k}'] = _ndcg_at_k(relevances, k)
+        metrics[f"ndcg@{k}"] = _ndcg_at_k(relevances, k)
         # MRR@k
-        metrics[f'mrr@{k}'] = _mrr_at_k(relevances, k)
+        metrics[f"mrr@{k}"] = _mrr_at_k(relevances, k)
         # Precision@k
-        metrics[f'precision@{k}'] = _precision_at_k(relevances, k)
+        metrics[f"precision@{k}"] = _precision_at_k(relevances, k)
         # Recall@k
-        metrics[f'recall@{k}'] = _recall_at_k(relevances, total_relevant, k)
+        metrics[f"recall@{k}"] = _recall_at_k(relevances, total_relevant, k)
 
     # MAP
     max_k = max(k_values)
-    metrics[f'map@{max_k}'] = _average_precision(relevances[:max_k], total_relevant)
+    metrics[f"map@{max_k}"] = _average_precision(relevances[:max_k], total_relevant)
 
     return metrics
 

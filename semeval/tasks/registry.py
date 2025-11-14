@@ -14,10 +14,10 @@ from .vector_arithmetic import VectorArithmetic
 
 # Task registry mapping task names to task classes
 TASK_REGISTRY: Dict[str, Type[BaseTask]] = {
-    'information_retrieval': InformationRetrieval,
-    'semantic_similarity': SemanticSimilarity,
-    'linguistic_robustness': LinguisticRobustness,
-    'vector_arithmetic': VectorArithmetic
+    "information_retrieval": InformationRetrieval,
+    "semantic_similarity": SemanticSimilarity,
+    "linguistic_robustness": LinguisticRobustness,
+    "vector_arithmetic": VectorArithmetic,
 }
 
 

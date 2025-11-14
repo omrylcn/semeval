@@ -16,4 +16,4 @@ Examples
 
 from .json_loader import JSONDataLoader
 
-__all__ = ['JSONDataLoader']
+__all__ = ["JSONDataLoader"]

@@ -49,7 +49,7 @@ class BaseEncoder(ABC):
         convert_to_tensor: bool = False,
         show_progress_bar: bool = False,
         batch_size: int = 32,
-        **kwargs
+        **kwargs,
     ) -> np.ndarray:
         """Encode text(s) into embeddings.
 
@@ -141,7 +141,7 @@ class BaseEncoder(ABC):
         texts: List[str],
         batch_size: int = 32,
         show_progress_bar: bool = True,
-        **kwargs
+        **kwargs,
     ) -> np.ndarray:
         """Encode texts in batches (default implementation).
 
@@ -173,10 +173,7 @@ class BaseEncoder(ABC):
         (1000, 768)
         """
         return self.encode(
-            texts,
-            batch_size=batch_size,
-            show_progress_bar=show_progress_bar,
-            **kwargs
+            texts, batch_size=batch_size, show_progress_bar=show_progress_bar, **kwargs
         )
 
     def __repr__(self) -> str:

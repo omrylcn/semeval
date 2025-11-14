@@ -42,7 +42,7 @@ class JSONDataLoader(BaseDataLoader):
     True
     """
 
-    def __init__(self, encoding: str = 'utf-8'):
+    def __init__(self, encoding: str = "utf-8"):
         """Initialize JSON data loader.
 
         Parameters
@@ -93,17 +93,16 @@ class JSONDataLoader(BaseDataLoader):
 
         # Load JSON
         try:
-            with open(path, 'r', encoding=self.encoding) as f:
+            with open(path, "r", encoding=self.encoding) as f:
                 data = json.load(f)
         except json.JSONDecodeError as e:
             raise DataValidationError(
                 f"Invalid JSON in file: {source}",
-                errors=[f"Line {e.lineno}, Column {e.colno}: {e.msg}"]
+                errors=[f"Line {e.lineno}, Column {e.colno}: {e.msg}"],
             ) from e
         except Exception as e:
             raise DataValidationError(
-                f"Failed to read file: {source}",
-                errors=[str(e)]
+                f"Failed to read file: {source}", errors=[str(e)]
             ) from e
 
         # Validate and parse
@@ -113,13 +112,12 @@ class JSONDataLoader(BaseDataLoader):
             # Extract error details from Pydantic
             errors = []
             for error in e.errors():
-                loc = " -> ".join(str(loc_part) for loc_part in error['loc'])
-                msg = error['msg']
+                loc = " -> ".join(str(loc_part) for loc_part in error["loc"])
+                msg = error["msg"]
                 errors.append(f"{loc}: {msg}")
 
             raise DataValidationError(
-                f"Invalid test data format in file: {source}",
-                errors=errors
+                f"Invalid test data format in file: {source}", errors=errors
             ) from e
 
     def validate(self, data: Dict[str, Any]) -> bool:
@@ -176,14 +174,11 @@ class JSONDataLoader(BaseDataLoader):
             # Extract error details
             errors = []
             for error in e.errors():
-                loc = " -> ".join(str(loc_part) for loc_part in error['loc'])
-                msg = error['msg']
+                loc = " -> ".join(str(loc_part) for loc_part in error["loc"])
+                msg = error["msg"]
                 errors.append(f"{loc}: {msg}")
 
-            raise DataValidationError(
-                "Invalid test data format",
-                errors=errors
-            ) from e
+            raise DataValidationError("Invalid test data format", errors=errors) from e
 
     def load_from_string(self, json_string: str) -> TestDataModel:
         """Load test data from JSON string.
@@ -219,7 +214,7 @@ class JSONDataLoader(BaseDataLoader):
         except json.JSONDecodeError as e:
             raise DataValidationError(
                 "Invalid JSON string",
-                errors=[f"Line {e.lineno}, Column {e.colno}: {e.msg}"]
+                errors=[f"Line {e.lineno}, Column {e.colno}: {e.msg}"],
             ) from e
 
         try:
@@ -227,11 +222,8 @@ class JSONDataLoader(BaseDataLoader):
         except ValidationError as e:
             errors = []
             for error in e.errors():
-                loc = " -> ".join(str(loc_part) for loc_part in error['loc'])
-                msg = error['msg']
+                loc = " -> ".join(str(loc_part) for loc_part in error["loc"])
+                msg = error["msg"]
                 errors.append(f"{loc}: {msg}")
 
-            raise DataValidationError(
-                "Invalid test data format",
-                errors=errors
-            ) from e
+            raise DataValidationError("Invalid test data format", errors=errors) from e

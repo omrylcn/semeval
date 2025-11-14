@@ -53,6 +53,7 @@ class TaskResult(BaseModel):
 
     class Config:
         """Pydantic config."""
+
         arbitrary_types_allowed = True
 
     def is_success(self) -> bool:
@@ -140,7 +141,7 @@ class BaseTask(ABC):
         encoder,  # BaseEncoder type hint causes circular import
         task_data: Any,
         device: Optional[str] = None,
-        verbose: bool = False
+        verbose: bool = False,
     ):
         """Initialize base task.
 
@@ -275,13 +276,13 @@ class BaseTask(ABC):
         lines = []
         if result.metrics:
             # Build data for DataFrame
-            data = {'Metric': [], 'Value': []}
+            data = {"Metric": [], "Value": []}
             for key, value in result.metrics.items():
-                data['Metric'].append(key)
+                data["Metric"].append(key)
                 if isinstance(value, float):
-                    data['Value'].append(f"{value:.4f}")
+                    data["Value"].append(f"{value:.4f}")
                 else:
-                    data['Value'].append(str(value))
+                    data["Value"].append(str(value))
 
             df = pd.DataFrame(data)
             lines.append(df.to_markdown(index=False))
@@ -302,7 +303,7 @@ class BaseTask(ABC):
         >>> repr(task)
         'InformationRetrieval(encoder=SentenceTransformerEncoder(...), enabled=True)'
         """
-        enabled = getattr(self.task_data, 'enabled', True)
+        enabled = getattr(self.task_data, "enabled", True)
         return (
             f"{self.__class__.__name__}("
             f"encoder={self.encoder.__class__.__name__}(...), "

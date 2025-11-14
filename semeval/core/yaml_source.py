@@ -40,9 +40,7 @@ class YamlConfigSettingsSource(PydanticBaseSettingsSource):
     """
 
     def __init__(
-        self,
-        settings_cls: Type[BaseSettings],
-        yaml_file: str | Path | None = None
+        self, settings_cls: Type[BaseSettings], yaml_file: str | Path | None = None
     ):
         """Initialize YAML config source.
 
@@ -63,16 +61,14 @@ class YamlConfigSettingsSource(PydanticBaseSettingsSource):
     def _load_yaml(self) -> None:
         """Load configuration from YAML file."""
         try:
-            with open(self.yaml_file, 'r', encoding='utf-8') as f:
+            with open(self.yaml_file, "r", encoding="utf-8") as f:
                 self._config_data = yaml.safe_load(f) or {}
         except Exception:
             # Fail silently, let defaults handle it
             self._config_data = {}
 
     def get_field_value(
-        self,
-        field: FieldInfo,
-        field_name: str
+        self, field: FieldInfo, field_name: str
     ) -> Tuple[Any, str, bool]:
         """Get value for a specific field from YAML config.
 
@@ -90,7 +86,7 @@ class YamlConfigSettingsSource(PydanticBaseSettingsSource):
         """
         # Support nested field access with dot notation
         value = self._config_data
-        for key in field_name.split('.'):
+        for key in field_name.split("."):
             if isinstance(value, dict):
                 value = value.get(key)
             else:
@@ -100,11 +96,7 @@ class YamlConfigSettingsSource(PydanticBaseSettingsSource):
         return value, field_name, False
 
     def prepare_field_value(
-        self,
-        field_name: str,
-        field: FieldInfo,
-        value: Any,
-        value_is_complex: bool
+        self, field_name: str, field: FieldInfo, value: Any, value_is_complex: bool
     ) -> Any:
         """Prepare field value for validation.
 

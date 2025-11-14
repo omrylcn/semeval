@@ -67,7 +67,7 @@ class LinguisticRobustness(BaseTask):
         encoder,
         task_data: LinguisticRobustnessData,
         device: Optional[str] = None,
-        verbose: bool = False
+        verbose: bool = False,
     ):
         """Initialize Linguistic Robustness task."""
         super().__init__(encoder, task_data, device, verbose)
@@ -93,10 +93,10 @@ class LinguisticRobustness(BaseTask):
         if not self.task_data.morphology:
             self._log("No morphology pairs to evaluate", level="WARNING")
             return {
-                'avg_similarity': 0.0,
-                'success_rate': 0.0,
-                'total_pairs': 0,
-                'category_breakdown': {}
+                "avg_similarity": 0.0,
+                "success_rate": 0.0,
+                "total_pairs": 0,
+                "category_breakdown": {},
             }
 
         self._log(f"Evaluating morphology ({len(self.task_data.morphology)} pairs)...")
@@ -112,7 +112,7 @@ class LinguisticRobustness(BaseTask):
             original_texts,
             batch_size=32,
             show_progress_bar=self.verbose,
-            convert_to_tensor=True
+            convert_to_tensor=True,
         )
 
         self._log("Encoding modified texts...")
@@ -120,7 +120,7 @@ class LinguisticRobustness(BaseTask):
             modified_texts,
             batch_size=32,
             show_progress_bar=self.verbose,
-            convert_to_tensor=True
+            convert_to_tensor=True,
         )
 
         # Compute similarities
@@ -134,11 +134,13 @@ class LinguisticRobustness(BaseTask):
         metrics = compute_morphology_metrics(
             similarities,
             categories,
-            threshold=self.task_data.config.morphology_threshold
+            threshold=self.task_data.config.morphology_threshold,
         )
 
-        self._log(f"Morphology: avg_sim={metrics['avg_similarity']:.3f}, " +
-                  f"success={metrics['success_rate']:.1%}")
+        self._log(
+            f"Morphology: avg_sim={metrics['avg_similarity']:.3f}, "
+            + f"success={metrics['success_rate']:.1%}"
+        )
 
         return metrics
 
@@ -153,10 +155,10 @@ class LinguisticRobustness(BaseTask):
         if not self.task_data.typo:
             self._log("No typo pairs to evaluate", level="WARNING")
             return {
-                'avg_similarity': 0.0,
-                'success_rate': 0.0,
-                'total_pairs': 0,
-                'type_breakdown': {}
+                "avg_similarity": 0.0,
+                "success_rate": 0.0,
+                "total_pairs": 0,
+                "type_breakdown": {},
             }
 
         self._log(f"Evaluating typo ({len(self.task_data.typo)} pairs)...")
@@ -172,7 +174,7 @@ class LinguisticRobustness(BaseTask):
             correct_texts,
             batch_size=32,
             show_progress_bar=self.verbose,
-            convert_to_tensor=True
+            convert_to_tensor=True,
         )
 
         self._log("Encoding typo texts...")
@@ -180,7 +182,7 @@ class LinguisticRobustness(BaseTask):
             typo_texts,
             batch_size=32,
             show_progress_bar=self.verbose,
-            convert_to_tensor=True
+            convert_to_tensor=True,
         )
 
         # Compute similarities
@@ -192,13 +194,13 @@ class LinguisticRobustness(BaseTask):
 
         # Compute metrics
         metrics = compute_typo_metrics(
-            similarities,
-            types,
-            threshold=self.task_data.config.typo_threshold
+            similarities, types, threshold=self.task_data.config.typo_threshold
         )
 
-        self._log(f"Typo: avg_sim={metrics['avg_similarity']:.3f}, " +
-                  f"success={metrics['success_rate']:.1%}")
+        self._log(
+            f"Typo: avg_sim={metrics['avg_similarity']:.3f}, "
+            + f"success={metrics['success_rate']:.1%}"
+        )
 
         return metrics
 
@@ -213,10 +215,10 @@ class LinguisticRobustness(BaseTask):
         if not self.task_data.negation:
             self._log("No negation pairs to evaluate", level="WARNING")
             return {
-                'avg_similarity': 0.0,
-                'success_rate': 0.0,
-                'total_pairs': 0,
-                'type_breakdown': {}
+                "avg_similarity": 0.0,
+                "success_rate": 0.0,
+                "total_pairs": 0,
+                "type_breakdown": {},
             }
 
         self._log(f"Evaluating negation ({len(self.task_data.negation)} pairs)...")
@@ -232,7 +234,7 @@ class LinguisticRobustness(BaseTask):
             sentence1_texts,
             batch_size=32,
             show_progress_bar=self.verbose,
-            convert_to_tensor=True
+            convert_to_tensor=True,
         )
 
         self._log("Encoding sentence2 texts...")
@@ -240,7 +242,7 @@ class LinguisticRobustness(BaseTask):
             sentence2_texts,
             batch_size=32,
             show_progress_bar=self.verbose,
-            convert_to_tensor=True
+            convert_to_tensor=True,
         )
 
         # Compute similarities
@@ -252,13 +254,13 @@ class LinguisticRobustness(BaseTask):
 
         # Compute metrics
         metrics = compute_negation_metrics(
-            similarities,
-            types,
-            threshold=self.task_data.config.negation_threshold
+            similarities, types, threshold=self.task_data.config.negation_threshold
         )
 
-        self._log(f"Negation: avg_sim={metrics['avg_similarity']:.3f} (should be low), " +
-                  f"success={metrics['success_rate']:.1%}")
+        self._log(
+            f"Negation: avg_sim={metrics['avg_similarity']:.3f} (should be low), "
+            + f"success={metrics['success_rate']:.1%}"
+        )
 
         return metrics
 
@@ -299,17 +301,15 @@ class LinguisticRobustness(BaseTask):
 
             # Compute overall summary
             summary = compute_robustness_summary(
-                morphology_result,
-                typo_result,
-                negation_result
+                morphology_result, typo_result, negation_result
             )
 
             # Combine all metrics
             metrics = {
                 **summary,
-                'morphology': morphology_result,
-                'typo': typo_result,
-                'negation': negation_result
+                "morphology": morphology_result,
+                "typo": typo_result,
+                "negation": negation_result,
             }
 
             runtime = time.time() - start_time
@@ -327,8 +327,8 @@ class LinguisticRobustness(BaseTask):
                     "morphology_count": len(self.task_data.morphology),
                     "typo_count": len(self.task_data.typo),
                     "negation_count": len(self.task_data.negation),
-                    "config": self.task_data.config.model_dump()
-                }
+                    "config": self.task_data.config.model_dump(),
+                },
             )
 
             return result
@@ -344,7 +344,7 @@ class LinguisticRobustness(BaseTask):
                 metrics={},
                 runtime_seconds=runtime,
                 error_message=str(e),
-                metadata={}
+                metadata={},
             )
 
     @staticmethod
@@ -352,10 +352,14 @@ class LinguisticRobustness(BaseTask):
         """Get Linguistic Robustness-specific export columns."""
         metrics = result.metrics
         return {
-            'overall_success_rate': round(metrics.get('overall_success_rate', 0), 4),
-            'morphology_success': round(metrics.get('morphology', {}).get('success_rate', 0), 4),
-            'typo_success': round(metrics.get('typo', {}).get('success_rate', 0), 4),
-            'negation_success': round(metrics.get('negation', {}).get('success_rate', 0), 4)
+            "overall_success_rate": round(metrics.get("overall_success_rate", 0), 4),
+            "morphology_success": round(
+                metrics.get("morphology", {}).get("success_rate", 0), 4
+            ),
+            "typo_success": round(metrics.get("typo", {}).get("success_rate", 0), 4),
+            "negation_success": round(
+                metrics.get("negation", {}).get("success_rate", 0), 4
+            ),
         }
 
     @staticmethod
@@ -369,73 +373,82 @@ class LinguisticRobustness(BaseTask):
         lines.append("#### Key Metrics")
         lines.append("")
 
-        morph_metrics = metrics.get('morphology', {})
-        typo_metrics = metrics.get('typo', {})
-        neg_metrics = metrics.get('negation', {})
+        morph_metrics = metrics.get("morphology", {})
+        typo_metrics = metrics.get("typo", {})
+        neg_metrics = metrics.get("negation", {})
 
         # Main metrics table
         main_data = {
-            'Metric': [
-                'Overall Success Rate',
-                'Morphology Success',
-                'Typo Success',
-                'Negation Success'
+            "Metric": [
+                "Overall Success Rate",
+                "Morphology Success",
+                "Typo Success",
+                "Negation Success",
             ],
-            'Value': [
+            "Value": [
                 f"{metrics.get('overall_success_rate', 0):.2%}",
                 f"{morph_metrics.get('success_rate', 0):.2%}",
                 f"{typo_metrics.get('success_rate', 0):.2%}",
-                f"{neg_metrics.get('success_rate', 0):.2%}"
-            ]
+                f"{neg_metrics.get('success_rate', 0):.2%}",
+            ],
         }
         df_main = pd.DataFrame(main_data)
         lines.append(df_main.to_markdown(index=False))
 
         # Morphology category breakdown
-        if 'category_breakdown' in morph_metrics and morph_metrics['category_breakdown']:
+        if (
+            "category_breakdown" in morph_metrics
+            and morph_metrics["category_breakdown"]
+        ):
             lines.append("")
             lines.append("**Morphology by Category:**")
             lines.append("")
             morph_data = []
-            for cat, cat_metrics in morph_metrics['category_breakdown'].items():
-                morph_data.append({
-                    'Category': cat,
-                    'Avg Similarity': f"{cat_metrics.get('avg_similarity', 0):.3f}",
-                    'Success': f"{cat_metrics.get('success_rate', 0):.1%}",
-                    'Count': cat_metrics.get('count', 0)
-                })
+            for cat, cat_metrics in morph_metrics["category_breakdown"].items():
+                morph_data.append(
+                    {
+                        "Category": cat,
+                        "Avg Similarity": f"{cat_metrics.get('avg_similarity', 0):.3f}",
+                        "Success": f"{cat_metrics.get('success_rate', 0):.1%}",
+                        "Count": cat_metrics.get("count", 0),
+                    }
+                )
             df_morph = pd.DataFrame(morph_data)
             lines.append(df_morph.to_markdown(index=False))
 
         # Typo type breakdown
-        if 'type_breakdown' in typo_metrics and typo_metrics['type_breakdown']:
+        if "type_breakdown" in typo_metrics and typo_metrics["type_breakdown"]:
             lines.append("")
             lines.append("**Typo by Type:**")
             lines.append("")
             typo_data = []
-            for typ, typ_metrics in typo_metrics['type_breakdown'].items():
-                typo_data.append({
-                    'Type': typ,
-                    'Avg Similarity': f"{typ_metrics.get('avg_similarity', 0):.3f}",
-                    'Success': f"{typ_metrics.get('success_rate', 0):.1%}",
-                    'Count': typ_metrics.get('count', 0)
-                })
+            for typ, typ_metrics in typo_metrics["type_breakdown"].items():
+                typo_data.append(
+                    {
+                        "Type": typ,
+                        "Avg Similarity": f"{typ_metrics.get('avg_similarity', 0):.3f}",
+                        "Success": f"{typ_metrics.get('success_rate', 0):.1%}",
+                        "Count": typ_metrics.get("count", 0),
+                    }
+                )
             df_typo = pd.DataFrame(typo_data)
             lines.append(df_typo.to_markdown(index=False))
 
         # Negation type breakdown
-        if 'type_breakdown' in neg_metrics and neg_metrics['type_breakdown']:
+        if "type_breakdown" in neg_metrics and neg_metrics["type_breakdown"]:
             lines.append("")
             lines.append("**Negation by Type:**")
             lines.append("")
             neg_data = []
-            for typ, typ_metrics in neg_metrics['type_breakdown'].items():
-                neg_data.append({
-                    'Type': typ,
-                    'Avg Similarity': f"{typ_metrics.get('avg_similarity', 0):.3f}",
-                    'Success': f"{typ_metrics.get('success_rate', 0):.1%}",
-                    'Count': typ_metrics.get('count', 0)
-                })
+            for typ, typ_metrics in neg_metrics["type_breakdown"].items():
+                neg_data.append(
+                    {
+                        "Type": typ,
+                        "Avg Similarity": f"{typ_metrics.get('avg_similarity', 0):.3f}",
+                        "Success": f"{typ_metrics.get('success_rate', 0):.1%}",
+                        "Count": typ_metrics.get("count", 0),
+                    }
+                )
             df_neg = pd.DataFrame(neg_data)
             lines.append(df_neg.to_markdown(index=False))
 

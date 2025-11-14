@@ -9,8 +9,7 @@ import numpy as np
 
 
 def compute_triplet_metrics(
-    positive_sims: List[float],
-    negative_sims: List[float]
+    positive_sims: List[float], negative_sims: List[float]
 ) -> Dict[str, float]:
     """Compute triplet accuracy metrics for a batch of triplets.
 
@@ -50,21 +49,19 @@ def compute_triplet_metrics(
     correct = np.sum(margins > 0)
 
     return {
-        'accuracy': float(correct / len(positive_sims)),
-        'avg_positive_sim': float(np.mean(pos_arr)),
-        'avg_negative_sim': float(np.mean(neg_arr)),
-        'avg_margin': float(np.mean(margins)),
-        'min_margin': float(np.min(margins)),
-        'max_margin': float(np.max(margins)),
-        'margin_gt_01': float(np.mean(margins > 0.1)),
-        'margin_gt_02': float(np.mean(margins > 0.2)),
+        "accuracy": float(correct / len(positive_sims)),
+        "avg_positive_sim": float(np.mean(pos_arr)),
+        "avg_negative_sim": float(np.mean(neg_arr)),
+        "avg_margin": float(np.mean(margins)),
+        "min_margin": float(np.min(margins)),
+        "max_margin": float(np.max(margins)),
+        "margin_gt_01": float(np.mean(margins > 0.1)),
+        "margin_gt_02": float(np.mean(margins > 0.2)),
     }
 
 
 def compute_category_breakdown(
-    positive_sims: List[float],
-    negative_sims: List[float],
-    categories: List[str]
+    positive_sims: List[float], negative_sims: List[float], categories: List[str]
 ) -> Dict[str, Dict[str, float]]:
     """Compute metrics broken down by category.
 
@@ -89,15 +86,15 @@ def compute_category_breakdown(
     category_data = {}
     for pos, neg, cat in zip(positive_sims, negative_sims, categories):
         if cat not in category_data:
-            category_data[cat] = {'pos': [], 'neg': []}
-        category_data[cat]['pos'].append(pos)
-        category_data[cat]['neg'].append(neg)
+            category_data[cat] = {"pos": [], "neg": []}
+        category_data[cat]["pos"].append(pos)
+        category_data[cat]["neg"].append(neg)
 
     # Compute metrics per category
     result = {}
     for cat, data in category_data.items():
-        result[cat] = compute_triplet_metrics(data['pos'], data['neg'])
-        result[cat]['count'] = len(data['pos'])
+        result[cat] = compute_triplet_metrics(data["pos"], data["neg"])
+        result[cat]["count"] = len(data["pos"])
 
     return result
 
@@ -105,12 +102,12 @@ def compute_category_breakdown(
 def _empty_result() -> Dict[str, float]:
     """Return empty result for edge cases."""
     return {
-        'accuracy': 0.0,
-        'avg_positive_sim': 0.0,
-        'avg_negative_sim': 0.0,
-        'avg_margin': 0.0,
-        'min_margin': 0.0,
-        'max_margin': 0.0,
-        'margin_gt_01': 0.0,
-        'margin_gt_02': 0.0,
+        "accuracy": 0.0,
+        "avg_positive_sim": 0.0,
+        "avg_negative_sim": 0.0,
+        "avg_margin": 0.0,
+        "min_margin": 0.0,
+        "max_margin": 0.0,
+        "margin_gt_01": 0.0,
+        "margin_gt_02": 0.0,
     }

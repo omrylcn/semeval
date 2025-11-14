@@ -107,37 +107,37 @@ from .tasks import (
 
 __all__ = [
     # Version
-    '__version__',
-    '__author__',
+    "__version__",
+    "__author__",
     # Main runner
-    'TaskRunner',
-    'EvaluationResult',
+    "TaskRunner",
+    "EvaluationResult",
     # Encoders
-    'SentenceTransformerEncoder',
-    'HuggingFaceEncoder',
-    'BaseEncoder',
+    "SentenceTransformerEncoder",
+    "HuggingFaceEncoder",
+    "BaseEncoder",
     # Data loaders
-    'JSONDataLoader',
-    'BaseDataLoader',
+    "JSONDataLoader",
+    "BaseDataLoader",
     # Configuration
-    'load_settings',
-    'SemEvalSettings',
+    "load_settings",
+    "SemEvalSettings",
     # Tasks
-    'InformationRetrieval',
-    'SemanticSimilarity',
-    'LinguisticRobustness',
-    'VectorArithmetic',
-    'BaseTask',
-    'TaskResult',
+    "InformationRetrieval",
+    "SemanticSimilarity",
+    "LinguisticRobustness",
+    "VectorArithmetic",
+    "BaseTask",
+    "TaskResult",
     # Schemas
-    'TestDataModel',
-    'InformationRetrievalData',
-    'SemanticSimilarityData',
-    'LinguisticRobustnessData',
-    'VectorArithmeticData',
+    "TestDataModel",
+    "InformationRetrievalData",
+    "SemanticSimilarityData",
+    "LinguisticRobustnessData",
+    "VectorArithmeticData",
     # Exceptions
-    'DataValidationError',
+    "DataValidationError",
     # Post-processing
-    'ResultsExporter',
-    'ReportGenerator',
+    "ResultsExporter",
+    "ReportGenerator",
 ]

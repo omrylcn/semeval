@@ -9,7 +9,7 @@ from .report_generator import ReportGenerator
 from .results_exporter import ResultsExporter
 
 __all__ = [
-    'ResultsExporter',
-    'ReportGenerator',
-    'ModelComparator',
+    "ResultsExporter",
+    "ReportGenerator",
+    "ModelComparator",
 ]

@@ -9,9 +9,7 @@ import numpy as np
 
 
 def compute_morphology_metrics(
-    similarities: List[float],
-    categories: List[str],
-    threshold: float = 0.85
+    similarities: List[float], categories: List[str], threshold: float = 0.85
 ) -> Dict[str, Any]:
     """Compute metrics for morphology robustness.
 
@@ -48,13 +46,13 @@ def compute_morphology_metrics(
     """
     if not similarities:
         return {
-            'avg_similarity': 0.0,
-            'min_similarity': 0.0,
-            'max_similarity': 0.0,
-            'std_similarity': 0.0,
-            'success_rate': 0.0,
-            'total_pairs': 0,
-            'category_breakdown': {}
+            "avg_similarity": 0.0,
+            "min_similarity": 0.0,
+            "max_similarity": 0.0,
+            "std_similarity": 0.0,
+            "success_rate": 0.0,
+            "total_pairs": 0,
+            "category_breakdown": {},
         }
 
     sims = np.array(similarities)
@@ -63,36 +61,36 @@ def compute_morphology_metrics(
     category_stats = {}
     for cat, sim in zip(categories, similarities):
         if cat not in category_stats:
-            category_stats[cat] = {'scores': [], 'count': 0, 'success': 0}
-        category_stats[cat]['scores'].append(sim)
-        category_stats[cat]['count'] += 1
+            category_stats[cat] = {"scores": [], "count": 0, "success": 0}
+        category_stats[cat]["scores"].append(sim)
+        category_stats[cat]["count"] += 1
         if sim >= threshold:
-            category_stats[cat]['success'] += 1
+            category_stats[cat]["success"] += 1
 
     # Aggregate category stats
     category_breakdown = {}
     for cat, stats in category_stats.items():
         category_breakdown[cat] = {
-            'avg_similarity': float(np.mean(stats['scores'])),
-            'success_rate': stats['success'] / stats['count'] if stats['count'] > 0 else 0.0,
-            'count': stats['count']
+            "avg_similarity": float(np.mean(stats["scores"])),
+            "success_rate": (
+                stats["success"] / stats["count"] if stats["count"] > 0 else 0.0
+            ),
+            "count": stats["count"],
         }
 
     return {
-        'avg_similarity': float(np.mean(sims)),
-        'min_similarity': float(np.min(sims)),
-        'max_similarity': float(np.max(sims)),
-        'std_similarity': float(np.std(sims)),
-        'success_rate': float((sims >= threshold).mean()),
-        'total_pairs': len(similarities),
-        'category_breakdown': category_breakdown
+        "avg_similarity": float(np.mean(sims)),
+        "min_similarity": float(np.min(sims)),
+        "max_similarity": float(np.max(sims)),
+        "std_similarity": float(np.std(sims)),
+        "success_rate": float((sims >= threshold).mean()),
+        "total_pairs": len(similarities),
+        "category_breakdown": category_breakdown,
     }
 
 
 def compute_typo_metrics(
-    similarities: List[float],
-    types: List[str],
-    threshold: float = 0.75
+    similarities: List[float], types: List[str], threshold: float = 0.75
 ) -> Dict[str, Any]:
     """Compute metrics for typo robustness.
 
@@ -129,13 +127,13 @@ def compute_typo_metrics(
     """
     if not similarities:
         return {
-            'avg_similarity': 0.0,
-            'min_similarity': 0.0,
-            'max_similarity': 0.0,
-            'std_similarity': 0.0,
-            'success_rate': 0.0,
-            'total_pairs': 0,
-            'type_breakdown': {}
+            "avg_similarity": 0.0,
+            "min_similarity": 0.0,
+            "max_similarity": 0.0,
+            "std_similarity": 0.0,
+            "success_rate": 0.0,
+            "total_pairs": 0,
+            "type_breakdown": {},
         }
 
     sims = np.array(similarities)
@@ -144,36 +142,36 @@ def compute_typo_metrics(
     type_stats = {}
     for typ, sim in zip(types, similarities):
         if typ not in type_stats:
-            type_stats[typ] = {'scores': [], 'count': 0, 'success': 0}
-        type_stats[typ]['scores'].append(sim)
-        type_stats[typ]['count'] += 1
+            type_stats[typ] = {"scores": [], "count": 0, "success": 0}
+        type_stats[typ]["scores"].append(sim)
+        type_stats[typ]["count"] += 1
         if sim >= threshold:
-            type_stats[typ]['success'] += 1
+            type_stats[typ]["success"] += 1
 
     # Aggregate type stats
     type_breakdown = {}
     for typ, stats in type_stats.items():
         type_breakdown[typ] = {
-            'avg_similarity': float(np.mean(stats['scores'])),
-            'success_rate': stats['success'] / stats['count'] if stats['count'] > 0 else 0.0,
-            'count': stats['count']
+            "avg_similarity": float(np.mean(stats["scores"])),
+            "success_rate": (
+                stats["success"] / stats["count"] if stats["count"] > 0 else 0.0
+            ),
+            "count": stats["count"],
         }
 
     return {
-        'avg_similarity': float(np.mean(sims)),
-        'min_similarity': float(np.min(sims)),
-        'max_similarity': float(np.max(sims)),
-        'std_similarity': float(np.std(sims)),
-        'success_rate': float((sims >= threshold).mean()),
-        'total_pairs': len(similarities),
-        'type_breakdown': type_breakdown
+        "avg_similarity": float(np.mean(sims)),
+        "min_similarity": float(np.min(sims)),
+        "max_similarity": float(np.max(sims)),
+        "std_similarity": float(np.std(sims)),
+        "success_rate": float((sims >= threshold).mean()),
+        "total_pairs": len(similarities),
+        "type_breakdown": type_breakdown,
     }
 
 
 def compute_negation_metrics(
-    similarities: List[float],
-    types: List[str],
-    threshold: float = 0.50
+    similarities: List[float], types: List[str], threshold: float = 0.50
 ) -> Dict[str, Any]:
     """Compute metrics for negation/opposition detection.
 
@@ -210,13 +208,13 @@ def compute_negation_metrics(
     """
     if not similarities:
         return {
-            'avg_similarity': 0.0,
-            'min_similarity': 0.0,
-            'max_similarity': 0.0,
-            'std_similarity': 0.0,
-            'success_rate': 0.0,
-            'total_pairs': 0,
-            'type_breakdown': {}
+            "avg_similarity": 0.0,
+            "min_similarity": 0.0,
+            "max_similarity": 0.0,
+            "std_similarity": 0.0,
+            "success_rate": 0.0,
+            "total_pairs": 0,
+            "type_breakdown": {},
         }
 
     sims = np.array(similarities)
@@ -225,36 +223,38 @@ def compute_negation_metrics(
     type_stats = {}
     for typ, sim in zip(types, similarities):
         if typ not in type_stats:
-            type_stats[typ] = {'scores': [], 'count': 0, 'success': 0}
-        type_stats[typ]['scores'].append(sim)
-        type_stats[typ]['count'] += 1
+            type_stats[typ] = {"scores": [], "count": 0, "success": 0}
+        type_stats[typ]["scores"].append(sim)
+        type_stats[typ]["count"] += 1
         if sim < threshold:
-            type_stats[typ]['success'] += 1
+            type_stats[typ]["success"] += 1
 
     # Aggregate type stats
     type_breakdown = {}
     for typ, stats in type_stats.items():
         type_breakdown[typ] = {
-            'avg_similarity': float(np.mean(stats['scores'])),
-            'success_rate': stats['success'] / stats['count'] if stats['count'] > 0 else 0.0,
-            'count': stats['count']
+            "avg_similarity": float(np.mean(stats["scores"])),
+            "success_rate": (
+                stats["success"] / stats["count"] if stats["count"] > 0 else 0.0
+            ),
+            "count": stats["count"],
         }
 
     return {
-        'avg_similarity': float(np.mean(sims)),
-        'min_similarity': float(np.min(sims)),
-        'max_similarity': float(np.max(sims)),
-        'std_similarity': float(np.std(sims)),
-        'success_rate': float((sims < threshold).mean()),  # Note: < instead of >=
-        'total_pairs': len(similarities),
-        'type_breakdown': type_breakdown
+        "avg_similarity": float(np.mean(sims)),
+        "min_similarity": float(np.min(sims)),
+        "max_similarity": float(np.max(sims)),
+        "std_similarity": float(np.std(sims)),
+        "success_rate": float((sims < threshold).mean()),  # Note: < instead of >=
+        "total_pairs": len(similarities),
+        "type_breakdown": type_breakdown,
     }
 
 
 def compute_robustness_summary(
     morphology_metrics: Dict[str, Any],
     typo_metrics: Dict[str, Any],
-    negation_metrics: Dict[str, Any]
+    negation_metrics: Dict[str, Any],
 ) -> Dict[str, Any]:
     """Compute overall robustness summary.
 
@@ -280,41 +280,41 @@ def compute_robustness_summary(
     """
     # Calculate weighted average success rate
     total_pairs = (
-        morphology_metrics['total_pairs'] +
-        typo_metrics['total_pairs'] +
-        negation_metrics['total_pairs']
+        morphology_metrics["total_pairs"]
+        + typo_metrics["total_pairs"]
+        + negation_metrics["total_pairs"]
     )
 
     if total_pairs == 0:
         overall_success = 0.0
     else:
         overall_success = (
-            morphology_metrics['success_rate'] * morphology_metrics['total_pairs'] +
-            typo_metrics['success_rate'] * typo_metrics['total_pairs'] +
-            negation_metrics['success_rate'] * negation_metrics['total_pairs']
+            morphology_metrics["success_rate"] * morphology_metrics["total_pairs"]
+            + typo_metrics["success_rate"] * typo_metrics["total_pairs"]
+            + negation_metrics["success_rate"] * negation_metrics["total_pairs"]
         ) / total_pairs
 
     return {
-        'overall_success_rate': overall_success,
-        'total_pairs': total_pairs,
-        'morphology_success': morphology_metrics['success_rate'],
-        'typo_success': typo_metrics['success_rate'],
-        'negation_success': negation_metrics['success_rate'],
-        'subtask_breakdown': {
-            'morphology': {
-                'success_rate': morphology_metrics['success_rate'],
-                'avg_similarity': morphology_metrics['avg_similarity'],
-                'count': morphology_metrics['total_pairs']
+        "overall_success_rate": overall_success,
+        "total_pairs": total_pairs,
+        "morphology_success": morphology_metrics["success_rate"],
+        "typo_success": typo_metrics["success_rate"],
+        "negation_success": negation_metrics["success_rate"],
+        "subtask_breakdown": {
+            "morphology": {
+                "success_rate": morphology_metrics["success_rate"],
+                "avg_similarity": morphology_metrics["avg_similarity"],
+                "count": morphology_metrics["total_pairs"],
             },
-            'typo': {
-                'success_rate': typo_metrics['success_rate'],
-                'avg_similarity': typo_metrics['avg_similarity'],
-                'count': typo_metrics['total_pairs']
+            "typo": {
+                "success_rate": typo_metrics["success_rate"],
+                "avg_similarity": typo_metrics["avg_similarity"],
+                "count": typo_metrics["total_pairs"],
             },
-            'negation': {
-                'success_rate': negation_metrics['success_rate'],
-                'avg_similarity': negation_metrics['avg_similarity'],
-                'count': negation_metrics['total_pairs']
-            }
-        }
+            "negation": {
+                "success_rate": negation_metrics["success_rate"],
+                "avg_similarity": negation_metrics["avg_similarity"],
+                "count": negation_metrics["total_pairs"],
+            },
+        },
     }

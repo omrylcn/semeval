@@ -53,24 +53,24 @@ from .schemas import (
 
 __all__ = [
     # Schemas
-    'TestDataModel',
-    'InformationRetrievalData',
-    'SemanticSimilarityData',
-    'LinguisticRobustnessData',
-    'VectorArithmeticData',
+    "TestDataModel",
+    "InformationRetrievalData",
+    "SemanticSimilarityData",
+    "LinguisticRobustnessData",
+    "VectorArithmeticData",
     # Base classes
-    'BaseEncoder',
-    'BaseDataLoader',
+    "BaseEncoder",
+    "BaseDataLoader",
     # Runner
-    'TaskRunner',
-    'EvaluationResult',
+    "TaskRunner",
+    "EvaluationResult",
     # Configuration
-    'SemEvalSettings',
-    'load_settings',
-    'ModelConfig',
-    'OutputConfig',
-    'TasksConfig',
-    'LoggingConfig',
+    "SemEvalSettings",
+    "load_settings",
+    "ModelConfig",
+    "OutputConfig",
+    "TasksConfig",
+    "LoggingConfig",
     # Exceptions
-    'DataValidationError',
+    "DataValidationError",
 ]

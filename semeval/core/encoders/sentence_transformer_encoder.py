@@ -54,7 +54,7 @@ class SentenceTransformerEncoder(BaseEncoder):
         self,
         model_name_or_path: str,
         device: Optional[str] = None,
-        trust_remote_code: bool = False
+        trust_remote_code: bool = False,
     ):
         """Initialize Sentence Transformer encoder."""
         try:
@@ -70,16 +70,14 @@ class SentenceTransformerEncoder(BaseEncoder):
         # Auto-detect device if not specified or "auto"
         if device is None or device == "auto":
             if torch.cuda.is_available():
-                device = 'cuda'
+                device = "cuda"
             elif torch.backends.mps.is_available():
-                device = 'mps'
+                device = "mps"
             else:
-                device = 'cpu'
+                device = "cpu"
 
         self.model = SentenceTransformer(
-            model_name_or_path,
-            device=device,
-            trust_remote_code=trust_remote_code
+            model_name_or_path, device=device, trust_remote_code=trust_remote_code
         )
 
     def encode(
@@ -89,7 +87,7 @@ class SentenceTransformerEncoder(BaseEncoder):
         show_progress_bar: bool = False,
         batch_size: int = 32,
         normalize_embeddings: bool = False,
-        **kwargs
+        **kwargs,
     ) -> np.ndarray:
         """Encode text(s) into embeddings.
 
@@ -156,7 +154,7 @@ class SentenceTransformerEncoder(BaseEncoder):
             show_progress_bar=show_progress_bar,
             batch_size=batch_size,
             normalize_embeddings=normalize_embeddings,
-            **kwargs
+            **kwargs,
         )
 
     def get_embedding_dim(self) -> int:
