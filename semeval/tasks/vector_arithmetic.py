@@ -93,7 +93,7 @@ class VectorArithmetic(BaseTask):
             vocabulary_set.update([analogy.a, analogy.b, analogy.c, analogy.d])
 
         # Convert to sorted list
-        self.vocabulary = sorted(list(vocabulary_set))
+        self.vocabulary = sorted(vocabulary_set)
 
         self._log(f"Vocabulary size: {len(self.vocabulary)} unique words")
         self._log("Encoding vocabulary...")

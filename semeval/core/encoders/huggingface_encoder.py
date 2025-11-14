@@ -73,7 +73,7 @@ class HuggingFaceEncoder(BaseEncoder):
             raise ImportError(
                 "transformers is not installed. "
                 "Install it with: pip install transformers"
-            )
+            ) from None
 
         self._model_name = model_name
         self.max_length = max_length

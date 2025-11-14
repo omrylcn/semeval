@@ -63,7 +63,7 @@ class SentenceTransformerEncoder(BaseEncoder):
             raise ImportError(
                 "sentence-transformers is not installed. "
                 "Install it with: pip install sentence-transformers"
-            )
+            ) from None
 
         self._model_name = model_name_or_path
 

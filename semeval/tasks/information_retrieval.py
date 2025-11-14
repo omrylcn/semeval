@@ -100,9 +100,9 @@ class InformationRetrieval(BaseTask):
         # Only include docs with score > 0
         relevant_docs = {}
         for query_id, docs in self.task_data.relevant_docs.items():
-            relevant_docs[query_id] = set(
+            relevant_docs[query_id] = {
                 doc_id for doc_id, score in docs.items() if score > 0
-            )
+            }
 
         return (
             self.task_data.queries,

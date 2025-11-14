@@ -3,7 +3,7 @@
 Provides metrics for analogy-based vector arithmetic tests.
 """
 
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 
 import numpy as np
 
@@ -12,7 +12,7 @@ def compute_analogy_metrics(
     ranks: List[int],
     categories: List[str],
     subcategories: List[str],
-    top_k: List[int] = [1, 5, 10]
+    top_k: Optional[List[int]] = None
 ) -> Dict[str, Any]:
     """Compute metrics for analogy evaluation.
 
@@ -51,6 +51,9 @@ def compute_analogy_metrics(
     >>> metrics['top_k_accuracy'][5]
     1.0
     """
+    if top_k is None:
+        top_k = [1, 5, 10]
+
     if not ranks:
         return {
             'top_k_accuracy': dict.fromkeys(top_k, 0.0),

@@ -382,7 +382,7 @@ class ModelComparator:
                 best_models[task_name] = (best_model, best_score)
 
         # Generate recommendations
-        if len(set(m for m, _ in best_models.values())) == 1:
+        if len({m for m, _ in best_models.values()}) == 1:
             best_overall = list(best_models.values())[0][0]
             lines.append(f"### Recommendation: Use **{best_overall}**")
             lines.append("")
