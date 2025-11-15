@@ -17,7 +17,6 @@ A modular toolkit for evaluating semantic embeddings and NLP models.
 
 > ⚠️ **v0.1.1 Focus**: Testing infrastructure, CLI interface, error handling, and CI/CD pipeline for production readiness.
 
-📋 [View Full Roadmap →](ROADMAP.md)
 
 ---
 
