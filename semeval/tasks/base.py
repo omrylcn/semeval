@@ -10,6 +10,11 @@ from typing import Any, Dict, List, Optional
 
 from pydantic import BaseModel, Field
 
+from ..core.exceptions import TaskError, TaskExecutionError
+from ..core.logging import get_logger
+
+logger = get_logger("semeval")
+
 
 class TaskResult(BaseModel):
     """Result of running an evaluation task.
@@ -161,6 +166,11 @@ class BaseTask(ABC):
         self.device = device
         self.verbose = verbose
 
+        logger.debug(
+            f"Initialized {self.__class__.__name__} task "
+            f"(device: {device}, verbose: {verbose})"
+        )
+
     @abstractmethod
     def run(self) -> TaskResult:
         """Execute the evaluation task.
@@ -172,7 +182,7 @@ class BaseTask(ABC):
 
         Raises
         ------
-        RuntimeError
+        TaskExecutionError
             If task execution fails
 
         Examples
@@ -219,6 +229,14 @@ class BaseTask(ABC):
         """
         if self.verbose:
             print(f"[{level}] {message}")
+
+        # Also log to logger
+        if level == "ERROR":
+            logger.error(message)
+        elif level == "WARNING":
+            logger.warning(message)
+        else:
+            logger.debug(message)
 
     @staticmethod
     def get_export_columns(result: TaskResult) -> Dict[str, Any]:

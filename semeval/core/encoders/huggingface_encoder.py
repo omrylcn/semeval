@@ -11,6 +11,10 @@ import torch
 from tqdm import tqdm
 
 from ..base_encoder import BaseEncoder
+from ..exceptions import EncoderError, ModelLoadError
+from ..logging import get_logger, log_execution_time
+
+logger = get_logger("semeval")
 
 
 class HuggingFaceEncoder(BaseEncoder):
@@ -67,24 +71,40 @@ class HuggingFaceEncoder(BaseEncoder):
         max_length: int = 512,
     ):
         """Initialize HuggingFace encoder."""
+        logger.info(f"Initializing HuggingFace encoder: {model_name}")
+
         try:
             from transformers import AutoModel, AutoTokenizer
-        except ImportError:
-            raise ImportError(
+        except ImportError as e:
+            logger.error("transformers library not installed")
+            raise ModelLoadError(
                 "transformers is not installed. "
-                "Install it with: pip install transformers"
-            ) from None
+                "Install it with: pip install transformers",
+                model_name=model_name,
+            ) from e
 
         self._model_name = model_name
         self.max_length = max_length
 
         # Load tokenizer and model
-        self.tokenizer = AutoTokenizer.from_pretrained(
-            model_name, trust_remote_code=trust_remote_code
-        )
-        self.model = AutoModel.from_pretrained(
-            model_name, trust_remote_code=trust_remote_code
-        )
+        try:
+            with log_execution_time(logger, "tokenizer_loading"):
+                self.tokenizer = AutoTokenizer.from_pretrained(
+                    model_name, trust_remote_code=trust_remote_code
+                )
+            logger.debug(f"Tokenizer loaded: {model_name}")
+
+            with log_execution_time(logger, "model_loading"):
+                self.model = AutoModel.from_pretrained(
+                    model_name, trust_remote_code=trust_remote_code
+                )
+            logger.debug(f"Model loaded: {model_name}")
+        except Exception as e:
+            logger.error(f"Failed to load model or tokenizer: {model_name} - {str(e)}")
+            raise ModelLoadError(
+                f"Failed to load HuggingFace model or tokenizer: {str(e)}",
+                model_name=model_name,
+            ) from e
 
         # Auto-detect device if not specified
         if device is None:
@@ -94,10 +114,18 @@ class HuggingFaceEncoder(BaseEncoder):
                 device = "mps"
             else:
                 device = "cpu"
+            logger.info(f"Auto-detected device: {device}")
+        else:
+            logger.info(f"Using specified device: {device}")
 
         self.device = device
         self.model.to(self.device)
         self.model.eval()  # Set to evaluation mode
+
+        logger.info(
+            f"Model initialized successfully: {model_name} "
+            f"(device: {device}, dim: {self.model.config.hidden_size}, max_length: {max_length})"
+        )
 
     def _mean_pooling(
         self, model_output: torch.Tensor, attention_mask: torch.Tensor
@@ -171,10 +199,8 @@ class HuggingFaceEncoder(BaseEncoder):
 
         Raises
         ------
-        ValueError
-            If texts is empty
-        RuntimeError
-            If encoding fails
+        EncoderError
+            If texts is empty or encoding fails
 
         Examples
         --------
@@ -192,54 +218,87 @@ class HuggingFaceEncoder(BaseEncoder):
         """
         if isinstance(texts, str):
             if not texts.strip():
-                raise ValueError("Input text cannot be empty")
+                logger.error("Empty text provided for encoding")
+                raise EncoderError(
+                    "Input text cannot be empty",
+                    model_name=self._model_name,
+                    num_texts=1,
+                    device=self.device,
+                )
             texts = [texts]
         elif not texts:
-            raise ValueError("Input texts list cannot be empty")
-
-        all_embeddings = []
-
-        # Process in batches
-        num_batches = (len(texts) + batch_size - 1) // batch_size
-
-        iterator = range(0, len(texts), batch_size)
-        if show_progress_bar:
-            iterator = tqdm(iterator, total=num_batches, desc="Encoding")
-
-        for i in iterator:
-            batch_texts = texts[i : i + batch_size]
-
-            # Tokenize
-            encoded = self.tokenizer(
-                batch_texts,
-                padding=True,
-                truncation=True,
-                max_length=self.max_length,
-                return_tensors="pt",
-            ).to(self.device)
-
-            # Encode
-            with torch.no_grad():
-                outputs = self.model(**encoded)
-
-            # Mean pooling
-            embeddings = self._mean_pooling(
-                outputs.last_hidden_state, encoded["attention_mask"]
+            logger.error("Empty texts list provided for encoding")
+            raise EncoderError(
+                "Input texts list cannot be empty",
+                model_name=self._model_name,
+                num_texts=0,
+                device=self.device,
             )
 
-            # Normalize if requested
-            if normalize_embeddings:
-                embeddings = torch.nn.functional.normalize(embeddings, p=2, dim=1)
+        num_texts = len(texts)
+        logger.debug(
+            f"Encoding {num_texts} texts (batch_size={batch_size}, normalize={normalize_embeddings})"
+        )
 
-            all_embeddings.append(embeddings.cpu())
+        try:
+            all_embeddings = []
 
-        # Concatenate all batches
-        final_embeddings = torch.cat(all_embeddings, dim=0)
+            # Process in batches
+            num_batches = (len(texts) + batch_size - 1) // batch_size
 
-        if convert_to_tensor:
-            return final_embeddings
+            iterator = range(0, len(texts), batch_size)
+            if show_progress_bar:
+                iterator = tqdm(iterator, total=num_batches, desc="Encoding")
 
-        return final_embeddings.numpy()
+            with log_execution_time(logger, "text_encoding"):
+                for i in iterator:
+                    batch_texts = texts[i : i + batch_size]
+
+                    # Tokenize
+                    encoded = self.tokenizer(
+                        batch_texts,
+                        padding=True,
+                        truncation=True,
+                        max_length=self.max_length,
+                        return_tensors="pt",
+                    ).to(self.device)
+
+                    # Encode
+                    with torch.no_grad():
+                        outputs = self.model(**encoded)
+
+                    # Mean pooling
+                    embeddings = self._mean_pooling(
+                        outputs.last_hidden_state, encoded["attention_mask"]
+                    )
+
+                    # Normalize if requested
+                    if normalize_embeddings:
+                        embeddings = torch.nn.functional.normalize(embeddings, p=2, dim=1)
+
+                    all_embeddings.append(embeddings.cpu())
+
+            # Concatenate all batches
+            final_embeddings = torch.cat(all_embeddings, dim=0)
+
+            logger.info(
+                f"Encoded {num_texts} texts successfully (shape: {final_embeddings.shape})"
+            )
+
+            if convert_to_tensor:
+                return final_embeddings
+
+            return final_embeddings.numpy()
+        except Exception as e:
+            logger.error(
+                f"Encoding failed for {num_texts} texts with model {self._model_name}: {str(e)}"
+            )
+            raise EncoderError(
+                f"Failed to encode texts: {str(e)}",
+                model_name=self._model_name,
+                num_texts=num_texts,
+                device=self.device,
+            ) from e
 
     def get_embedding_dim(self) -> int:
         """Return the dimensionality of the embeddings.

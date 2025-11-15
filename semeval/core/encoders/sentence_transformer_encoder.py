@@ -9,6 +9,10 @@ import numpy as np
 import torch
 
 from ..base_encoder import BaseEncoder
+from ..exceptions import EncoderError, ModelLoadError
+from ..logging import get_logger, log_execution_time
+
+logger = get_logger("semeval")
 
 
 class SentenceTransformerEncoder(BaseEncoder):
@@ -57,13 +61,17 @@ class SentenceTransformerEncoder(BaseEncoder):
         trust_remote_code: bool = False,
     ):
         """Initialize Sentence Transformer encoder."""
+        logger.info(f"Initializing SentenceTransformer encoder: {model_name_or_path}")
+
         try:
             from sentence_transformers import SentenceTransformer
-        except ImportError:
-            raise ImportError(
+        except ImportError as e:
+            logger.error("sentence-transformers library not installed")
+            raise ModelLoadError(
                 "sentence-transformers is not installed. "
-                "Install it with: pip install sentence-transformers"
-            ) from None
+                "Install it with: pip install sentence-transformers",
+                model_name=model_name_or_path,
+            ) from e
 
         self._model_name = model_name_or_path
 
@@ -75,10 +83,25 @@ class SentenceTransformerEncoder(BaseEncoder):
                 device = "mps"
             else:
                 device = "cpu"
+            logger.info(f"Auto-detected device: {device}")
+        else:
+            logger.info(f"Using specified device: {device}")
 
-        self.model = SentenceTransformer(
-            model_name_or_path, device=device, trust_remote_code=trust_remote_code
-        )
+        try:
+            with log_execution_time(logger, "model_loading"):
+                self.model = SentenceTransformer(
+                    model_name_or_path, device=device, trust_remote_code=trust_remote_code
+                )
+            logger.info(
+                f"Model loaded successfully: {model_name_or_path} "
+                f"(device: {device}, dim: {self.model.get_sentence_embedding_dimension()})"
+            )
+        except Exception as e:
+            logger.error(f"Failed to load model: {model_name_or_path} - {str(e)}")
+            raise ModelLoadError(
+                f"Failed to load SentenceTransformer model: {str(e)}",
+                model_name=model_name_or_path,
+            ) from e
 
     def encode(
         self,
@@ -116,10 +139,8 @@ class SentenceTransformerEncoder(BaseEncoder):
 
         Raises
         ------
-        ValueError
-            If texts is empty
-        RuntimeError
-            If encoding fails
+        EncoderError
+            If texts is empty or encoding fails
 
         Examples
         --------
@@ -143,19 +164,51 @@ class SentenceTransformerEncoder(BaseEncoder):
         """
         if isinstance(texts, str):
             if not texts.strip():
-                raise ValueError("Input text cannot be empty")
+                logger.error("Empty text provided for encoding")
+                raise EncoderError(
+                    "Input text cannot be empty",
+                    model_name=self._model_name,
+                    num_texts=1,
+                )
             texts = [texts]
         elif not texts:
-            raise ValueError("Input texts list cannot be empty")
+            logger.error("Empty texts list provided for encoding")
+            raise EncoderError(
+                "Input texts list cannot be empty",
+                model_name=self._model_name,
+                num_texts=0,
+            )
 
-        return self.model.encode(
-            texts,
-            convert_to_tensor=convert_to_tensor,
-            show_progress_bar=show_progress_bar,
-            batch_size=batch_size,
-            normalize_embeddings=normalize_embeddings,
-            **kwargs,
+        num_texts = len(texts)
+        logger.debug(
+            f"Encoding {num_texts} texts (batch_size={batch_size}, normalize={normalize_embeddings})"
         )
+
+        try:
+            with log_execution_time(logger, "text_encoding"):
+                embeddings = self.model.encode(
+                    texts,
+                    convert_to_tensor=convert_to_tensor,
+                    show_progress_bar=show_progress_bar,
+                    batch_size=batch_size,
+                    normalize_embeddings=normalize_embeddings,
+                    **kwargs,
+                )
+            logger.info(
+                f"Encoded {num_texts} texts successfully "
+                f"(shape: {embeddings.shape if hasattr(embeddings, 'shape') else 'N/A'})"
+            )
+            return embeddings
+        except Exception as e:
+            logger.error(
+                f"Encoding failed for {num_texts} texts with model {self._model_name}: {str(e)}"
+            )
+            raise EncoderError(
+                f"Failed to encode texts: {str(e)}",
+                model_name=self._model_name,
+                num_texts=num_texts,
+                device=str(self.model.device) if hasattr(self.model, "device") else None,
+            ) from e
 
     def get_embedding_dim(self) -> int:
         """Return the dimensionality of the embeddings.

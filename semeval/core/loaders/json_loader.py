@@ -8,8 +8,12 @@ from typing import Any, Dict
 
 from pydantic import ValidationError
 
-from ..base_loader import BaseDataLoader, DataValidationError
+from ..base_loader import BaseDataLoader
+from ..exceptions import DataFormatError, DataValidationError
+from ..logging import get_logger
 from ..schemas import TestDataModel
+
+logger = get_logger("semeval")
 
 
 class JSONDataLoader(BaseDataLoader):
@@ -69,11 +73,11 @@ class JSONDataLoader(BaseDataLoader):
 
         Raises
         ------
-        FileNotFoundError
+        DataLoadError
             If source file not found
         DataValidationError
             If JSON is invalid or doesn't match schema
-        json.JSONDecodeError
+        DataFormatError
             If file contains invalid JSON
 
         Examples
@@ -88,6 +92,8 @@ class JSONDataLoader(BaseDataLoader):
         >>> print(f"Query count: {len(ir_data.queries)}")
         Query count: 12
         """
+        logger.info(f"Loading test data from: {source}")
+
         # Check if file exists
         path = self._check_source_exists(source)
 
@@ -95,19 +101,32 @@ class JSONDataLoader(BaseDataLoader):
         try:
             with open(path, "r", encoding=self.encoding) as f:
                 data = json.load(f)
+            logger.debug(f"JSON file loaded successfully: {source}")
         except json.JSONDecodeError as e:
-            raise DataValidationError(
+            logger.error(
+                f"Invalid JSON in file: {source} (Line {e.lineno}, Column {e.colno})"
+            )
+            raise DataFormatError(
                 f"Invalid JSON in file: {source}",
-                errors=[f"Line {e.lineno}, Column {e.colno}: {e.msg}"],
+                expected_format="Valid JSON",
+                actual_format=f"JSON parse error at line {e.lineno}",
             ) from e
         except Exception as e:
+            logger.error(f"Failed to read file: {source} - {str(e)}")
             raise DataValidationError(
-                f"Failed to read file: {source}", errors=[str(e)]
+                f"Failed to read file: {source}",
+                errors=[str(e)],
+                file_path=source,
             ) from e
 
         # Validate and parse
         try:
-            return TestDataModel(**data)
+            test_data = TestDataModel(**data)
+            logger.info(
+                f"Test data validated successfully: {source} "
+                f"(tasks: {', '.join(test_data.get_enabled_tasks())})"
+            )
+            return test_data
         except ValidationError as e:
             # Extract error details from Pydantic
             errors = []
@@ -116,8 +135,14 @@ class JSONDataLoader(BaseDataLoader):
                 msg = error["msg"]
                 errors.append(f"{loc}: {msg}")
 
+            logger.error(
+                f"Invalid test data format in file: {source} "
+                f"({len(errors)} validation errors)"
+            )
             raise DataValidationError(
-                f"Invalid test data format in file: {source}", errors=errors
+                f"Invalid test data format in file: {source}",
+                errors=errors,
+                file_path=source,
             ) from e
 
     def validate(self, data: Dict[str, Any]) -> bool:
@@ -167,8 +192,10 @@ class JSONDataLoader(BaseDataLoader):
           - metadata -> version: field required
           - metadata -> description: field required
         """
+        logger.debug("Validating test data format")
         try:
             TestDataModel(**data)
+            logger.debug("Test data validation successful")
             return True
         except ValidationError as e:
             # Extract error details
@@ -178,6 +205,7 @@ class JSONDataLoader(BaseDataLoader):
                 msg = error["msg"]
                 errors.append(f"{loc}: {msg}")
 
+            logger.error(f"Test data validation failed ({len(errors)} errors)")
             raise DataValidationError("Invalid test data format", errors=errors) from e
 
     def load_from_string(self, json_string: str) -> TestDataModel:
@@ -195,8 +223,10 @@ class JSONDataLoader(BaseDataLoader):
 
         Raises
         ------
+        DataFormatError
+            If JSON is invalid
         DataValidationError
-            If JSON is invalid or doesn't match schema
+            If data doesn't match schema
 
         Examples
         --------
@@ -209,16 +239,27 @@ class JSONDataLoader(BaseDataLoader):
         ... '''
         >>> test_data = loader.load_from_string(json_str)
         """
+        logger.debug("Loading test data from JSON string")
         try:
             data = json.loads(json_string)
+            logger.debug("JSON string parsed successfully")
         except json.JSONDecodeError as e:
-            raise DataValidationError(
+            logger.error(
+                f"Invalid JSON string (Line {e.lineno}, Column {e.colno}: {e.msg})"
+            )
+            raise DataFormatError(
                 "Invalid JSON string",
-                errors=[f"Line {e.lineno}, Column {e.colno}: {e.msg}"],
+                expected_format="Valid JSON",
+                actual_format=f"JSON parse error at line {e.lineno}",
             ) from e
 
         try:
-            return TestDataModel(**data)
+            test_data = TestDataModel(**data)
+            logger.info(
+                f"Test data from string validated successfully "
+                f"(tasks: {', '.join(test_data.get_enabled_tasks())})"
+            )
+            return test_data
         except ValidationError as e:
             errors = []
             for error in e.errors():
@@ -226,4 +267,5 @@ class JSONDataLoader(BaseDataLoader):
                 msg = error["msg"]
                 errors.append(f"{loc}: {msg}")
 
+            logger.error(f"Invalid test data format ({len(errors)} errors)")
             raise DataValidationError("Invalid test data format", errors=errors) from e

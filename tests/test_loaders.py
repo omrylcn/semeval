@@ -6,7 +6,7 @@ from pathlib import Path
 
 import pytest
 
-from semeval.core.base_loader import DataValidationError
+from semeval.core.exceptions import DataFormatError, DataLoadError, DataValidationError
 from semeval.core.loaders import JSONDataLoader
 from semeval.core.schemas import TestDataModel
 
@@ -70,7 +70,7 @@ def test_json_loader_invalid_json():
 
     try:
         loader = JSONDataLoader()
-        with pytest.raises(DataValidationError):
+        with pytest.raises(DataFormatError):
             loader.load(tmp_path)
     finally:
         Path(tmp_path).unlink()
@@ -79,14 +79,14 @@ def test_json_loader_invalid_json():
 def test_json_loader_missing_file():
     """Test loader handles missing file."""
     loader = JSONDataLoader()
-    with pytest.raises(FileNotFoundError):
+    with pytest.raises(DataLoadError):
         loader.load("/nonexistent/path/file.json")
 
 
 def test_json_loader_directory_not_file():
     """Test loader rejects directory instead of file."""
     loader = JSONDataLoader()
-    with pytest.raises(ValueError, match="must be a file, not a directory"):
+    with pytest.raises(DataLoadError, match="must be a file, not a directory"):
         loader.load(str(Path.cwd()))
 
 
@@ -212,7 +212,7 @@ def test_json_loader_load_from_string_invalid_json():
     invalid_json = "{not valid json"
 
     loader = JSONDataLoader()
-    with pytest.raises(DataValidationError, match="Invalid JSON string"):
+    with pytest.raises(DataFormatError, match="Invalid JSON string"):
         loader.load_from_string(invalid_json)
 
 

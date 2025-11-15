@@ -5,6 +5,7 @@ import pytest
 import torch
 
 from semeval.core.encoders import SentenceTransformerEncoder
+from semeval.core.exceptions import EncoderError
 
 
 class TestSentenceTransformerEncoder:
@@ -70,17 +71,17 @@ class TestSentenceTransformerEncoder:
 
     def test_encode_empty_string_raises_error(self, encoder):
         """Test that encoding empty string raises ValueError."""
-        with pytest.raises(ValueError, match="Input text cannot be empty"):
+        with pytest.raises(EncoderError, match="Input text cannot be empty"):
             encoder.encode("")
 
     def test_encode_empty_list_raises_error(self, encoder):
         """Test that encoding empty list raises ValueError."""
-        with pytest.raises(ValueError, match="Input texts list cannot be empty"):
+        with pytest.raises(EncoderError, match="Input texts list cannot be empty"):
             encoder.encode([])
 
     def test_encode_whitespace_only_raises_error(self, encoder):
         """Test that encoding whitespace-only string raises ValueError."""
-        with pytest.raises(ValueError, match="Input text cannot be empty"):
+        with pytest.raises(EncoderError, match="Input text cannot be empty"):
             encoder.encode("   ")
 
     def test_get_embedding_dim(self, encoder):
@@ -222,17 +223,17 @@ class TestHuggingFaceEncoder:
 
     def test_encode_empty_string_raises_error(self, encoder):
         """Test that encoding empty string raises ValueError."""
-        with pytest.raises(ValueError, match="Input text cannot be empty"):
+        with pytest.raises(EncoderError, match="Input text cannot be empty"):
             encoder.encode("")
 
     def test_encode_empty_list_raises_error(self, encoder):
         """Test that encoding empty list raises ValueError."""
-        with pytest.raises(ValueError, match="Input texts list cannot be empty"):
+        with pytest.raises(EncoderError, match="Input texts list cannot be empty"):
             encoder.encode([])
 
     def test_encode_whitespace_only_raises_error(self, encoder):
         """Test that encoding whitespace-only string raises ValueError."""
-        with pytest.raises(ValueError, match="Input text cannot be empty"):
+        with pytest.raises(EncoderError, match="Input text cannot be empty"):
             encoder.encode("   ")
 
     def test_get_embedding_dim(self, encoder):
