@@ -8,6 +8,18 @@ from typing import Dict, List
 import numpy as np
 
 
+def _get_logger():
+    """Lazy logger import to avoid circular imports."""
+    from ..core.logging import get_logger
+    return get_logger("semeval")
+
+
+def _get_exceptions():
+    """Lazy exception import to avoid circular imports."""
+    from ..core.exceptions import MetricComputationError, MetricInputError
+    return MetricComputationError, MetricInputError
+
+
 def compute_triplet_metrics(
     positive_sims: List[float], negative_sims: List[float]
 ) -> Dict[str, float]:
@@ -39,25 +51,50 @@ def compute_triplet_metrics(
     >>> print(f"Accuracy: {metrics['accuracy']:.2%}")
     Accuracy: 66.67%
     """
+    logger = _get_logger()
+    MetricComputationError, MetricInputError = _get_exceptions()
+
+    logger.debug(f"Computing triplet metrics (n_triplets: {len(positive_sims)})")
+
     if not positive_sims or not negative_sims:
+        logger.warning("Empty similarity lists provided")
         return _empty_result()
 
-    pos_arr = np.array(positive_sims)
-    neg_arr = np.array(negative_sims)
+    if len(positive_sims) != len(negative_sims):
+        logger.error(
+            f"Mismatched list lengths: pos={len(positive_sims)}, neg={len(negative_sims)}"
+        )
+        raise MetricInputError(
+            f"Length mismatch: {len(positive_sims)} positive vs {len(negative_sims)} negative",
+            metric_name="triplet_accuracy",
+        )
 
-    margins = pos_arr - neg_arr
-    correct = np.sum(margins > 0)
+    try:
+        pos_arr = np.array(positive_sims)
+        neg_arr = np.array(negative_sims)
 
-    return {
-        "accuracy": float(correct / len(positive_sims)),
-        "avg_positive_sim": float(np.mean(pos_arr)),
-        "avg_negative_sim": float(np.mean(neg_arr)),
-        "avg_margin": float(np.mean(margins)),
-        "min_margin": float(np.min(margins)),
-        "max_margin": float(np.max(margins)),
-        "margin_gt_01": float(np.mean(margins > 0.1)),
-        "margin_gt_02": float(np.mean(margins > 0.2)),
-    }
+        margins = pos_arr - neg_arr
+        correct = np.sum(margins > 0)
+
+        metrics = {
+            "accuracy": float(correct / len(positive_sims)),
+            "avg_positive_sim": float(np.mean(pos_arr)),
+            "avg_negative_sim": float(np.mean(neg_arr)),
+            "avg_margin": float(np.mean(margins)),
+            "min_margin": float(np.min(margins)),
+            "max_margin": float(np.max(margins)),
+            "margin_gt_01": float(np.mean(margins > 0.1)),
+            "margin_gt_02": float(np.mean(margins > 0.2)),
+        }
+
+        logger.debug(f"Triplet metrics computed (accuracy: {metrics['accuracy']:.4f})")
+        return metrics
+    except Exception as e:
+        logger.error(f"Failed to compute triplet metrics: {str(e)}")
+        raise MetricComputationError(
+            f"Failed to compute triplet metrics: {str(e)}",
+            metric_name="triplet_accuracy",
+        ) from e
 
 
 def compute_category_breakdown(

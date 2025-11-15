@@ -6,32 +6,13 @@ from various sources (JSON, CSV, databases, etc.).
 
 from abc import ABC, abstractmethod
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Dict
 
+from .exceptions import DataFormatError, DataLoadError, DataValidationError
+from .logging import get_logger
 from .schemas import TestDataModel
 
-
-class DataValidationError(Exception):
-    """Exception raised when test data validation fails.
-
-    Parameters
-    ----------
-    message : str
-        Error message describing the validation failure
-    errors : list, optional
-        List of specific validation errors
-    """
-
-    def __init__(self, message: str, errors: Optional[list] = None):
-        self.message = message
-        self.errors = errors or []
-        super().__init__(self.message)
-
-    def __str__(self):
-        if self.errors:
-            error_details = "\n".join(f"  - {err}" for err in self.errors)
-            return f"{self.message}\nErrors:\n{error_details}"
-        return self.message
+logger = get_logger("semeval")
 
 
 class BaseDataLoader(ABC):
@@ -144,8 +125,8 @@ class BaseDataLoader(ABC):
 
         Raises
         ------
-        FileNotFoundError
-            If file does not exist
+        DataLoadError
+            If file does not exist or is not a file
 
         Examples
         --------
@@ -157,14 +138,23 @@ class BaseDataLoader(ABC):
         path = Path(source)
 
         if not path.exists():
-            raise FileNotFoundError(
+            logger.error(
+                f"Test data file not found: {source} (absolute: {path.absolute()})"
+            )
+            raise DataLoadError(
                 f"Test data file not found: {source}\n"
-                f"Absolute path: {path.absolute()}"
+                f"Absolute path: {path.absolute()}",
+                file_path=source,
             )
 
         if not path.is_file():
-            raise ValueError(f"Source must be a file, not a directory: {source}")
+            logger.error(f"Source is not a file: {source}")
+            raise DataLoadError(
+                f"Source must be a file, not a directory: {source}",
+                file_path=source,
+            )
 
+        logger.debug(f"Source file validated: {source}")
         return path
 
     def __repr__(self) -> str:
