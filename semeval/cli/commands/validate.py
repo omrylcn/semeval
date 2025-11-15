@@ -5,6 +5,9 @@ from typing import Optional
 
 import typer
 
+from semeval.core.exceptions import DataValidationError
+from semeval.core.loaders import JSONDataLoader
+
 from ..utils.output import console, error, success, warning
 
 
@@ -30,10 +33,6 @@ def validate(
         semeval validate test_data.json --report validation_report.html
     """
     try:
-        # Lazy import to avoid loading heavy dependencies
-        from semeval.core.base_loader import DataValidationError
-        from semeval.core.loaders import JSONDataLoader
-
         console.print(f"\n🔍 Validating: [cyan]{data}[/cyan]\n")
 
         # Load and validate using existing JSONDataLoader
