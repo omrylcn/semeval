@@ -6,16 +6,16 @@ A modular toolkit for evaluating semantic embeddings and NLP models.
 
 ## 📌 Project Status
 
-![Version](https://img.shields.io/badge/version-0.1.0-blue)
+![Version](https://img.shields.io/badge/version-0.1.1-blue)
 ![Python](https://img.shields.io/badge/python-3.8+-green)
 ![License](https://img.shields.io/badge/license-MIT-blue)
 ![Development](https://img.shields.io/badge/status-beta-yellow)
 
-**Current Version**: v0.1.0  
-**Next Release**: v0.1.1 (Stabilization)  
-**Stability**: Beta - Active Development
+**Current Version**: v0.1.1
+**Next Release**: v0.2.0 (Core Expansion)
+**Stability**: Beta - Production Ready Foundations
 
-> ⚠️ **v0.1.1 Focus**: Testing infrastructure, CLI interface, error handling, and CI/CD pipeline for production readiness.
+> ✅ **v0.1.1 Released**: Complete testing infrastructure (153 tests, 51% coverage), CLI interface, error handling & logging, and CI/CD pipeline.
 
 
 ---
@@ -71,14 +71,15 @@ Existing benchmarks are excellent for standardized comparisons, but sometimes yo
   - Representation Health Checks
   - Label-free Quality Assessment
 
-### Production-Ready Features *(v0.1.1+)*
+### Production-Ready Features *(v0.1.1)*
 
 - **✅ CLI Interface** - Fast, user-friendly command-line tools (`eval`, `validate`, `init`, `version`, `info`)
 - **✅ Instant Startup** - ~0.2s CLI performance with lazy loading optimization
-- **✅ Comprehensive Testing** - 121 tests with >90% coverage
+- **✅ Comprehensive Testing** - 153 tests, 51% coverage (core metrics 89-100%)
 - **✅ Type Safety** - Full Pydantic V2 validation
-- Robust error handling and recovery
-- CI/CD integration ready
+- **✅ Error Handling** - 17 custom exceptions with rich context
+- **✅ Structured Logging** - Centralized logging with performance tracking
+- **✅ CI/CD Pipeline** - GitHub Actions with automated testing
 
 ### Flexible Architecture
 
@@ -880,16 +881,16 @@ output/
 
 ## Roadmap & Upcoming Features
 
-### v0.1.1 - Stabilization Release
+### v0.1.1 - Stabilization Release ✅ COMPLETED
 
 **Focus**: Production readiness foundations
 
-- ✅ **Testing Infrastructure** - 121 tests with >90% coverage
+- ✅ **Testing Infrastructure** - 153 tests, 51% coverage (metrics: 89-100%, core: 80-96%)
 - ✅ **CLI Interface** - Fast command-line tools (`eval`, `validate`, `init`, `version`, `info`) with ~0.2s startup
+- ✅ **Error Handling & Logging** - 17 custom exceptions, centralized structured logging
 - ✅ **Data Validation** - Schema validation with helpful error messages
 - ✅ **Performance Optimization** - Lazy loading for instant CLI startup (20x speedup)
-- 🔴 **Error Handling** - Robust error recovery (in progress)
-- 🔴 **CI/CD Pipeline** - Automated testing and deployment (planned)
+- ✅ **CI/CD Pipeline** - GitHub Actions with multi-Python testing (3.8-3.11)
 
 > **Why this matters**: Solid foundations ensure reliability and great developer experience before expanding features.
 
@@ -923,9 +924,9 @@ output/
 
 ## Project Info
 
-**Current Version**: v0.1.0 (Beta)  
-**License**: MIT  
-**Python**: 3.8+  
+**Current Version**: v0.1.1 (Beta)
+**License**: MIT
+**Python**: 3.8+
 **Maintainer**: [@omrylcn](https://github.com/omrylcn)
 
 ---
