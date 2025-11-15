@@ -122,7 +122,7 @@ def eval(
         elapsed = time.time() - start_time
 
         # Print results
-        console.print(f"\n✅ [bold green]Evaluation complete![/bold green]")
+        console.print("\n✅ [bold green]Evaluation complete![/bold green]")
         console.print(f"⏱️  Total time: [cyan]{elapsed:.2f}s[/cyan]\n")
 
         # Print summary

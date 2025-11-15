@@ -5,7 +5,7 @@ from pathlib import Path
 
 import typer
 
-from ..utils.output import console, error, success, warning
+from ..utils.output import console, error, success
 
 # Template data structures with English examples
 TEMPLATES = {
@@ -230,7 +230,7 @@ def init(
 
         # Task info
         tasks = template_data.get("tasks", {})
-        console.print(f"\n[bold]Included Tasks:[/bold]")
+        console.print("\n[bold]Included Tasks:[/bold]")
         for task_name in tasks.keys():
             console.print(f"  ✓ [green]{task_name.replace('_', ' ').title()}[/green]")
 

@@ -77,7 +77,7 @@ def validate(
             console.print(f"  • Arithmetic: {len(arith.analogies)} analogies")
 
         # Metadata info
-        console.print(f"\n[bold]ℹ️  Metadata:[/bold]")
+        console.print("\n[bold]ℹ️  Metadata:[/bold]")
         console.print(f"  Version: [cyan]{test_data.metadata.version}[/cyan]")
         console.print(f"  Language: [cyan]{test_data.metadata.language}[/cyan]")
         if test_data.metadata.domain:

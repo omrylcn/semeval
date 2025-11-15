@@ -4,7 +4,7 @@ This module defines all custom exceptions used throughout the SemEval framework,
 providing clear error messages and proper exception chaining.
 """
 
-from typing import Any, Dict, List, Optional
+from typing import List, Optional
 
 
 class SemEvalError(Exception):

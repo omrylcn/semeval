@@ -10,7 +10,6 @@ from typing import Any, Dict, List, Optional
 
 from pydantic import BaseModel, Field
 
-from ..core.exceptions import TaskError, TaskExecutionError
 from ..core.logging import get_logger
 
 logger = get_logger("semeval")

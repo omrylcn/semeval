@@ -17,7 +17,7 @@ from ..tasks import (
 from .base_encoder import BaseEncoder
 from .base_loader import BaseDataLoader
 from .config import SemEvalSettings, load_settings
-from .exceptions import TaskConfigError, TaskError, TaskExecutionError
+from .exceptions import TaskConfigError, TaskExecutionError
 from .loaders import JSONDataLoader
 from .logging import get_logger, log_execution_time
 

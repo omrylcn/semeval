@@ -1,7 +1,6 @@
 """Compare command - compare multiple models."""
 
 from pathlib import Path
-from typing import Optional
 
 import typer
 
