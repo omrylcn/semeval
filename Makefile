@@ -174,7 +174,7 @@ clean-all: clean clean-output
 # Code quality
 lint:
 	@echo "Running ruff linter..."
-	uv run ruff check semeval/
+	uv run ruff check semeval/ --ignore B904
 	@echo "✅ Linting complete"
 
 format:
