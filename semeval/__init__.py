@@ -81,29 +81,98 @@ semeval.metrics : Metric functions
 __version__ = "0.1.0"
 __author__ = "No-One"
 
-# Main API exports
-from .core.base_encoder import BaseEncoder
-from .core.base_loader import BaseDataLoader, DataValidationError
-from .core.config import SemEvalSettings, load_settings
-from .core.encoders import HuggingFaceEncoder, SentenceTransformerEncoder
-from .core.loaders import JSONDataLoader
-from .core.runner import EvaluationResult, TaskRunner
-from .core.schemas import (
-    InformationRetrievalData,
-    LinguisticRobustnessData,
-    SemanticSimilarityData,
-    TestDataModel,
-    VectorArithmeticData,
-)
-from .postprocess import ReportGenerator, ResultsExporter
-from .tasks import (
-    BaseTask,
-    InformationRetrieval,
-    LinguisticRobustness,
-    SemanticSimilarity,
-    TaskResult,
-    VectorArithmetic,
-)
+
+# Lazy imports for better CLI performance
+def __getattr__(name):
+    """Lazy import for better performance.
+
+    This allows CLI commands to load quickly without importing heavy dependencies
+    like torch, transformers, and sentence-transformers until they're actually needed.
+    """
+    # Encoders
+    if name == "BaseEncoder":
+        from .core.base_encoder import BaseEncoder
+        return BaseEncoder
+    if name == "SentenceTransformerEncoder":
+        from .core.encoders import SentenceTransformerEncoder
+        return SentenceTransformerEncoder
+    if name == "HuggingFaceEncoder":
+        from .core.encoders import HuggingFaceEncoder
+        return HuggingFaceEncoder
+
+    # Data loaders
+    if name == "BaseDataLoader":
+        from .core.base_loader import BaseDataLoader
+        return BaseDataLoader
+    if name == "DataValidationError":
+        from .core.base_loader import DataValidationError
+        return DataValidationError
+    if name == "JSONDataLoader":
+        from .core.loaders import JSONDataLoader
+        return JSONDataLoader
+
+    # Configuration
+    if name == "SemEvalSettings":
+        from .core.config import SemEvalSettings
+        return SemEvalSettings
+    if name == "load_settings":
+        from .core.config import load_settings
+        return load_settings
+
+    # Runner
+    if name == "TaskRunner":
+        from .core.runner import TaskRunner
+        return TaskRunner
+    if name == "EvaluationResult":
+        from .core.runner import EvaluationResult
+        return EvaluationResult
+
+    # Schemas
+    if name == "TestDataModel":
+        from .core.schemas import TestDataModel
+        return TestDataModel
+    if name == "InformationRetrievalData":
+        from .core.schemas import InformationRetrievalData
+        return InformationRetrievalData
+    if name == "SemanticSimilarityData":
+        from .core.schemas import SemanticSimilarityData
+        return SemanticSimilarityData
+    if name == "LinguisticRobustnessData":
+        from .core.schemas import LinguisticRobustnessData
+        return LinguisticRobustnessData
+    if name == "VectorArithmeticData":
+        from .core.schemas import VectorArithmeticData
+        return VectorArithmeticData
+
+    # Tasks
+    if name == "BaseTask":
+        from .tasks import BaseTask
+        return BaseTask
+    if name == "InformationRetrieval":
+        from .tasks import InformationRetrieval
+        return InformationRetrieval
+    if name == "SemanticSimilarity":
+        from .tasks import SemanticSimilarity
+        return SemanticSimilarity
+    if name == "LinguisticRobustness":
+        from .tasks import LinguisticRobustness
+        return LinguisticRobustness
+    if name == "VectorArithmetic":
+        from .tasks import VectorArithmetic
+        return VectorArithmetic
+    if name == "TaskResult":
+        from .tasks import TaskResult
+        return TaskResult
+
+    # Post-processing
+    if name == "ResultsExporter":
+        from .postprocess import ResultsExporter
+        return ResultsExporter
+    if name == "ReportGenerator":
+        from .postprocess import ReportGenerator
+        return ReportGenerator
+
+    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
 
 __all__ = [
     # Version
