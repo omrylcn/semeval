@@ -57,7 +57,7 @@ Existing benchmarks are excellent for standardized comparisons, but sometimes yo
 
 ### Evaluation Tasks
 
-**4 Core Tasks** (13+ planned - [see roadmap](ROADMAP.md))
+**4 Core Tasks** (13+ planned)
 
 - **Information Retrieval** - NDCG, MRR, MAP metrics
 - **Semantic Similarity** - Triplet evaluation with margin analysis
