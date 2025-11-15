@@ -146,7 +146,7 @@ semeval init -o test.json
 
 ---
 
-## ⚡ Quick Start
+## Quick Start
 
 ### 🖥️ CLI Usage (Recommended)
 
@@ -176,7 +176,7 @@ semeval info
 
 **CLI Performance:** Instant startup (~0.2s) with lazy loading of ML dependencies.
 
-### 🐍 Python API
+### Python API
 
 ```python
 from semeval import TaskRunner, SentenceTransformerEncoder
@@ -219,7 +219,7 @@ encoder = SentenceTransformerEncoder("your-organization/your-model")
 
 ---
 
-## 🖥️ CLI Commands
+## CLI Commands
 
 SemEval provides a powerful command-line interface for quick evaluations and automation.
 
