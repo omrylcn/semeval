@@ -121,9 +121,7 @@ def validate(
         )
 
         if warnings_found and not strict:
-            console.print(
-                "💡 [dim]Use --strict to treat warnings as errors[/dim]"
-            )
+            console.print("💡 [dim]Use --strict to treat warnings as errors[/dim]")
 
     except DataValidationError as e:
         error(f"Validation failed: {e.message}")

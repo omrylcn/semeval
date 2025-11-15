@@ -11,12 +11,14 @@ import numpy as np
 def _get_logger():
     """Lazy logger import to avoid circular imports."""
     from ..core.logging import get_logger
+
     return get_logger("semeval")
 
 
 def _get_exceptions():
     """Lazy exception import to avoid circular imports."""
     from ..core.exceptions import MetricComputationError, MetricInputError
+
     return MetricComputationError, MetricInputError
 
 

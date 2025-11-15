@@ -274,7 +274,9 @@ class HuggingFaceEncoder(BaseEncoder):
 
                     # Normalize if requested
                     if normalize_embeddings:
-                        embeddings = torch.nn.functional.normalize(embeddings, p=2, dim=1)
+                        embeddings = torch.nn.functional.normalize(
+                            embeddings, p=2, dim=1
+                        )
 
                     all_embeddings.append(embeddings.cpu())
 

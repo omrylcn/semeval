@@ -34,7 +34,9 @@ def report(
         semeval report results.json -o my_report.html
     """
     try:
-        console.print(f"\n📄 Generating {format.upper()} report from: [cyan]{results}[/cyan]")
+        console.print(
+            f"\n📄 Generating {format.upper()} report from: [cyan]{results}[/cyan]"
+        )
 
         # Auto-generate output filename if not provided
         if not output:
@@ -43,9 +45,7 @@ def report(
         console.print(f"💾 Output: [yellow]{output}[/yellow]\n")
 
         # TODO: Implement report generation
-        warning(
-            f"Report generation not yet implemented for format: {format}"
-        )
+        warning(f"Report generation not yet implemented for format: {format}")
 
         console.print("\n[bold]Planned features:[/bold]")
         console.print("  • Beautiful HTML reports with charts")

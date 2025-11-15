@@ -92,87 +92,111 @@ def __getattr__(name):
     # Encoders
     if name == "BaseEncoder":
         from .core.base_encoder import BaseEncoder
+
         return BaseEncoder
     if name == "SentenceTransformerEncoder":
         from .core.encoders import SentenceTransformerEncoder
+
         return SentenceTransformerEncoder
     if name == "HuggingFaceEncoder":
         from .core.encoders import HuggingFaceEncoder
+
         return HuggingFaceEncoder
 
     # Data loaders
     if name == "BaseDataLoader":
         from .core.base_loader import BaseDataLoader
+
         return BaseDataLoader
     if name == "DataValidationError":
         from .core.base_loader import DataValidationError
+
         return DataValidationError
     if name == "JSONDataLoader":
         from .core.loaders import JSONDataLoader
+
         return JSONDataLoader
 
     # Configuration
     if name == "SemEvalSettings":
         from .core.config import SemEvalSettings
+
         return SemEvalSettings
     if name == "load_settings":
         from .core.config import load_settings
+
         return load_settings
 
     # Runner
     if name == "TaskRunner":
         from .core.runner import TaskRunner
+
         return TaskRunner
     if name == "EvaluationResult":
         from .core.runner import EvaluationResult
+
         return EvaluationResult
 
     # Schemas
     if name == "TestDataModel":
         from .core.schemas import TestDataModel
+
         return TestDataModel
     if name == "InformationRetrievalData":
         from .core.schemas import InformationRetrievalData
+
         return InformationRetrievalData
     if name == "SemanticSimilarityData":
         from .core.schemas import SemanticSimilarityData
+
         return SemanticSimilarityData
     if name == "LinguisticRobustnessData":
         from .core.schemas import LinguisticRobustnessData
+
         return LinguisticRobustnessData
     if name == "VectorArithmeticData":
         from .core.schemas import VectorArithmeticData
+
         return VectorArithmeticData
 
     # Tasks
     if name == "BaseTask":
         from .tasks import BaseTask
+
         return BaseTask
     if name == "InformationRetrieval":
         from .tasks import InformationRetrieval
+
         return InformationRetrieval
     if name == "SemanticSimilarity":
         from .tasks import SemanticSimilarity
+
         return SemanticSimilarity
     if name == "LinguisticRobustness":
         from .tasks import LinguisticRobustness
+
         return LinguisticRobustness
     if name == "VectorArithmetic":
         from .tasks import VectorArithmetic
+
         return VectorArithmetic
     if name == "TaskResult":
         from .tasks import TaskResult
+
         return TaskResult
 
     # Post-processing
     if name == "ResultsExporter":
         from .postprocess import ResultsExporter
+
         return ResultsExporter
     if name == "ReportGenerator":
         from .postprocess import ReportGenerator
+
         return ReportGenerator
 
     raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+
 
 __all__ = [
     # Version

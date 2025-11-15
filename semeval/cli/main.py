@@ -30,7 +30,9 @@ def version():
     """Show SemEval version information."""
     from semeval import __version__
 
-    console.print(f"[bold green]SemEval[/bold green] version [bold]{__version__}[/bold]")
+    console.print(
+        f"[bold green]SemEval[/bold green] version [bold]{__version__}[/bold]"
+    )
     console.print("\nSemantic Embedding Evaluation Framework")
     console.print("https://github.com/omrylcn/semeval")
 

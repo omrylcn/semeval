@@ -281,7 +281,9 @@ class TaskRunner:
                 with log_execution_time(logger, "information_retrieval_task"):
                     result = task.run()
                 task_results.append(result)
-                logger.info(f"Information Retrieval task completed (status: {result.status})")
+                logger.info(
+                    f"Information Retrieval task completed (status: {result.status})"
+                )
             except Exception as e:
                 logger.error(f"Information Retrieval task failed: {str(e)}")
                 self._log(f"Task failed: {str(e)}", level="ERROR")
@@ -304,7 +306,9 @@ class TaskRunner:
                 with log_execution_time(logger, "semantic_similarity_task"):
                     result = task.run()
                 task_results.append(result)
-                logger.info(f"Semantic Similarity task completed (status: {result.status})")
+                logger.info(
+                    f"Semantic Similarity task completed (status: {result.status})"
+                )
             except Exception as e:
                 logger.error(f"Semantic Similarity task failed: {str(e)}")
                 self._log(f"Task failed: {str(e)}", level="ERROR")
@@ -326,7 +330,9 @@ class TaskRunner:
                 with log_execution_time(logger, "linguistic_robustness_task"):
                     result = task.run()
                 task_results.append(result)
-                logger.info(f"Linguistic Robustness task completed (status: {result.status})")
+                logger.info(
+                    f"Linguistic Robustness task completed (status: {result.status})"
+                )
             except Exception as e:
                 logger.error(f"Linguistic Robustness task failed: {str(e)}")
                 self._log(f"Task failed: {str(e)}", level="ERROR")
@@ -348,7 +354,9 @@ class TaskRunner:
                 with log_execution_time(logger, "vector_arithmetic_task"):
                     result = task.run()
                 task_results.append(result)
-                logger.info(f"Vector Arithmetic task completed (status: {result.status})")
+                logger.info(
+                    f"Vector Arithmetic task completed (status: {result.status})"
+                )
             except Exception as e:
                 logger.error(f"Vector Arithmetic task failed: {str(e)}")
                 self._log(f"Task failed: {str(e)}", level="ERROR")
@@ -429,11 +437,15 @@ class TaskRunner:
                 )
                 with log_execution_time(logger, f"{task_name}_execution"):
                     result = task.run()
-                logger.info(f"Task {task_name} completed successfully (status: {result.status})")
+                logger.info(
+                    f"Task {task_name} completed successfully (status: {result.status})"
+                )
                 return result
             except Exception as e:
                 logger.error(f"Task {task_name} execution failed: {str(e)}")
-                raise TaskExecutionError(f"Task execution failed: {str(e)}", task_name=task_name) from e
+                raise TaskExecutionError(
+                    f"Task execution failed: {str(e)}", task_name=task_name
+                ) from e
 
         elif task_name == "semantic_similarity":
             if test_data.tasks.semantic_similarity is None:
@@ -452,11 +464,15 @@ class TaskRunner:
                 )
                 with log_execution_time(logger, f"{task_name}_execution"):
                     result = task.run()
-                logger.info(f"Task {task_name} completed successfully (status: {result.status})")
+                logger.info(
+                    f"Task {task_name} completed successfully (status: {result.status})"
+                )
                 return result
             except Exception as e:
                 logger.error(f"Task {task_name} execution failed: {str(e)}")
-                raise TaskExecutionError(f"Task execution failed: {str(e)}", task_name=task_name) from e
+                raise TaskExecutionError(
+                    f"Task execution failed: {str(e)}", task_name=task_name
+                ) from e
 
         elif task_name == "linguistic_robustness":
             if test_data.tasks.linguistic_robustness is None:
@@ -475,11 +491,15 @@ class TaskRunner:
                 )
                 with log_execution_time(logger, f"{task_name}_execution"):
                     result = task.run()
-                logger.info(f"Task {task_name} completed successfully (status: {result.status})")
+                logger.info(
+                    f"Task {task_name} completed successfully (status: {result.status})"
+                )
                 return result
             except Exception as e:
                 logger.error(f"Task {task_name} execution failed: {str(e)}")
-                raise TaskExecutionError(f"Task execution failed: {str(e)}", task_name=task_name) from e
+                raise TaskExecutionError(
+                    f"Task execution failed: {str(e)}", task_name=task_name
+                ) from e
 
         elif task_name == "vector_arithmetic":
             if test_data.tasks.vector_arithmetic is None:
@@ -498,12 +518,18 @@ class TaskRunner:
                 )
                 with log_execution_time(logger, f"{task_name}_execution"):
                     result = task.run()
-                logger.info(f"Task {task_name} completed successfully (status: {result.status})")
+                logger.info(
+                    f"Task {task_name} completed successfully (status: {result.status})"
+                )
                 return result
             except Exception as e:
                 logger.error(f"Task {task_name} execution failed: {str(e)}")
-                raise TaskExecutionError(f"Task execution failed: {str(e)}", task_name=task_name) from e
+                raise TaskExecutionError(
+                    f"Task execution failed: {str(e)}", task_name=task_name
+                ) from e
 
         else:
             logger.error(f"Unknown task name: {task_name}")
-            raise TaskConfigError(f"Unknown task name: {task_name}", task_name=task_name)
+            raise TaskConfigError(
+                f"Unknown task name: {task_name}", task_name=task_name
+            )

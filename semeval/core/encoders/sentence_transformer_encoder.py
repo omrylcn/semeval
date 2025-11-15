@@ -90,7 +90,9 @@ class SentenceTransformerEncoder(BaseEncoder):
         try:
             with log_execution_time(logger, "model_loading"):
                 self.model = SentenceTransformer(
-                    model_name_or_path, device=device, trust_remote_code=trust_remote_code
+                    model_name_or_path,
+                    device=device,
+                    trust_remote_code=trust_remote_code,
                 )
             logger.info(
                 f"Model loaded successfully: {model_name_or_path} "
@@ -207,7 +209,9 @@ class SentenceTransformerEncoder(BaseEncoder):
                 f"Failed to encode texts: {str(e)}",
                 model_name=self._model_name,
                 num_texts=num_texts,
-                device=str(self.model.device) if hasattr(self.model, "device") else None,
+                device=(
+                    str(self.model.device) if hasattr(self.model, "device") else None
+                ),
             ) from e
 
     def get_embedding_dim(self) -> int:

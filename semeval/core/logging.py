@@ -306,9 +306,7 @@ class PerformanceLogger:
         if operation not in self.metrics:
             self.metrics[operation] = []
 
-        self.metrics[operation].append(
-            {"time": elapsed_time, "metadata": metadata}
-        )
+        self.metrics[operation].append({"time": elapsed_time, "metadata": metadata})
 
     @contextmanager
     def measure(self, operation: str, **metadata):

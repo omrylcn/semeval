@@ -26,16 +26,22 @@ TEMPLATES = {
                         "anchor": "This is a test sentence",
                         "positive": "This is a sample sentence",
                         "negative": "The weather is nice today",
-                        "expected_similarity": {"anchor_positive": 0.8, "anchor_negative": 0.2},
+                        "expected_similarity": {
+                            "anchor_positive": 0.8,
+                            "anchor_negative": 0.2,
+                        },
                     },
                     {
                         "id": "triplet_2",
                         "anchor": "Machine learning is fascinating",
                         "positive": "Artificial intelligence is interesting",
                         "negative": "I like pizza",
-                        "expected_similarity": {"anchor_positive": 0.75, "anchor_negative": 0.1},
+                        "expected_similarity": {
+                            "anchor_positive": 0.75,
+                            "anchor_negative": 0.1,
+                        },
                     },
-                ]
+                ],
             }
         },
     },
@@ -54,16 +60,13 @@ TEMPLATES = {
                     "doc1": "Istanbul is Turkey's most populous city and economic center",
                     "doc2": "Ankara is the capital of Turkey",
                     "doc3": "Mount Ararat is the highest mountain in Turkey",
-                    "doc4": "Turkish coffee is a traditional beverage"
+                    "doc4": "Turkish coffee is a traditional beverage",
                 },
                 "queries": {
                     "q1": "What is Turkey's capital?",
-                    "q2": "Tell me about Istanbul"
+                    "q2": "Tell me about Istanbul",
                 },
-                "relevant_docs": {
-                    "q1": {"doc2": 2},
-                    "q2": {"doc1": 2}
-                }
+                "relevant_docs": {"q1": {"doc2": 2}, "q2": {"doc1": 2}},
             }
         },
     },
@@ -84,23 +87,32 @@ TEMPLATES = {
                         "anchor": "The cat is sitting on the mat",
                         "positive": "A feline is resting on the rug",
                         "negative": "Dogs are playing in the park",
-                        "expected_similarity": {"anchor_positive": 0.85, "anchor_negative": 0.15},
+                        "expected_similarity": {
+                            "anchor_positive": 0.85,
+                            "anchor_negative": 0.15,
+                        },
                     },
                     {
                         "id": "sim_2",
                         "anchor": "I love programming in Python",
                         "positive": "Python is my favorite programming language",
                         "negative": "I enjoy cooking Italian food",
-                        "expected_similarity": {"anchor_positive": 0.8, "anchor_negative": 0.1},
+                        "expected_similarity": {
+                            "anchor_positive": 0.8,
+                            "anchor_negative": 0.1,
+                        },
                     },
                     {
                         "id": "sim_3",
                         "anchor": "The stock market crashed today",
                         "positive": "Today's market saw a significant downturn",
                         "negative": "The weather is beautiful this morning",
-                        "expected_similarity": {"anchor_positive": 0.75, "anchor_negative": 0.05},
+                        "expected_similarity": {
+                            "anchor_positive": 0.75,
+                            "anchor_negative": 0.05,
+                        },
                     },
-                ]
+                ],
             }
         },
     },
@@ -179,9 +191,7 @@ def init(
     output: Path = typer.Option(
         "test_data.json", "--output", "-o", help="Output JSON file path"
     ),
-    force: bool = typer.Option(
-        False, "--force", "-f", help="Overwrite if file exists"
-    ),
+    force: bool = typer.Option(False, "--force", "-f", help="Overwrite if file exists"),
 ):
     """Create a template test data file.
 
@@ -203,7 +213,9 @@ def init(
             error(f"Unknown template: {template}")
             console.print("\n[bold]Available templates:[/bold]")
             for name, data in TEMPLATES.items():
-                console.print(f"  • [cyan]{name}[/cyan]: {data['metadata']['description']}")
+                console.print(
+                    f"  • [cyan]{name}[/cyan]: {data['metadata']['description']}"
+                )
             raise typer.Exit(code=1)
 
         # Check if file exists

@@ -133,7 +133,9 @@ def eval(
             if task_name in ["total_runtime", "timestamp"]:
                 continue
 
-            console.print(f"\n[bold cyan]{task_name.replace('_', ' ').title()}[/bold cyan]:")
+            console.print(
+                f"\n[bold cyan]{task_name.replace('_', ' ').title()}[/bold cyan]:"
+            )
             if isinstance(metrics, dict):
                 for metric, value in metrics.items():
                     if isinstance(value, (int, float)):
