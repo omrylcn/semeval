@@ -21,7 +21,7 @@ A modular toolkit for evaluating semantic embeddings and NLP models.
 
 ---
 
-## 🎯 Why SemEval?
+## Why SemEval?
 
 ### When You Need Flexibility
 
@@ -54,9 +54,9 @@ Existing benchmarks are excellent for standardized comparisons, but sometimes yo
 
 ---
 
-## ✨ Core Features
+## Core Features
 
-### 🧪 Evaluation Tasks
+### Evaluation Tasks
 
 **4 Core Tasks** (13+ planned - [see roadmap](ROADMAP.md))
 
@@ -65,14 +65,14 @@ Existing benchmarks are excellent for standardized comparisons, but sometimes yo
 - **Linguistic Robustness** - Test stability under variations (typos, morphology, negation)
 - **Vector Arithmetic** - Analogy and compositional semantics
 
-### 🔬 Advanced Capabilities
+### Advanced Capabilities
 
 - **Embedding Quality Metrics** *(coming in v0.2.0)*
   - Isotropy & Uniformity Analysis
   - Representation Health Checks
   - Label-free Quality Assessment
 
-### 🛠️ Production-Ready Features *(v0.1.1+)*
+### Production-Ready Features *(v0.1.1+)*
 
 - **✅ CLI Interface** - Fast, user-friendly command-line tools (`eval`, `validate`, `init`, `version`, `info`)
 - **✅ Instant Startup** - ~0.2s CLI performance with lazy loading optimization
@@ -81,7 +81,7 @@ Existing benchmarks are excellent for standardized comparisons, but sometimes yo
 - Robust error handling and recovery
 - CI/CD integration ready
 
-### 🌐 Flexible Architecture
+### Flexible Architecture
 
 - **Multiple Encoders**: Sentence Transformers, HuggingFace, custom encoders
 - **Type-Safe**: Full Pydantic V2 validation
@@ -106,7 +106,7 @@ Existing benchmarks are excellent for standardized comparisons, but sometimes yo
 
 ---
 
-## 🚀 Installation
+## Installation
 
 ### Requirements
 
@@ -879,9 +879,9 @@ output/
 
 ---
 
-## 🗺️ Roadmap & Upcoming Features
+## Roadmap & Upcoming Features
 
-### 🚨 v0.1.1 - Stabilization Release
+### v0.1.1 - Stabilization Release
 
 **Focus**: Production readiness foundations
 
@@ -894,7 +894,7 @@ output/
 
 > **Why this matters**: Solid foundations ensure reliability and great developer experience before expanding features.
 
-### 🎯 v0.2.0 - Core Expansion
+### v0.2.0 - Core Expansion
 
 **Focus**: Advanced metrics and new tasks
 
@@ -909,7 +909,7 @@ output/
   - `semeval benchmark` - Run standardized benchmarks
   - Config file support for `eval` command
 
-### 🚀 v0.3.0 and Beyond
+### v0.3.0 and Beyond
 
 **Focus**: Advanced analysis and ecosystem integration
 
@@ -922,7 +922,7 @@ output/
 
 ---
 
-## 📊 Project Info
+## Project Info
 
 **Current Version**: v0.1.0 (Beta)  
 **License**: MIT  
@@ -931,7 +931,7 @@ output/
 
 ---
 
-## 🎯 Project Goals
+## Project Goals
 
 SemEval aims to be:
 
