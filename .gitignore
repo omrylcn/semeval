@@ -67,3 +67,7 @@ dmypy.json
 TODO.md
 ROADMAP.md
 uv.lock
+USAGE.md
+uv.lock
+tests/TEST_REHBERI_TR.md
+tests/TESTING_GUIDE.md
